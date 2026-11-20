@@ -1,9 +1,15 @@
 package com.ljj.PocketBench.ui
 
 import android.os.Build
-import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.clickable
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -11,9 +17,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -22,11 +26,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
@@ -42,9 +43,13 @@ import com.itos.coui.navigation.NavigationBar
 import com.itos.coui.slider.Slider
 import com.itos.coui.switch.Switch
 import com.itos.coui.text.CouiTextKind
-import com.itos.coui.theme.LocalCouiTextStyle
 import com.itos.coui.text.Text
+import com.itos.coui.theme.CouiTheme
 import com.itos.coui.topappbar.TopAppBar
+import com.itos.coui.topappbar.TopAppBarButton
+import com.itos.coui.topappbar.TopAppBarButtonGroup
+import com.itos.coui.dialog.CouiDialogAction
+import com.itos.coui.dialog.InputDialog
 import com.ljj.PocketBench.notification.LiveUpdateController
 
 @RequiresApi(34)
@@ -60,15 +65,27 @@ fun PocketBenchApp(
     onOpenNotificationSettings: () -> Unit,
 ) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
-    var subPage by rememberSaveable { mutableStateOf("") }
+    var currentPage by rememberSaveable { mutableStateOf("home") }
+    var navigationForward by remember { mutableStateOf(true) }
     val pageColors = CouiPageDefaults.themeColors()
     val bottomRenderer = remember {
         if (Build.VERSION.SDK_INT >= 34) runCatching { BottomBarRenderer() } else null
     }
+    val isSubPage = currentPage == "live" || currentPage == "announcement"
 
-    BackHandler(enabled = subPage.isNotEmpty()) {
-        subPage = ""
+    fun navigate(page: String) {
+        navigationForward = true
+        currentPage = page
+        selectedTab = if (page == "settings") 1 else 0
     }
+
+    fun goBack() {
+        navigationForward = false
+        currentPage = "home"
+        selectedTab = 0
+    }
+
+    BackHandler(enabled = isSubPage) { goBack() }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -76,41 +93,42 @@ fun PocketBenchApp(
         topBar = {
             TopAppBar(
                 title = {
-                    androidx.compose.foundation.text.BasicText(
-                        text = when (subPage) {
+                    Text(
+                        text = when (currentPage) {
                             "live" -> "实况通知"
                             "announcement" -> "公告"
+                            "settings" -> "设置"
                             else -> "PocketBench"
                         },
-                        style = LocalCouiTextStyle.current,
+                        kind = CouiTextKind.ItemTitle,
                     )
                 },
                 navigationIcon = {
-                    if (subPage.isNotEmpty()) {
-                        androidx.compose.foundation.text.BasicText(
-                            text = "‹",
-                            style = LocalCouiTextStyle.current,
-                            modifier = Modifier
-                                .clickable { subPage = "" }
-                                .padding(horizontal = 16.dp, vertical = 8.dp),
-                        )
+                    if (isSubPage) {
+                        if (Build.VERSION.SDK_INT >= 34) {
+                            CouiBackTopBarButton(onClick = ::goBack)
+                        } else {
+                            Item(onClick = ::goBack) {
+                                Text(text = "‹", kind = CouiTextKind.ItemTitle)
+                            }
+                        }
                     }
                 },
                 actions = {
-                    if (subPage.isEmpty()) {
-                        androidx.compose.foundation.text.BasicText(
-                            text = "公告",
-                            style = LocalCouiTextStyle.current,
-                            modifier = Modifier
-                                .clickable { subPage = "announcement" }
-                                .padding(horizontal = 16.dp, vertical = 8.dp),
-                        )
+                    if (currentPage == "home" || currentPage == "settings") {
+                        if (Build.VERSION.SDK_INT >= 34) {
+                            CouiAnnouncementTopBarButton(onClick = { navigate("announcement") })
+                        } else {
+                            Item(onClick = { navigate("announcement") }) {
+                                Text(text = "公告", kind = CouiTextKind.ItemTitle)
+                            }
+                        }
                     }
                 },
             )
         },
         bottomBar = {
-            if (subPage.isEmpty()) {
+            if (!isSubPage) {
                 val renderer = bottomRenderer?.getOrNull()?.renderer
                 if (Build.VERSION.SDK_INT >= 34 && renderer != null) {
                     NavigationBar(
@@ -120,8 +138,21 @@ fun PocketBenchApp(
                             CouiNavigationItem("设置", Icons.Outlined.Settings, Icons.Filled.Settings),
                         ),
                         selectedIndex = selectedTab,
-                        onSelection = { selectedTab = it },
+                        onSelection = {
+                            navigationForward = it > selectedTab
+                            selectedTab = it
+                            currentPage = if (it == 0) "home" else "settings"
+                        },
                     )
+                } else {
+                    Group {
+                        Item(onClick = { navigate("home") }) {
+                            Text(text = if (selectedTab == 0) "● 首页" else "首页", kind = CouiTextKind.ItemTitle)
+                        }
+                        Item(onClick = { navigate("settings") }) {
+                            Text(text = if (selectedTab == 1) "● 设置" else "设置", kind = CouiTextKind.ItemTitle)
+                        }
+                    }
                 }
             }
         },
@@ -135,17 +166,44 @@ fun PocketBenchApp(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             item {
-                when (subPage) {
-                    "live" -> LiveUpdatePage(controller, onStart)
-                    "announcement" -> AnnouncementPage()
-                    else -> if (selectedTab == 0) {
-                        HomePage(onOpenLiveUpdate = { subPage = "live" })
-                    } else {
-                        SettingsPage(
+                AnimatedContent(
+                    targetState = currentPage,
+                    transitionSpec = {
+                        val enter = if (navigationForward) {
+                            slideInHorizontally(
+                                initialOffsetX = { it / 5 },
+                                animationSpec = tween(280),
+                            ) + fadeIn(animationSpec = tween(220))
+                        } else {
+                            slideInHorizontally(
+                                initialOffsetX = { -it / 5 },
+                                animationSpec = tween(280),
+                            ) + fadeIn(animationSpec = tween(220))
+                        }
+                        val exit = if (navigationForward) {
+                            slideOutHorizontally(
+                                targetOffsetX = { -it / 8 },
+                                animationSpec = tween(220),
+                            ) + fadeOut(animationSpec = tween(180))
+                        } else {
+                            slideOutHorizontally(
+                                targetOffsetX = { it / 8 },
+                                animationSpec = tween(220),
+                            ) + fadeOut(animationSpec = tween(180))
+                        }
+                        enter togetherWith exit
+                    },
+                    label = "PocketBenchSecondaryPageTransition",
+                ) { page ->
+                    when (page) {
+                        "live" -> LiveUpdatePage(controller, onStart)
+                        "announcement" -> AnnouncementPage()
+                        "settings" -> SettingsPage(
                             controller = controller,
                             onOpenNotificationSettings = onOpenNotificationSettings,
                             onOpenPromotionSettings = onOpenPromotionSettings,
                         )
+                        else -> HomePage(onOpenLiveUpdate = { navigate("live") })
                     }
                 }
             }
@@ -154,14 +212,34 @@ fun PocketBenchApp(
     }
 }
 
+@RequiresApi(34)
+@Composable
+private fun CouiBackTopBarButton(onClick: () -> Unit) {
+    TopAppBarButtonGroup {
+        TopAppBarButton(onClick = onClick) {
+            Text(text = "‹", kind = CouiTextKind.ItemTitle)
+        }
+    }
+}
+
+@RequiresApi(34)
+@Composable
+private fun CouiAnnouncementTopBarButton(onClick: () -> Unit) {
+    TopAppBarButtonGroup {
+        TopAppBarButton(onClick = onClick, text = true) {
+            Text(text = "公告", kind = CouiTextKind.ItemTitle)
+        }
+    }
+}
+
 @Composable
 private fun HomePage(onOpenLiveUpdate: () -> Unit) {
-    Group(title = "首页", footer = "选择功能进入对应页面。") {
+    Group(title = "PocketBench", footer = "轻量、清晰，尽量使用 Android 系统能力。") {
         Item(
             onClick = onOpenLiveUpdate,
             summary = {
                 Text(
-                    text = "创建和管理由 Android 系统展示的原生实况通知",
+                    text = "配置内容、进度，并控制 Android 系统原生实况通知",
                     kind = CouiTextKind.ItemSummary,
                 )
             },
@@ -173,20 +251,34 @@ private fun HomePage(onOpenLiveUpdate: () -> Unit) {
         }
     }
 
-    Group(title = "关于 PocketBench") {
+    Group(title = "使用说明") {
         Item(
             summary = {
-                Text(text = "管理系统通知与应用常规选项", kind = CouiTextKind.ItemSummary)
+                Text(
+                    text = "通知由 Android 系统创建和渲染；应用页面负责配置与控制。",
+                    kind = CouiTextKind.ItemSummary,
+                )
             },
         ) {
-            Text(text = "轻量、清晰，尽量使用系统原生能力", kind = CouiTextKind.ItemTitle)
+            Text(text = "原生通知接入", kind = CouiTextKind.ItemTitle)
         }
     }
 }
 
 @Composable
 private fun LiveUpdatePage(controller: LiveUpdateController, onStart: () -> Unit) {
-    Group(title = "实况通知", footer = "通知由 Android 系统创建和渲染；本页面只负责配置与控制，不绘制仿系统通知。") {
+    var editingField by rememberSaveable { mutableStateOf("") }
+    var editingValue by remember { mutableStateOf(TextFieldValue("")) }
+
+    fun edit(field: String, value: String) {
+        editingField = field
+        editingValue = TextFieldValue(value)
+    }
+
+    Group(
+        title = "实况通知",
+        footer = "本页面只负责配置和控制；通知内容、状态栏展示及实况通知呈现均由 Android 系统处理。",
+    ) {
         Item(
             summary = {
                 Text(
@@ -209,20 +301,22 @@ private fun LiveUpdatePage(controller: LiveUpdateController, onStart: () -> Unit
 
     Group(title = "通知内容", footer = "短文本建议控制在 7 个字符以内，系统会根据设备界面决定展示方式。") {
         Item(
-            summary = { Text(text = "通知的主标题", kind = CouiTextKind.ItemSummary) },
-            trailing = { TextEditor(controller.title, controller::updateTitle, "输入标题") },
+            onClick = { edit("title", controller.title) },
+            summary = { Text(text = controller.title, kind = CouiTextKind.ItemSummary) },
+            trailing = { Text(text = "编辑", kind = CouiTextKind.ItemSummary) },
         ) {
             Text(text = "标题", kind = CouiTextKind.ItemTitle)
         }
         Item(
-            summary = { Text(text = "用于系统实况通知的短文本字段", kind = CouiTextKind.ItemSummary) },
-            trailing = { TextEditor(controller.shortText, controller::updateShortText, "短文本") },
+            onClick = { edit("shortText", controller.shortText) },
+            summary = { Text(text = controller.shortText, kind = CouiTextKind.ItemSummary) },
+            trailing = { Text(text = "编辑", kind = CouiTextKind.ItemSummary) },
         ) {
             Text(text = "短文本", kind = CouiTextKind.ItemTitle)
         }
     }
 
-    Group(title = "进度", footer = "拖动滑块时会更新同一条系统通知。") {
+    Group(title = "进度", footer = "拖动 COUI 滑块时，会更新同一条 Android 原生通知。") {
         Item(
             trailing = { Text(text = "${controller.progress}%", kind = CouiTextKind.ItemTitle) },
         ) {
@@ -254,7 +348,10 @@ private fun LiveUpdatePage(controller: LiveUpdateController, onStart: () -> Unit
 
     Group(title = "系统状态") {
         StatusItem("通知状态", if (controller.isRunning) "正在运行" else "未启动")
-        StatusItem("系统授权", if (controller.canPromote) "已允许" else "未允许或不可用")
+        StatusItem(
+            "实况通知授权",
+            if (Build.VERSION.SDK_INT < 36) "当前系统版本不支持" else if (controller.canPromote) "已允许" else "未允许",
+        )
         StatusItem("系统提升条件", if (controller.isPromotable) "符合" else "尚未确认")
         StatusItem("系统提升结果", if (controller.isPromoted) "已提升" else "尚未提升")
         Item(
@@ -264,6 +361,32 @@ private fun LiveUpdatePage(controller: LiveUpdateController, onStart: () -> Unit
             Text(text = "刷新状态", kind = CouiTextKind.ItemTitle)
         }
     }
+
+    if (editingField.isNotEmpty()) {
+        val field = editingField
+        InputDialog(
+            value = editingValue,
+            onValueChange = { editingValue = it },
+            onDismissRequest = { editingField = "" },
+            confirmAction = CouiDialogAction(
+                text = "保存",
+                onClick = {
+                    when (field) {
+                        "title" -> controller.updateTitle(editingValue.text)
+                        "shortText" -> controller.updateShortText(editingValue.text)
+                    }
+                    editingField = ""
+                },
+            ),
+            dismissAction = CouiDialogAction(
+                text = "取消",
+                onClick = { editingField = "" },
+            ),
+            clearContentDescription = "清除输入",
+            title = if (field == "title") "编辑通知标题" else "编辑短文本",
+            placeholder = if (field == "title") "输入通知标题" else "输入短文本",
+        )
+    }
 }
 
 @Composable
@@ -272,18 +395,18 @@ private fun SettingsPage(
     onOpenNotificationSettings: () -> Unit,
     onOpenPromotionSettings: () -> Unit,
 ) {
-    Group(title = "权限管理", footer = "权限由 Android 系统管理，点击后进入系统设置页面。") {
+    Group(title = "权限管理", footer = "权限由 Android 系统管理，点击后进入对应系统设置页面。") {
         StatusItem(
             "通知运行状态",
             if (controller.isRunning) "运行中" else "未运行",
         )
         StatusItem(
             "实况通知授权",
-            if (controller.canPromote) "已允许" else "未允许或系统不支持",
+            if (Build.VERSION.SDK_INT < 36) "当前系统版本不支持" else if (controller.canPromote) "已允许" else "未允许",
         )
         Item(
             onClick = onOpenNotificationSettings,
-            summary = { Text(text = "管理通知开关、通知类别等系统选项", kind = CouiTextKind.ItemSummary) },
+            summary = { Text(text = "管理通知开关和通知类别", kind = CouiTextKind.ItemSummary) },
         ) {
             Text(text = "通知权限设置", kind = CouiTextKind.ItemTitle)
         }
@@ -303,7 +426,7 @@ private fun SettingsPage(
             Text(text = "刷新应用状态", kind = CouiTextKind.ItemTitle)
         }
         Item(
-            summary = { Text(text = "PocketBench 1.0.0", kind = CouiTextKind.ItemSummary) },
+            summary = { Text(text = "PocketBench 0.3", kind = CouiTextKind.ItemSummary) },
         ) {
             Text(text = "应用版本", kind = CouiTextKind.ItemTitle)
         }
@@ -316,12 +439,12 @@ private fun AnnouncementPage() {
         Item(
             summary = {
                 Text(
-                    text = "建立首页与设置双 Tab 结构；实况通知调整为首页入口及独立子页面；继续使用 Android 原生通知。",
+                    text = "重做 COUI 页面导航与交互；加入二级页面转场；通知继续由 Android 原生 API 创建和管理。",
                     kind = CouiTextKind.ItemSummary,
                 )
             },
         ) {
-            Text(text = "PocketBench 1.0.0", kind = CouiTextKind.ItemTitle)
+            Text(text = "PocketBench 0.3", kind = CouiTextKind.ItemTitle)
         }
     }
 }
@@ -333,25 +456,4 @@ private fun StatusItem(label: String, value: String) {
     ) {
         Text(text = label, kind = CouiTextKind.ItemTitle)
     }
-}
-
-@Composable
-private fun TextEditor(value: String, onValueChange: (String) -> Unit, placeholder: String) {
-    BasicTextField(
-        value = value,
-        onValueChange = onValueChange,
-        singleLine = true,
-        textStyle = TextStyle(
-            color = Color.Unspecified,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Medium,
-        ),
-        modifier = Modifier.width(152.dp).padding(vertical = 8.dp),
-        decorationBox = { innerTextField ->
-            if (value.isEmpty()) {
-                Text(text = placeholder, kind = CouiTextKind.ItemSummary)
-            }
-            innerTextField()
-        },
-    )
 }

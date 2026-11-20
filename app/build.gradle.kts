@@ -9,8 +9,8 @@ android {
         applicationId = "com.ljj.PocketBench"
         minSdk = 31
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 3
+        versionName = "0.3"
     }
     buildFeatures { compose = true }
     compileOptions {
@@ -21,6 +21,7 @@ android {
 dependencies {
     implementation("io.github.itoseo:coui:0.0.1-alpha12")
     implementation(platform("androidx.compose:compose-bom-alpha:2026.08.01"))
+    implementation("androidx.compose.animation:animation")
     implementation("androidx.compose.foundation:foundation")
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.core:core-ktx:1.19.1")
