@@ -19,15 +19,18 @@ import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
 import com.itos.coui.theme.CouiTheme
 import com.ljj.PocketBench.notification.LiveUpdateController
+import com.ljj.PocketBench.device.DeviceMonitorController
 import com.ljj.PocketBench.ui.PocketBenchApp
 
 class MainActivity : ComponentActivity() {
     private lateinit var liveUpdateController: LiveUpdateController
+    private lateinit var deviceMonitorController: DeviceMonitorController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         liveUpdateController = LiveUpdateController(applicationContext)
-        setContent { CouiThemeHost(liveUpdateController) }
+        deviceMonitorController = DeviceMonitorController(applicationContext)
+        setContent { CouiThemeHost(liveUpdateController, deviceMonitorController) }
     }
 
     override fun onResume() {
@@ -37,7 +40,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-private fun CouiThemeHost(controller: LiveUpdateController) {
+private fun CouiThemeHost(controller: LiveUpdateController, deviceMonitor: DeviceMonitorController) {
     val activity = androidx.compose.ui.platform.LocalContext.current as Activity
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission(),
@@ -61,6 +64,7 @@ private fun CouiThemeHost(controller: LiveUpdateController) {
     CouiTheme(darkTheme = darkTheme) {
         PocketBenchApp(
             controller = controller,
+            deviceMonitor = deviceMonitor,
             onStart = {
                 val granted = ContextCompat.checkSelfPermission(
                     activity,

@@ -2,6 +2,8 @@ package com.ljj.PocketBench.ui
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.ui.graphics.Color
+import com.ljj.PocketBench.device.DeviceMonitorController
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
@@ -54,6 +56,7 @@ import com.ljj.PocketBench.notification.LiveUpdateController
 @Composable
 fun PocketBenchApp(
     controller: LiveUpdateController,
+    deviceMonitor: DeviceMonitorController,
     onStart: () -> Unit,
     onOpenPromotionSettings: () -> Unit,
     onOpenNotificationSettings: () -> Unit,
@@ -65,7 +68,7 @@ fun PocketBenchApp(
     var navigationForward by remember { mutableStateOf(true) }
     val pageColors = CouiPageDefaults.themeColors()
     val bottomRenderer = remember { CouiFloatingRenderer() }
-    val isSubPage = currentPage == "live" || currentPage == "announcement"
+    val isSubPage = currentPage == "live" || currentPage == "announcement" || currentPage == "device"
 
     fun navigate(page: String) {
         navigationForward = page != "home"
@@ -91,6 +94,7 @@ fun PocketBenchApp(
                         text = when (currentPage) {
                             "live" -> "实况通知"
                             "announcement" -> "公告"
+                            "device" -> "电池与温度"
                             "settings" -> "设置"
                             else -> "PocketBench"
                         },
@@ -160,6 +164,7 @@ fun PocketBenchApp(
                 when (page) {
                     "live" -> LiveUpdatePage(controller, onStart)
                     "announcement" -> AnnouncementPage()
+                    "device" -> DeviceMonitorPage(deviceMonitor)
                     "settings" -> SettingsPage(
                         controller = controller,
                         onOpenNotificationSettings = onOpenNotificationSettings,
@@ -171,6 +176,7 @@ fun PocketBenchApp(
                         controller = controller,
                         onStart = onStart,
                         onOpenLiveUpdate = { navigate("live") },
+                        onOpenDeviceMonitor = { deviceMonitor.refreshDeviceInfo(); navigate("device") },
                     )
                 }
                 Spacer(Modifier.height(16.dp))
@@ -207,6 +213,7 @@ private fun HomePage(
     controller: LiveUpdateController,
     onStart: () -> Unit,
     onOpenLiveUpdate: () -> Unit,
+    onOpenDeviceMonitor: () -> Unit,
 ) {
     Group(title = "PocketBench", footer = "轻量、清晰，尽量使用 Android 系统能力。") {
         Item(
@@ -227,6 +234,12 @@ private fun HomePage(
             },
         ) {
             Text(text = "实况通知", kind = CouiTextKind.ItemTitle)
+        }
+    }
+
+    Group(title = "设备监测") {
+        Item(onClick = onOpenDeviceMonitor, summary = { Text(text = "查看电量、电池温度、CPU 核心数与设备热状态", kind = CouiTextKind.ItemSummary) }) {
+            Text(text = "电池与温度", kind = CouiTextKind.ItemTitle)
         }
     }
 
@@ -369,6 +382,22 @@ private fun LiveUpdatePage(controller: LiveUpdateController, onStart: () -> Unit
 }
 
 @Composable
+private fun DeviceMonitorPage(controller: DeviceMonitorController) {
+    val champagne = Color(0xFFC9A66B)
+    Group(title = "设备概览", footer = "基础数据由 Android 系统接口读取；电池温度为电池传感器读数，设备热状态为系统热状态等级。") {
+        Item(summary = { Text(text = "电量 ${controller.batteryPercent}% · ${controller.batteryStatus}", kind = CouiTextKind.ItemSummary, color = champagne) }, trailing = { Text(text = "${controller.batteryPercent}%", kind = CouiTextKind.ItemTitle, color = champagne) }) { Text(text = "当前电量", kind = CouiTextKind.ItemTitle) }
+        Item(summary = { Text(text = controller.batteryTemperature, kind = CouiTextKind.ItemSummary, color = champagne) }) { Text(text = "电池温度", kind = CouiTextKind.ItemTitle) }
+        Item(summary = { Text(text = controller.batteryVoltage, kind = CouiTextKind.ItemSummary, color = champagne) }) { Text(text = "电池电压", kind = CouiTextKind.ItemTitle) }
+        Item(summary = { Text(text = controller.cpuCoreCount, kind = CouiTextKind.ItemSummary, color = champagne) }) { Text(text = "CPU 核心数", kind = CouiTextKind.ItemTitle) }
+        Item(summary = { Text(text = controller.thermalStatus, kind = CouiTextKind.ItemSummary, color = champagne) }) { Text(text = "系统热状态", kind = CouiTextKind.ItemTitle) }
+    }
+    Group(title = "Root 授权", footer = "仅请求一次只读身份确认（su -c id），用于确认 SU 是否授予 UID 0。不会执行写入、改权限、挂载、刷写、删除或调频命令；基础设备数据仍通过 Android 系统 API 读取。") {
+        Item(summary = { Text(text = controller.rootStatus, kind = CouiTextKind.ItemSummary) }, trailing = { Text(text = if (controller.isCheckingRoot) "检查中…" else if (controller.rootGranted) "已授权" else "未授权", kind = CouiTextKind.ItemTitle, color = champagne) }) { Text(text = "SU 状态", kind = CouiTextKind.ItemTitle) }
+        Item(onClick = controller::requestRootAuthorization, enabled = !controller.isCheckingRoot, summary = { Text(text = "点击后由本机 Root 管理器显示授权请求；拒绝不会影响普通设备信息读取。", kind = CouiTextKind.ItemSummary) }) { Text(text = if (controller.rootGranted) "重新检查 Root 授权" else "请求 Root 授权", kind = CouiTextKind.ItemTitle) }
+        Item(onClick = controller::refreshDeviceInfo, summary = { Text(text = "重新读取 Android 系统提供的电池与温度数据", kind = CouiTextKind.ItemSummary) }) { Text(text = "刷新设备信息", kind = CouiTextKind.ItemTitle) }
+    }
+}
+@Composable
 private fun SettingsPage(
     controller: LiveUpdateController,
     onOpenNotificationSettings: () -> Unit,
@@ -423,7 +452,7 @@ private fun SettingsPage(
             Text(text = "刷新应用状态", kind = CouiTextKind.ItemTitle)
         }
         Item(
-            summary = { Text(text = "PocketBench 1.0.0.8", kind = CouiTextKind.ItemSummary) },
+            summary = { Text(text = "PocketBench 1.0.0.9", kind = CouiTextKind.ItemSummary) },
         ) {
             Text(text = "应用版本", kind = CouiTextKind.ItemTitle)
         }
@@ -436,12 +465,12 @@ private fun AnnouncementPage() {
         Item(
             summary = {
                 Text(
-                    text = "修复浅色与深色主题下设置页分组重叠；将滚动约束放回各自页面，保持二级页面切换动画；修正主题参数和版本显示。",
+                    text = "新增电池与温度设备监测页；Root 授权仅执行只读 UID 身份确认，不运行写入或系统修改命令。",
                     kind = CouiTextKind.ItemSummary,
                 )
             },
         ) {
-            Text(text = "PocketBench 1.0.0.8", kind = CouiTextKind.ItemTitle)
+            Text(text = "PocketBench 1.0.0.9", kind = CouiTextKind.ItemTitle)
         }
         Item(
             summary = {
