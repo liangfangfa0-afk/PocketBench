@@ -4,22 +4,16 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -56,22 +50,21 @@ fun PocketBenchApp(
     onStart: () -> Unit,
     onOpenPromotionSettings: () -> Unit,
     onOpenNotificationSettings: () -> Unit,
+    darkTheme: Boolean,
+    onDarkThemeChange: (Boolean) -> Unit,
 ) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
     var currentPage by rememberSaveable { mutableStateOf("home") }
-    var navigationForward by remember { mutableStateOf(true) }
     val pageColors = CouiPageDefaults.themeColors()
     val bottomRenderer = remember { CouiFloatingRenderer() }
     val isSubPage = currentPage == "live" || currentPage == "announcement"
 
     fun navigate(page: String) {
-        navigationForward = true
         currentPage = page
         selectedTab = if (page == "settings") 1 else 0
     }
 
     fun goBack() {
-        navigationForward = false
         currentPage = "home"
         selectedTab = 0
     }
@@ -116,7 +109,6 @@ fun PocketBenchApp(
                         ),
                         selectedIndex = selectedTab,
                         onSelection = {
-                            navigationForward = it > selectedTab
                             selectedTab = it
                             currentPage = if (it == 0) "home" else "settings"
                         },
@@ -124,57 +116,30 @@ fun PocketBenchApp(
             }
         },
     ) { contentPadding ->
-        LazyColumn(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 4.dp)
+                .verticalScroll(rememberScrollState())
+                .padding(contentPadding)
                 .consumeWindowInsets(contentPadding),
-            contentPadding = contentPadding,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            item {
-                AnimatedContent(
-                    targetState = currentPage,
-                    transitionSpec = {
-                        val enter = if (navigationForward) {
-                            slideInHorizontally(
-                                initialOffsetX = { it / 5 },
-                                animationSpec = tween(280),
-                            ) + fadeIn(animationSpec = tween(220))
-                        } else {
-                            slideInHorizontally(
-                                initialOffsetX = { -it / 5 },
-                                animationSpec = tween(280),
-                            ) + fadeIn(animationSpec = tween(220))
-                        }
-                        val exit = if (navigationForward) {
-                            slideOutHorizontally(
-                                targetOffsetX = { -it / 8 },
-                                animationSpec = tween(220),
-                            ) + fadeOut(animationSpec = tween(180))
-                        } else {
-                            slideOutHorizontally(
-                                targetOffsetX = { it / 8 },
-                                animationSpec = tween(220),
-                            ) + fadeOut(animationSpec = tween(180))
-                        }
-                        enter togetherWith exit
-                    },
-                    label = "PocketBenchSecondaryPageTransition",
-                ) { page ->
-                    when (page) {
-                        "live" -> LiveUpdatePage(controller, onStart)
-                        "announcement" -> AnnouncementPage()
-                        "settings" -> SettingsPage(
-                            controller = controller,
-                            onOpenNotificationSettings = onOpenNotificationSettings,
-                            onOpenPromotionSettings = onOpenPromotionSettings,
-                        )
-                        else -> HomePage(onOpenLiveUpdate = { navigate("live") })
-                    }
-                }
+            when (currentPage) {
+                "live" -> LiveUpdatePage(controller, onStart)
+                "announcement" -> AnnouncementPage()
+                "settings" -> SettingsPage(
+                    controller = controller,
+                    onOpenNotificationSettings = onOpenNotificationSettings,
+                    onOpenPromotionSettings = onOpenPromotionSettings,
+                    darkTheme = darkTheme,
+                    onDarkThemeChange = onDarkThemeChange,
+                )
+                else -> HomePage(
+                    controller = controller,
+                    onStart = onStart,
+                    onOpenLiveUpdate = { navigate("live") },
+                )
             }
-            item { Spacer(Modifier.height(12.dp)) }
+            Spacer(Modifier.height(16.dp))
         }
     }
 }
@@ -203,7 +168,11 @@ private fun CouiAnnouncementTopBarButton(onClick: () -> Unit) {
 }
 
 @Composable
-private fun HomePage(onOpenLiveUpdate: () -> Unit) {
+private fun HomePage(
+    controller: LiveUpdateController,
+    onStart: () -> Unit,
+    onOpenLiveUpdate: () -> Unit,
+) {
     Group(title = "PocketBench", footer = "轻量、清晰，尽量使用 Android 系统能力。") {
         Item(
             onClick = onOpenLiveUpdate,
@@ -214,7 +183,12 @@ private fun HomePage(onOpenLiveUpdate: () -> Unit) {
                 )
             },
             trailing = {
-                Text(text = "›", kind = CouiTextKind.ItemTitle)
+                Switch(
+                    checked = controller.isRunning,
+                    onCheckedChange = { enabled ->
+                        if (enabled) onStart() else controller.stop()
+                    },
+                )
             },
         ) {
             Text(text = "实况通知", kind = CouiTextKind.ItemTitle)
@@ -364,6 +338,8 @@ private fun SettingsPage(
     controller: LiveUpdateController,
     onOpenNotificationSettings: () -> Unit,
     onOpenPromotionSettings: () -> Unit,
+    darkTheme: Boolean,
+    onDarkThemeChange: (Boolean) -> Unit,
 ) {
     Group(title = "权限管理", footer = "权限由 Android 系统管理，点击后进入对应系统设置页面。") {
         StatusItem(
@@ -388,6 +364,20 @@ private fun SettingsPage(
         }
     }
 
+    Group(title = "外观") {
+        Item(
+            summary = { Text(text = if (darkTheme) "已开启深色模式" else "已开启浅色模式", kind = CouiTextKind.ItemSummary) },
+            trailing = {
+                Switch(
+                    checked = darkTheme,
+                    onCheckedChange = onDarkThemeChange,
+                )
+            },
+        ) {
+            Text(text = "深色模式", kind = CouiTextKind.ItemTitle)
+        }
+    }
+
     Group(title = "常规") {
         Item(
             onClick = controller::refreshStatus,
@@ -396,7 +386,7 @@ private fun SettingsPage(
             Text(text = "刷新应用状态", kind = CouiTextKind.ItemTitle)
         }
         Item(
-            summary = { Text(text = "PocketBench 0.5", kind = CouiTextKind.ItemSummary) },
+            summary = { Text(text = "PocketBench 1.0.0.6", kind = CouiTextKind.ItemSummary) },
         ) {
             Text(text = "应用版本", kind = CouiTextKind.ItemTitle)
         }
@@ -405,7 +395,27 @@ private fun SettingsPage(
 
 @Composable
 private fun AnnouncementPage() {
-    Group(title = "最新公告", footer = "后续版本更新时，会在这里补充对应版本的更新内容。") {
+    Group(title = "最新公告", footer = "每次更新都会在这里保留对应版本的更新内容。") {
+        Item(
+            summary = {
+                Text(
+                    text = "保留通知标题、短文本和进度的自定义编辑；修复首页与设置页布局重叠；新增 COUI 深浅色模式切换。",
+                    kind = CouiTextKind.ItemSummary,
+                )
+            },
+        ) {
+            Text(text = "PocketBench 1.0.0.6", kind = CouiTextKind.ItemTitle)
+        }
+        Item(
+            summary = {
+                Text(
+                    text = "上一版本：COUI 页面导航与系统原生实况通知接入。",
+                    kind = CouiTextKind.ItemSummary,
+                )
+            },
+        ) {
+            Text(text = "PocketBench 1.0.0.5", kind = CouiTextKind.ItemTitle)
+        }
         Item(
             summary = {
                 Text(
@@ -414,7 +424,7 @@ private fun AnnouncementPage() {
                 )
             },
         ) {
-            Text(text = "PocketBench 0.5", kind = CouiTextKind.ItemTitle)
+            Text(text = "PocketBench 1.0.0.5", kind = CouiTextKind.ItemTitle)
         }
     }
 }

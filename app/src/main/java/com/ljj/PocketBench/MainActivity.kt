@@ -11,6 +11,10 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
 import com.itos.coui.theme.CouiTheme
 import com.ljj.PocketBench.notification.LiveUpdateController
@@ -41,7 +45,14 @@ private fun CouiThemeHost(controller: LiveUpdateController) {
         else controller.statusMessage = "需要通知权限才能发布这条实况通知"
     }
 
-    CouiTheme {
+    val preferences = remember(activity) {
+        activity.getSharedPreferences("pocketbench_preferences", Activity.MODE_PRIVATE)
+    }
+    var darkTheme by remember {
+        mutableStateOf(preferences.getBoolean("dark_theme", false))
+    }
+
+    CouiTheme(darkTheme = darkTheme) {
         PocketBenchApp(
             controller = controller,
             onStart = {
@@ -54,6 +65,11 @@ private fun CouiThemeHost(controller: LiveUpdateController) {
                 else permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             },
             onOpenPromotionSettings = { controller.openPromotionSettings(activity) },
+            darkTheme = darkTheme,
+            onDarkThemeChange = { enabled ->
+                darkTheme = enabled
+                preferences.edit().putBoolean("dark_theme", enabled).apply()
+            },
             onOpenNotificationSettings = {
                 val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
                     .putExtra(Settings.EXTRA_APP_PACKAGE, activity.packageName)
