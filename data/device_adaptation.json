@@ -23,6 +23,11 @@
       "name": "HarmonyOS 6 华为官网支持机型",
       "url": "https://consumer.huawei.com/cn/support/harmonyos/models-6/",
       "checked_at": "2026-11-21"
+    },
+    {
+      "name": "HarmonyOS 6 华为官网产品页（首批公测计划）",
+      "url": "https://consumer.huawei.com/cn/harmonyos-6/",
+      "checked_at": "2026-11-21"
     }
   ],
   "coloros": [
@@ -360,19 +365,19 @@
     ],
     "timeline": [
       {
-        "period": "2025 年 Q4（10 月 22 日起）",
+        "period": "2025 年 Q4（10 月 22 日）",
         "version": "HarmonyOS 6",
-        "status": "华为发布会公布首批公测与花粉 Beta 计划；本配置仅保留官方支持页可核对的机型状态，不将媒体汇总当作官方逐机型排期。"
+        "status": "华为官网产品页标注已开启首批公测计划；官网该页面未提供逐机型季度推送表。"
       },
       {
-        "period": "2026 年",
+        "period": "2026 年（截至 11 月 21 日）",
         "version": "HarmonyOS 6.1 / HarmonyOS 7",
-        "status": "官方支持机型页面持续更新；未在支持页明确公布统一季度推送表。具体机型以对应版本官方支持名单为准。"
+        "status": "按华为官网当前支持机型页展示正式版与公测版设备。官网未公布统一的逐机型季度时间表。"
       },
       {
         "period": "2027 年",
         "version": "HarmonyOS 7",
-        "status": "截至本次核对，华为官方支持机型页面未公布 2027 年季度适配时间表。"
+        "status": "截至 2026 年 11 月 21 日，华为官网尚未公布 2027 年季度适配时间表；待官方发布后再补充。"
       }
     ],
     "region": "中国大陆（华为官方页面注明适用地区限制）"
