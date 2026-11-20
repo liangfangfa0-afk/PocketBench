@@ -1,7 +1,9 @@
 package com.ljj.PocketBench.ui
 
 import android.os.Build
+import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -15,6 +17,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -25,10 +28,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Settings
 import com.itos.coui.effect.CouiFloatingRenderer
 import com.itos.coui.layout.CouiPageDefaults
 import com.itos.coui.layout.Group
@@ -54,11 +57,17 @@ fun PocketBenchApp(
     controller: LiveUpdateController,
     onStart: () -> Unit,
     onOpenPromotionSettings: () -> Unit,
+    onOpenNotificationSettings: () -> Unit,
 ) {
-    var selectedPage by rememberSaveable { mutableIntStateOf(0) }
+    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+    var subPage by rememberSaveable { mutableStateOf("") }
     val pageColors = CouiPageDefaults.themeColors()
     val bottomRenderer = remember {
         if (Build.VERSION.SDK_INT >= 34) runCatching { BottomBarRenderer() } else null
+    }
+
+    BackHandler(enabled = subPage.isNotEmpty()) {
+        subPage = ""
     }
 
     Scaffold(
@@ -68,24 +77,52 @@ fun PocketBenchApp(
             TopAppBar(
                 title = {
                     androidx.compose.foundation.text.BasicText(
-                        text = "PocketBench",
+                        text = when (subPage) {
+                            "live" -> "实况通知"
+                            "announcement" -> "公告"
+                            else -> "PocketBench"
+                        },
                         style = LocalCouiTextStyle.current,
                     )
+                },
+                navigationIcon = {
+                    if (subPage.isNotEmpty()) {
+                        androidx.compose.foundation.text.BasicText(
+                            text = "‹",
+                            style = LocalCouiTextStyle.current,
+                            modifier = Modifier
+                                .clickable { subPage = "" }
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
+                        )
+                    }
+                },
+                actions = {
+                    if (subPage.isEmpty()) {
+                        androidx.compose.foundation.text.BasicText(
+                            text = "公告",
+                            style = LocalCouiTextStyle.current,
+                            modifier = Modifier
+                                .clickable { subPage = "announcement" }
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
+                        )
+                    }
                 },
             )
         },
         bottomBar = {
-            val renderer = bottomRenderer?.getOrNull()?.renderer
-            if (Build.VERSION.SDK_INT >= 34 && renderer != null) {
-                NavigationBar(
-                    renderer = renderer,
-                    items = listOf(
-                        CouiNavigationItem("编辑", Icons.Outlined.Edit, Icons.Filled.Edit),
-                        CouiNavigationItem("状态", Icons.Outlined.Info, Icons.Filled.Info),
-                    ),
-                    selectedIndex = selectedPage,
-                    onSelection = { selectedPage = it },
-                )
+            if (subPage.isEmpty()) {
+                val renderer = bottomRenderer?.getOrNull()?.renderer
+                if (Build.VERSION.SDK_INT >= 34 && renderer != null) {
+                    NavigationBar(
+                        renderer = renderer,
+                        items = listOf(
+                            CouiNavigationItem("首页", Icons.Outlined.Home, Icons.Filled.Home),
+                            CouiNavigationItem("设置", Icons.Outlined.Settings, Icons.Filled.Settings),
+                        ),
+                        selectedIndex = selectedTab,
+                        onSelection = { selectedTab = it },
+                    )
+                }
             }
         },
     ) { contentPadding ->
@@ -98,9 +135,18 @@ fun PocketBenchApp(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             item {
-                when (selectedPage) {
-                    0 -> EditorPage(controller, onStart)
-                    else -> StatusPage(controller, onOpenPromotionSettings)
+                when (subPage) {
+                    "live" -> LiveUpdatePage(controller, onStart)
+                    "announcement" -> AnnouncementPage()
+                    else -> if (selectedTab == 0) {
+                        HomePage(onOpenLiveUpdate = { subPage = "live" })
+                    } else {
+                        SettingsPage(
+                            controller = controller,
+                            onOpenNotificationSettings = onOpenNotificationSettings,
+                            onOpenPromotionSettings = onOpenPromotionSettings,
+                        )
+                    }
                 }
             }
             item { Spacer(Modifier.height(12.dp)) }
@@ -109,12 +155,42 @@ fun PocketBenchApp(
 }
 
 @Composable
-private fun EditorPage(controller: LiveUpdateController, onStart: () -> Unit) {
-    Group(title = "实时动态", footer = "修改内容后会立即更新同一条常驻通知。") {
+private fun HomePage(onOpenLiveUpdate: () -> Unit) {
+    Group(title = "首页", footer = "选择功能进入对应页面。") {
+        Item(
+            onClick = onOpenLiveUpdate,
+            summary = {
+                Text(
+                    text = "创建和管理由 Android 系统展示的原生实况通知",
+                    kind = CouiTextKind.ItemSummary,
+                )
+            },
+            trailing = {
+                Text(text = "›", kind = CouiTextKind.ItemTitle)
+            },
+        ) {
+            Text(text = "实况通知", kind = CouiTextKind.ItemTitle)
+        }
+    }
+
+    Group(title = "关于 PocketBench") {
+        Item(
+            summary = {
+                Text(text = "管理系统通知与应用常规选项", kind = CouiTextKind.ItemSummary)
+            },
+        ) {
+            Text(text = "轻量、清晰，尽量使用系统原生能力", kind = CouiTextKind.ItemTitle)
+        }
+    }
+}
+
+@Composable
+private fun LiveUpdatePage(controller: LiveUpdateController, onStart: () -> Unit) {
+    Group(title = "实况通知", footer = "通知由 Android 系统创建和渲染；本页面只负责配置与控制，不绘制仿系统通知。") {
         Item(
             summary = {
                 Text(
-                    text = if (controller.isRunning) "通知已发布，正在同步编辑内容" else "启动后会发布一条常驻通知",
+                    text = if (controller.isRunning) "原生通知正在运行" else "尚未发布原生通知",
                     kind = CouiTextKind.ItemSummary,
                 )
             },
@@ -127,34 +203,28 @@ private fun EditorPage(controller: LiveUpdateController, onStart: () -> Unit) {
                 )
             },
         ) {
-            Text(text = "启用实时动态", kind = CouiTextKind.ItemTitle)
+            Text(text = "启用实况通知", kind = CouiTextKind.ItemTitle)
         }
     }
 
-    Group(title = "胶囊内容", footer = "短文本建议控制在 7 个字符以内，避免系统胶囊显示拥挤。") {
+    Group(title = "通知内容", footer = "短文本建议控制在 7 个字符以内，系统会根据设备界面决定展示方式。") {
         Item(
-            summary = { Text(text = "显示在通知主标题位置", kind = CouiTextKind.ItemSummary) },
-            trailing = {
-                TextEditor(controller.title, controller::updateTitle, "输入标题")
-            },
+            summary = { Text(text = "通知的主标题", kind = CouiTextKind.ItemSummary) },
+            trailing = { TextEditor(controller.title, controller::updateTitle, "输入标题") },
         ) {
             Text(text = "标题", kind = CouiTextKind.ItemTitle)
         }
         Item(
-            summary = { Text(text = "用于系统实时动态的短文本字段", kind = CouiTextKind.ItemSummary) },
-            trailing = {
-                TextEditor(controller.shortText, controller::updateShortText, "短文本")
-            },
+            summary = { Text(text = "用于系统实况通知的短文本字段", kind = CouiTextKind.ItemSummary) },
+            trailing = { TextEditor(controller.shortText, controller::updateShortText, "短文本") },
         ) {
-            Text(text = "胶囊短文本", kind = CouiTextKind.ItemTitle)
+            Text(text = "短文本", kind = CouiTextKind.ItemTitle)
         }
     }
 
-    Group(title = "进度", footer = "拖动滑块时会同步更新通知进度。") {
+    Group(title = "进度", footer = "拖动滑块时会更新同一条系统通知。") {
         Item(
-            trailing = {
-                Text(text = "${controller.progress}%", kind = CouiTextKind.ItemTitle)
-            },
+            trailing = { Text(text = "${controller.progress}%", kind = CouiTextKind.ItemTitle) },
         ) {
             Text(text = "当前进度", kind = CouiTextKind.ItemTitle)
         }
@@ -170,54 +240,88 @@ private fun EditorPage(controller: LiveUpdateController, onStart: () -> Unit) {
     Group(title = "操作") {
         Item(
             onClick = onStart,
-            summary = { Text(text = "发布或更新同一条实时动态通知", kind = CouiTextKind.ItemSummary) },
+            summary = { Text(text = "发布或更新 Android 原生实况通知", kind = CouiTextKind.ItemSummary) },
         ) {
             Text(text = "启动 / 更新", kind = CouiTextKind.ItemTitle)
         }
         Item(
             onClick = controller::stop,
-            summary = { Text(text = "取消 PocketBench 当前通知", kind = CouiTextKind.ItemSummary) },
+            summary = { Text(text = "取消当前 PocketBench 系统通知", kind = CouiTextKind.ItemSummary) },
         ) {
-            Text(text = "停止实时动态", kind = CouiTextKind.ItemTitle)
+            Text(text = "停止实况通知", kind = CouiTextKind.ItemTitle)
+        }
+    }
+
+    Group(title = "系统状态") {
+        StatusItem("通知状态", if (controller.isRunning) "正在运行" else "未启动")
+        StatusItem("系统授权", if (controller.canPromote) "已允许" else "未允许或不可用")
+        StatusItem("系统提升条件", if (controller.isPromotable) "符合" else "尚未确认")
+        StatusItem("系统提升结果", if (controller.isPromoted) "已提升" else "尚未提升")
+        Item(
+            onClick = controller::refreshStatus,
+            summary = { Text(text = "重新读取系统返回的通知状态", kind = CouiTextKind.ItemSummary) },
+        ) {
+            Text(text = "刷新状态", kind = CouiTextKind.ItemTitle)
         }
     }
 }
 
 @Composable
-private fun StatusPage(
+private fun SettingsPage(
     controller: LiveUpdateController,
+    onOpenNotificationSettings: () -> Unit,
     onOpenPromotionSettings: () -> Unit,
 ) {
-    Group(
-        title = "系统状态",
-        footer = "系统是否将通知提升为实时动态，以系统返回的标记为准。",
-    ) {
-        StatusItem("通知状态", if (controller.isRunning) "正在运行" else "未启动")
-        StatusItem("系统授权", if (controller.canPromote) "已允许" else "未允许或尚不可用")
-        StatusItem("通知条件", if (controller.isPromotable) "符合提升条件" else "尚未确认符合")
+    Group(title = "权限管理", footer = "权限由 Android 系统管理，点击后进入系统设置页面。") {
         StatusItem(
-            "系统提升结果",
-            if (controller.isPromoted) "已获得系统提升标记" else "尚未获得提升标记",
+            "通知运行状态",
+            if (controller.isRunning) "运行中" else "未运行",
+        )
+        StatusItem(
+            "实况通知授权",
+            if (controller.canPromote) "已允许" else "未允许或系统不支持",
         )
         Item(
-            onClick = controller::refreshStatus,
-            summary = { Text(text = "重新读取通知标记与系统授权状态", kind = CouiTextKind.ItemSummary) },
+            onClick = onOpenNotificationSettings,
+            summary = { Text(text = "管理通知开关、通知类别等系统选项", kind = CouiTextKind.ItemSummary) },
         ) {
-            Text(text = "刷新状态", kind = CouiTextKind.ItemTitle)
+            Text(text = "通知权限设置", kind = CouiTextKind.ItemTitle)
         }
-        if (!controller.canPromote) {
-            Item(
-                onClick = onOpenPromotionSettings,
-                summary = { Text(text = "前往系统通知设置中的实时动态授权页", kind = CouiTextKind.ItemSummary) },
-            ) {
-                Text(text = "开启系统实时动态授权", kind = CouiTextKind.ItemTitle)
-            }
+        Item(
+            onClick = onOpenPromotionSettings,
+            summary = { Text(text = "在系统支持时管理实况通知授权", kind = CouiTextKind.ItemSummary) },
+        ) {
+            Text(text = "实况通知授权", kind = CouiTextKind.ItemTitle)
         }
     }
 
-    Group(title = "当前结果") {
-        Item {
-            Text(text = controller.statusMessage, kind = CouiTextKind.ItemTitle)
+    Group(title = "常规") {
+        Item(
+            onClick = controller::refreshStatus,
+            summary = { Text(text = "重新读取当前通知与系统授权状态", kind = CouiTextKind.ItemSummary) },
+        ) {
+            Text(text = "刷新应用状态", kind = CouiTextKind.ItemTitle)
+        }
+        Item(
+            summary = { Text(text = "PocketBench 1.0.0", kind = CouiTextKind.ItemSummary) },
+        ) {
+            Text(text = "应用版本", kind = CouiTextKind.ItemTitle)
+        }
+    }
+}
+
+@Composable
+private fun AnnouncementPage() {
+    Group(title = "最新公告", footer = "后续版本更新时，会在这里补充对应版本的更新内容。") {
+        Item(
+            summary = {
+                Text(
+                    text = "建立首页与设置双 Tab 结构；实况通知调整为首页入口及独立子页面；继续使用 Android 原生通知。",
+                    kind = CouiTextKind.ItemSummary,
+                )
+            },
+        ) {
+            Text(text = "PocketBench 1.0.0", kind = CouiTextKind.ItemTitle)
         }
     }
 }

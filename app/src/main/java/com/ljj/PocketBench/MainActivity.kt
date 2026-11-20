@@ -2,9 +2,11 @@ package com.ljj.PocketBench
 
 import android.Manifest
 import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -37,7 +39,7 @@ private fun CouiThemeHost(controller: LiveUpdateController) {
         ActivityResultContracts.RequestPermission(),
     ) { granted ->
         if (granted) controller.startOrUpdate()
-        else controller.statusMessage = "需要通知权限才能发布这条实时动态"
+        else controller.statusMessage = "需要通知权限才能发布这条实况通知"
     }
 
     CouiTheme {
@@ -54,6 +56,11 @@ private fun CouiThemeHost(controller: LiveUpdateController) {
                 else permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             },
             onOpenPromotionSettings = { controller.openPromotionSettings(activity) },
+            onOpenNotificationSettings = {
+                val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                    .putExtra(Settings.EXTRA_APP_PACKAGE, activity.packageName)
+                activity.startActivity(intent)
+            },
         )
     }
 }
