@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,12 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Settings
+import com.itos.coui.icons.CouiIcons
 import com.itos.coui.effect.CouiFloatingRenderer
 import com.itos.coui.layout.CouiPageDefaults
 import com.itos.coui.layout.Group
@@ -117,8 +111,8 @@ fun PocketBenchApp(
                 NavigationBar(
                         renderer = bottomRenderer,
                         items = listOf(
-                            CouiNavigationItem("首页", Icons.Outlined.Home, Icons.Filled.Home),
-                            CouiNavigationItem("设置", Icons.Outlined.Settings, Icons.Filled.Settings),
+                            CouiNavigationItem("首页", CouiIcons.Filled.Grid, CouiIcons.Filled.Grid),
+                            CouiNavigationItem("设置", CouiIcons.Filled.Setting, CouiIcons.Filled.Setting),
                         ),
                         selectedIndex = selectedTab,
                         onSelection = {
@@ -191,7 +185,7 @@ private fun CouiBackTopBarButton(onClick: () -> Unit) {
     TopAppBarButtonGroup {
         TopAppBarButton(onClick = onClick) {
             Image(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                imageVector = CouiIcons.Filled.Back,
                 contentDescription = "返回",
             )
         }
@@ -402,7 +396,7 @@ private fun SettingsPage(
             Text(text = "刷新应用状态", kind = CouiTextKind.ItemTitle)
         }
         Item(
-            summary = { Text(text = "PocketBench 0.3", kind = CouiTextKind.ItemSummary) },
+            summary = { Text(text = "PocketBench 0.5", kind = CouiTextKind.ItemSummary) },
         ) {
             Text(text = "应用版本", kind = CouiTextKind.ItemTitle)
         }
@@ -420,7 +414,7 @@ private fun AnnouncementPage() {
                 )
             },
         ) {
-            Text(text = "PocketBench 0.3", kind = CouiTextKind.ItemTitle)
+            Text(text = "PocketBench 0.5", kind = CouiTextKind.ItemTitle)
         }
     }
 }
