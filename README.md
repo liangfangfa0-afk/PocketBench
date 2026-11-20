@@ -1,6 +1,6 @@
 # PocketBench
 
-PocketBench 是一个专注于 Android 实时动态（Live Updates）的 Compose 应用，提供可编辑的通知标题、胶囊短文本与进度，并通过同一通知 ID 实时更新。当前版本：1.0.0.9。
+PocketBench 是一个专注于 Android 实时动态（Live Updates）的 Compose 应用，提供可编辑的通知标题、胶囊短文本与进度，并通过同一通知 ID 实时更新。当前版本：1.0.0.10。
 
 ## 功能
 
@@ -13,6 +13,9 @@ PocketBench 是一个专注于 Android 实时动态（Live Updates）的 Compose
 - 各页面在有界转场视口内独立滚动，避免设置分组在页面切换测量时发生重叠。
 - 新增电池与温度设备监测页，读取电量、电池温度、电压、CPU 核心数和 Android 系统热状态。
 - 可选 Root 授权仅进行 `su -c id` 只读身份确认；不执行写入、改权限、挂载、刷写、删除或调频操作。
+- 首页仅展示工具入口；实况通知使用说明归入实况通知子页面。
+- 新增 ColorOS 17 与 HarmonyOS 7 官方机型适配页面，按厂商公开名单和计划批次展示。
+- 设置页新增项目开源与 COUI-Kit 官方依赖/组件示例说明；公告使用 COUI 原生 Dialog 弹窗。
 
 ## 项目信息
 
@@ -27,4 +30,11 @@ PocketBench 是一个专注于 Android 实时动态（Live Updates）的 Compose
 
 ## COUI-Kit
 
-界面组件 API 以 [COUI-Kit 官方仓库](https://github.com/ItosEO/COUI-Kit) 的组件文档与示例为准。
+界面组件 API 以 [COUI-Kit 官方仓库](https://github.com/ItosEO/COUI-Kit) 的组件文档与示例为准。当前引用版本为 `0.0.1-alpha12`。官方组件文档：[组件目录](https://github.com/ItosEO/COUI-Kit/tree/main/docs/components)、[弹窗](https://github.com/ItosEO/COUI-Kit/blob/main/docs/components/dialog.md)、[Group](https://github.com/ItosEO/COUI-Kit/blob/main/docs/components/group.md)、[Item](https://github.com/ItosEO/COUI-Kit/blob/main/docs/components/item.md)。
+
+## 官方适配信息来源
+
+- [ColorOS 17 官方升级计划](https://www.coloros.com/upgrade/)
+- [华为 HarmonyOS 7 官方支持机型](https://consumer.huawei.com/cn/support/harmonyos/models-7/)
+
+适配名单与计划节点按公开信息展示。ColorOS 计划启动日期不代表全量推送完成；HarmonyOS 官方未公布整体适配百分比，PocketBench 不自行推算或虚构完成率。
