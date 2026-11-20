@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Home
@@ -108,8 +111,11 @@ fun PocketBenchApp(
                         if (Build.VERSION.SDK_INT >= 34) {
                             CouiBackTopBarButton(onClick = ::goBack)
                         } else {
-                            Item(onClick = ::goBack) {
-                                Text(text = "‹", kind = CouiTextKind.ItemTitle)
+                            Item(modifier = Modifier.width(48.dp), onClick = ::goBack) {
+                                Image(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = "返回",
+                                )
                             }
                         }
                     }
@@ -119,7 +125,7 @@ fun PocketBenchApp(
                         if (Build.VERSION.SDK_INT >= 34) {
                             CouiAnnouncementTopBarButton(onClick = { navigate("announcement") })
                         } else {
-                            Item(onClick = { navigate("announcement") }) {
+                            Item(modifier = Modifier.width(72.dp), onClick = { navigate("announcement") }) {
                                 Text(text = "公告", kind = CouiTextKind.ItemTitle)
                             }
                         }
@@ -217,7 +223,10 @@ fun PocketBenchApp(
 private fun CouiBackTopBarButton(onClick: () -> Unit) {
     TopAppBarButtonGroup {
         TopAppBarButton(onClick = onClick) {
-            Text(text = "‹", kind = CouiTextKind.ItemTitle)
+            Image(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "返回",
+            )
         }
     }
 }
