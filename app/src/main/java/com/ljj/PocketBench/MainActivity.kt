@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import androidx.activity.ComponentActivity
@@ -46,11 +45,10 @@ private fun CouiThemeHost(controller: LiveUpdateController) {
         PocketBenchApp(
             controller = controller,
             onStart = {
-                val granted = Build.VERSION.SDK_INT < 33 ||
-                    ContextCompat.checkSelfPermission(
-                        activity,
-                        Manifest.permission.POST_NOTIFICATIONS,
-                    ) == PackageManager.PERMISSION_GRANTED
+                val granted = ContextCompat.checkSelfPermission(
+                    activity,
+                    Manifest.permission.POST_NOTIFICATIONS,
+                ) == PackageManager.PERMISSION_GRANTED
 
                 if (granted) controller.startOrUpdate()
                 else permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)

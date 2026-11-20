@@ -2,6 +2,7 @@ package com.ljj.PocketBench.ui
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
@@ -10,6 +11,7 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -18,7 +20,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -55,11 +56,6 @@ import com.itos.coui.dialog.CouiDialogAction
 import com.itos.coui.dialog.InputDialog
 import com.ljj.PocketBench.notification.LiveUpdateController
 
-@RequiresApi(34)
-private class BottomBarRenderer {
-    val renderer = CouiFloatingRenderer()
-}
-
 @Composable
 fun PocketBenchApp(
     controller: LiveUpdateController,
@@ -71,9 +67,7 @@ fun PocketBenchApp(
     var currentPage by rememberSaveable { mutableStateOf("home") }
     var navigationForward by remember { mutableStateOf(true) }
     val pageColors = CouiPageDefaults.themeColors()
-    val bottomRenderer = remember {
-        if (Build.VERSION.SDK_INT >= 34) runCatching { BottomBarRenderer() } else null
-    }
+    val bottomRenderer = remember { CouiFloatingRenderer() }
     val isSubPage = currentPage == "live" || currentPage == "announcement"
 
     fun navigate(page: String) {
@@ -108,37 +102,20 @@ fun PocketBenchApp(
                 },
                 navigationIcon = {
                     if (isSubPage) {
-                        if (Build.VERSION.SDK_INT >= 34) {
-                            CouiBackTopBarButton(onClick = ::goBack)
-                        } else {
-                            Item(modifier = Modifier.width(48.dp), onClick = ::goBack) {
-                                Image(
-                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                    contentDescription = "返回",
-                                )
-                            }
-                        }
+                        CouiBackTopBarButton(onClick = ::goBack)
                     }
                 },
                 actions = {
                     if (currentPage == "home" || currentPage == "settings") {
-                        if (Build.VERSION.SDK_INT >= 34) {
-                            CouiAnnouncementTopBarButton(onClick = { navigate("announcement") })
-                        } else {
-                            Item(modifier = Modifier.width(72.dp), onClick = { navigate("announcement") }) {
-                                Text(text = "公告", kind = CouiTextKind.ItemTitle)
-                            }
-                        }
+                        CouiAnnouncementTopBarButton(onClick = { navigate("announcement") })
                     }
                 },
             )
         },
         bottomBar = {
             if (!isSubPage) {
-                val renderer = bottomRenderer?.getOrNull()?.renderer
-                if (Build.VERSION.SDK_INT >= 34 && renderer != null) {
-                    NavigationBar(
-                        renderer = renderer,
+                NavigationBar(
+                        renderer = bottomRenderer,
                         items = listOf(
                             CouiNavigationItem("首页", Icons.Outlined.Home, Icons.Filled.Home),
                             CouiNavigationItem("设置", Icons.Outlined.Settings, Icons.Filled.Settings),
@@ -150,16 +127,6 @@ fun PocketBenchApp(
                             currentPage = if (it == 0) "home" else "settings"
                         },
                     )
-                } else {
-                    Group {
-                        Item(onClick = { navigate("home") }) {
-                            Text(text = if (selectedTab == 0) "● 首页" else "首页", kind = CouiTextKind.ItemTitle)
-                        }
-                        Item(onClick = { navigate("settings") }) {
-                            Text(text = if (selectedTab == 1) "● 设置" else "设置", kind = CouiTextKind.ItemTitle)
-                        }
-                    }
-                }
             }
         },
     ) { contentPadding ->

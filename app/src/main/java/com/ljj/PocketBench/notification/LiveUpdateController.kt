@@ -120,17 +120,15 @@ class LiveUpdateController(context: Context) {
     }
 
     private fun ensureChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                CHANNEL_ID,
-                "PocketBench 实时动态",
-                NotificationManager.IMPORTANCE_DEFAULT,
-            ).apply {
-                description = "显示可自定义的实时进度通知"
-                setShowBadge(false)
-            }
-            notificationManager.createNotificationChannel(channel)
+        val channel = NotificationChannel(
+            CHANNEL_ID,
+            "PocketBench 实时动态",
+            NotificationManager.IMPORTANCE_DEFAULT,
+        ).apply {
+            description = "显示可自定义的实时进度通知"
+            setShowBadge(false)
         }
+        notificationManager.createNotificationChannel(channel)
     }
 
     private fun buildNotification(): Notification {

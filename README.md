@@ -8,13 +8,13 @@ PocketBench 是一个专注于 Android 实时动态（Live Updates）的 Compose
 - 编辑标题、短文本和进度后，立即更新同一条常驻通知。
 - 请求系统实时动态提升，并读取实际的 `FLAG_PROMOTED_ONGOING` 状态。
 - 系统未授权时，跳转到实时动态授权设置页。
-- 使用 COUI-Kit 官方 `Scaffold`、`NavigationBar`、`Group`、`Item`、`Slider` 与 `Switch` 组件构建界面。
+- 应用内所有界面组件统一使用 COUI-Kit，包括导航栏、顶栏按钮、列表、开关、滑块和输入弹窗。
 
 ## 项目信息
 
 - Application ID：`com.ljj.PocketBench`
 - Target SDK：36
-- Minimum SDK：31
+- Minimum SDK：34（Android 14）
 - UI：Jetpack Compose + COUI-Kit
 
 ## 构建
