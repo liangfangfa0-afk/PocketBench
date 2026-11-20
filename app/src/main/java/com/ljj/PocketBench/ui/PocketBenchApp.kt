@@ -24,6 +24,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.json.JSONArray
+import org.json.JSONObject
+import java.net.HttpURLConnection
+import java.net.URL
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -206,7 +214,7 @@ fun PocketBenchApp(
         visible = announcementVisible,
         onDismissRequest = { announcementVisible = false },
         title = "PocketBench 更新公告",
-        message = "1.0.0.10\n\n精简首页说明，新增 ColorOS 17 与 HarmonyOS 7 机型适配进度页面；设置页新增项目开源与 COUI 官方组件引用说明。\n\n适配批次以厂商公开计划为准，计划启动日期不代表全量推送完成。",
+        message = "1.0.0.11\n\n新增 GitHub 远程只读适配数据接口，ColorOS 与 HarmonyOS 适配页面支持手动刷新和离线缓存；按官方公开计划展示时间与机型。\n\n适配批次以厂商公开计划为准，计划启动日期不代表全量推送完成。",
         confirmAction = CouiDialogAction(text = "知道了", onClick = { announcementVisible = false }),
     )
 }
@@ -493,7 +501,7 @@ private fun SettingsPage(
             Text(text = "刷新应用状态", kind = CouiTextKind.ItemTitle)
         }
         Item(
-            summary = { Text(text = "PocketBench 1.0.0.10", kind = CouiTextKind.ItemSummary) },
+            summary = { Text(text = "PocketBench 1.0.0.11", kind = CouiTextKind.ItemSummary) },
         ) {
             Text(text = "应用版本", kind = CouiTextKind.ItemTitle)
         }
@@ -525,64 +533,168 @@ private fun OpenSourcePage(onOpenPocketBench: () -> Unit, onOpenCoui: () -> Unit
 }
 
 
-@Composable
-private fun ColorOsAdaptationPage(onOpenOfficial: () -> Unit) {
-    val batches = listOf(
-        "11 月 5 日 · 首批计划" to listOf("OPPO Pad 6", "OPPO Pad 6 柔光版", "OPPO Pad 5", "OPPO Pad 5 柔光版", "一加 Ace 5 Pro", "一加 Ace 5", "一加 Ace 5 至尊版", "一加 Ace 5 竞速版", "一加平板 2", "真我 GT7", "真我 GT7 阿斯顿马丁 F1 限量版", "真我 Neo7", "真我 Neo7 不良人限定版", "真我 Neo7 Turbo"),
-        "11 月 17 日" to listOf("OPPO Find X7 Ultra", "OPPO Find X7 Ultra 卫星通信版", "OPPO Find X7", "一加 12"),
-        "11 月 18 日" to listOf("OPPO Reno15 Pro", "OPPO Reno15", "OPPO Reno15c", "OPPO Pad 4 Pro", "一加平板 2 Pro", "真我 Neo7 SE"),
-        "11 月 19 日" to listOf("真我 15 Pro", "真我 15 Pro《权力的游戏》限定版", "真我 15", "真我 15T"),
-        "11 月 24 日" to listOf("OPPO Find N3", "OPPO Find N3 典藏版", "OPPO Find N3 Flip", "OPPO Reno14 Pro", "OPPO Reno14", "真我 GT5 Pro"),
-        "11 月 26 日" to listOf("OPPO K15 Pro+", "OPPO K15 Pro", "OPPO K15", "一加 Turbo 6", "一加 Turbo 6V"),
-        "11 月 30 日" to listOf("OPPO Watch S"),
-        "12 月" to listOf("OPPO Find X6 Pro", "OPPO Find X6", "OPPO Reno13 Pro", "OPPO Reno13", "OPPO K13 Turbo Pro", "OPPO K13 Turbo", "OPPO K12s", "OPPO Pad Air5", "OPPO Pad Air5 柔光版", "OPPO Pad 3 Pro", "OPPO Pad 3", "一加 11", "一加 11 木星岩定制版", "一加 Ace 3 Pro", "一加 Ace 3", "一加 Ace 3 原神刻晴定制机", "一加 Ace 3V", "一加 Turbo 6X Pro", "一加 Turbo 6X", "一加平板 Pro", "一加平板", "真我 GT6", "真我 Neo6", "真我 Neo6 SE", "真我 Neo7x", "真我 14 Pro+", "真我 14 Pro", "真我 14", "真我 V70", "真我 V70s"),
-        "2027 年 Q1" to listOf("OPPO Find N2", "OPPO Find N2 Flip"),
-    )
-    Group(title = "ColorOS 17 官方适配进度", footer = "截至 2026 年 11 月 20 日。进度条统计已到达的公开计划启动节点（4/9），不是实际升级覆盖率；官方说明计划日期代表开始推送，不代表全量推送完成。") {
-        Item(trailing = { Text(text = "44%", kind = CouiTextKind.ItemTitle) }) { Text(text = "计划节点进度", kind = CouiTextKind.ItemTitle) }
-        Slider(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp), value = 4f / 9f, onValueChange = {}, valueRange = 0f..1f, enabled = false)
-        Item { Text(text = "已到达 4 个计划节点 · 共公布 9 个时间节点", kind = CouiTextKind.ItemSummary) }
+
+private const val REMOTE_ADAPTATION_URL =
+    "https://raw.githubusercontent.com/liangfangfa0-afk/PocketBench/main/data/device_adaptation.json"
+
+private fun fetchAdaptationJson(): String {
+    val connection = (URL(REMOTE_ADAPTATION_URL).openConnection() as HttpURLConnection).apply {
+        requestMethod = "GET"
+        connectTimeout = 8000
+        readTimeout = 10000
+        setRequestProperty("Accept", "application/json")
+        setRequestProperty("Cache-Control", "no-cache")
     }
-    batches.forEachIndexed { index, pair ->
-        val (date, models) = pair
-        Group(title = date, footer = if (index < 4) "官方计划启动日期已到；各机型仍可能分批推送。" else "官方公布的后续计划批次，实际安排以官方更新为准。") {
-            Item { Text(text = models.joinToString("、"), kind = CouiTextKind.ItemSummary) }
-        }
-    }
-    Group(title = "已发布机型（截至 11 月 1 日）", footer = "以下为官方页面单独列出的已发布机型，并非上述后续计划批次。") {
-        Item { Text(text = "OPPO Find N6 / N6 卫星通信版、Find N5 / N5 卫星通信版、Find X9 Ultra / Ultra 卫星通信版、Find X9s Pro、Find X9 Pro / 卫星通信版、Find X9、Find X8 Ultra / 卫星通信版、Find X8s+、Find X8s、Find X8 Pro、Find X8 Pro 卫星通信版、Find X8、Reno16 Pro、Reno16、Reno16t、Pad 5 Pro、Pad Mini、Pad Mini 柔光版、Watch X3、Watch X3 Mini、Watch X2、Watch X2 Mini、一加 15、15T、13、13T、Ace 6、Ace 6 至尊版、Ace 6T、Ace 6T 原神神里绫华定制机、一加平板 3 Pro、真我 GT8 Pro、GT8 Pro 阿斯顿马丁 F1 限量版、GT8、GT7 Pro、GT7 Pro 竞速版、Neo8。", kind = CouiTextKind.ItemSummary) }
-    }
-    Group(title = "官方说明") {
-        Item(onClick = onOpenOfficial, summary = { Text(text = "打开 ColorOS 官方升级计划，查看实时更新与完整机型名单", kind = CouiTextKind.ItemSummary) }) { Text(text = "ColorOS 官方升级计划", kind = CouiTextKind.ItemTitle) }
-        Item { Text(text = "官方备注：机型排列不代表实际推送先后；计划可能随研发进展调整，部分功能受硬件支持情况影响。", kind = CouiTextKind.ItemSummary) }
+    return try {
+        if (connection.responseCode !in 200..299) error("HTTP ${connection.responseCode}")
+        connection.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
+    } finally {
+        connection.disconnect()
     }
 }
 
+@Composable
+private fun RemoteAdaptationPage(
+    section: String,
+    title: String,
+    onOpenOfficial: () -> Unit,
+) {
+    val context = LocalContext.current
+    val preferences = remember(context) {
+        context.getSharedPreferences("pocketbench_remote_data", android.content.Context.MODE_PRIVATE)
+    }
+    var refreshKey by rememberSaveable(section) { mutableIntStateOf(0) }
+    var rawJson by remember(section) { mutableStateOf(preferences.getString("adaptation_json", null)) }
+    var loading by remember { mutableStateOf(false) }
+    var loadError by remember { mutableStateOf("") }
+
+    LaunchedEffect(refreshKey, section) {
+        loading = true
+        loadError = ""
+        try {
+            val latest = withContext(Dispatchers.IO) { fetchAdaptationJson() }
+            val parsed = JSONObject(latest)
+            require(parsed.optInt("schema_version") == 1) { "不支持的数据格式版本" }
+            require(parsed.has("coloros") && parsed.has("harmony")) { "配置缺少必要字段" }
+            rawJson = latest
+            preferences.edit().putString("adaptation_json", latest).apply()
+        } catch (error: Exception) {
+            loadError = error.message ?: "网络请求失败"
+        } finally {
+            loading = false
+        }
+    }
+
+    val config = remember(rawJson) {
+        runCatching { rawJson?.let(::JSONObject) }.getOrNull()
+    }
+    val updatedAt = config?.optString("updated_at").orEmpty()
+    val configVersion = config?.optString("config_version").orEmpty()
+
+    Group(
+        title = title,
+        footer = "数据来自 PocketBench GitHub 公开配置。刷新只读取 JSON，不执行远程代码或系统命令。"
+    ) {
+        Item(
+            onClick = { refreshKey++ },
+            trailing = { Text(text = if (loading) "更新中…" else "刷新", kind = CouiTextKind.ItemTitle) },
+            summary = {
+                Text(
+                    text = when {
+                        loading -> "正在检查 GitHub 远程配置"
+                        loadError.isNotEmpty() && rawJson != null -> "联网失败，当前显示本地缓存 · $loadError"
+                        loadError.isNotEmpty() -> "获取失败：$loadError"
+                        rawJson == null -> "尚无缓存数据"
+                        else -> "配置版本 $configVersion · 更新于 $updatedAt"
+                    },
+                    kind = CouiTextKind.ItemSummary
+                )
+            }
+        ) { Text(text = "云端数据", kind = CouiTextKind.ItemTitle) }
+        Item(
+            onClick = { android.content.ClipData.newPlainText("JSON URL", REMOTE_ADAPTATION_URL).also { clip ->
+                (context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager).setPrimaryClip(clip)
+            } },
+            summary = { Text(text = "公开只读 Raw JSON · 点击复制接口地址", kind = CouiTextKind.ItemSummary) }
+        ) { Text(text = "远程配置接口", kind = CouiTextKind.ItemTitle) }
+    }
+
+    if (config == null) {
+        Group(title = "暂无可用数据") {
+            Item { Text(text = "请检查网络连接；首次加载失败时，页面不会显示未经验证的远程内容。", kind = CouiTextKind.ItemSummary) }
+        }
+        return
+    }
+
+    if (section == "coloros") {
+        val versions = config.optJSONArray("coloros") ?: JSONArray()
+        for (versionIndex in 0 until versions.length()) {
+            val version = versions.optJSONObject(versionIndex) ?: continue
+            val versionName = version.optString("version")
+            val region = version.optString("region")
+            Group(title = versionName, footer = region) {
+                val schedule = version.optJSONArray("schedule") ?: JSONArray()
+                for (batchIndex in 0 until schedule.length()) {
+                    val batch = schedule.optJSONObject(batchIndex) ?: continue
+                    val models = batch.optJSONArray("models") ?: JSONArray()
+                    val names = (0 until models.length()).mapNotNull { models.optString(it).takeIf(String::isNotBlank) }
+                    Group(title = batch.optString("period")) {
+                        Item { Text(text = names.joinToString("、"), kind = CouiTextKind.ItemSummary) }
+                    }
+                }
+                val notes = version.optJSONArray("notes") ?: JSONArray()
+                for (noteIndex in 0 until notes.length()) {
+                    Item { Text(text = notes.optString(noteIndex), kind = CouiTextKind.ItemSummary) }
+                }
+            }
+        }
+    } else {
+        val harmony = config.optJSONObject("harmony") ?: JSONObject()
+        Group(title = "HarmonyOS 官方时间信息", footer = harmony.optString("region")) {
+            val timeline = harmony.optJSONArray("timeline") ?: JSONArray()
+            for (index in 0 until timeline.length()) {
+                val entry = timeline.optJSONObject(index) ?: continue
+                Item(summary = { Text(text = entry.optString("status"), kind = CouiTextKind.ItemSummary) }) {
+                    Text(text = "${entry.optString("period")} · ${entry.optString("version")}", kind = CouiTextKind.ItemTitle)
+                }
+            }
+        }
+        val versions = harmony.optJSONArray("versions") ?: JSONArray()
+        for (versionIndex in 0 until versions.length()) {
+            val version = versions.optJSONObject(versionIndex) ?: continue
+            Group(title = version.optString("version"), footer = version.optString("source")) {
+                val categories = version.optJSONArray("categories") ?: JSONArray()
+                for (categoryIndex in 0 until categories.length()) {
+                    val category = categories.optJSONObject(categoryIndex) ?: continue
+                    val models = category.optJSONArray("models") ?: JSONArray()
+                    val names = (0 until models.length()).mapNotNull { models.optString(it).takeIf(String::isNotBlank) }
+                    Group(title = category.optString("name")) {
+                        Item { Text(text = names.joinToString("、"), kind = CouiTextKind.ItemSummary) }
+                    }
+                }
+                val notes = version.optJSONArray("notes") ?: JSONArray()
+                for (noteIndex in 0 until notes.length()) {
+                    Item { Text(text = notes.optString(noteIndex), kind = CouiTextKind.ItemSummary) }
+                }
+            }
+        }
+    }
+
+    Group(title = "官方原始资料") {
+        Item(onClick = onOpenOfficial, summary = { Text(text = "打开厂商官方页面核对名单和最新推送安排", kind = CouiTextKind.ItemSummary) }) {
+            Text(text = "查看官方升级信息", kind = CouiTextKind.ItemTitle)
+        }
+    }
+}
+
+@Composable
+private fun ColorOsAdaptationPage(onOpenOfficial: () -> Unit) {
+    RemoteAdaptationPage(section = "coloros", title = "ColorOS 官方适配计划", onOpenOfficial = onOpenOfficial)
+}
 
 @Composable
 private fun HarmonyAdaptationPage(onOpenOfficial: () -> Unit) {
-    Group(title = "HarmonyOS 7 官方适配", footer = "名单来自华为官方支持机型页面。官方说明目前已公布可支持升级尝鲜的具体机型，更多机型陆续上线中；适用地区为中国大陆。") {
-        Item { Text(text = "华为官方已公布正式版与公测版名单；官方未公布整体适配百分比，因此这里不虚构完成率。", kind = CouiTextKind.ItemSummary) }
-    }
-    Group(title = "正式版 · 手机") {
-        Item { Text(text = "HUAWEI Mate 80、Mate 80 Pro、Mate 80 Pro Max、Mate 80 Pro Max 风驰版、Mate 80 RS 非凡大师；Mate 70、Mate 70 Pro、Mate 70 Pro 优享版、Mate 70 Pro+、Mate 70 RS 非凡大师、Mate 70 Air；Mate 60、Mate 60 Pro、Mate 60 Pro+、Mate 60 RS 非凡大师；Mate X7、Mate X7 典藏版、Mate X6、Mate X6 典藏版、Mate X5、Mate X5 典藏版、Mate XTs 非凡大师、Mate XT 非凡大师；Pura 90、Pura 90 Pro、Pura 90 Pro Max、Pura 80、Pura 80 Pro、Pura 80 Pro+、Pura 80 Ultra、Pura 70、Pura 70 北斗卫星消息版、Pura 70 Pro、Pura 70 Pro+、Pura 70 Ultra；Pura X Max、Pura X Max 典藏版、Pura X、Pura X 典藏版；Pocket 2、Pocket 2 艺术定制版、Pocket 2 优享版；nova 16、nova 16 Pro、nova 16 Ultra、nova 16 SE、nova 16z；nova 15、nova 15 Pro、nova 15 Ultra；nova 14、nova 14 Pro、nova 14 Ultra、nova 14 活力版；nova 13、nova 13 Pro；nova 12、nova 12 Pro、nova 12 Ultra、nova 12 Ultra 星耀版；nova Flip S、nova Flip；畅享 90、畅享 90 Plus、畅享 90m Plus、畅享 90 Pro Max、畅享 70X、畅享 70X 尊享版。", kind = CouiTextKind.ItemSummary) }
-    }
-    Group(title = "正式版 · 平板") {
-        Item { Text(text = "MatePad Edge、MatePad Pro Max、MatePad Pro 13.2 英寸 2025、MatePad Pro 12.2 英寸 2025、MatePad Pro 12 英寸、MatePad Mini、MatePad Air 12 英寸 2026、MatePad Air 12 英寸 2025、MatePad 11.5 2026、MatePad 11.5 S 2025、MatePad 11.5 S 灵动款 2025、MatePad 11.5 S 活力版 2025。", kind = CouiTextKind.ItemSummary) }
-    }
-    Group(title = "正式版 · PC") {
-        Item { Text(text = "MateBook Fold 非凡大师 麒麟X90 Plus、MateBook Fold 非凡大师、MateBook Pro 麒麟X90 Plus、MateBook Pro、MateBook Pro S、MateBook 14 鸿蒙版。", kind = CouiTextKind.ItemSummary) }
-    }
-    Group(title = "正式版 · 穿戴") {
-        Item { Text(text = "WATCH Ultimate 2 非凡探索、WATCH ULTIMATE DESIGN 非凡大师紫金款、WATCH ULTIMATE DESIGN 非凡大师尊界定制款、WATCH GT 7、WATCH GT 7 Pro、WATCH GT 6、WATCH GT 6 Pro、WATCH GT Runner 2、WATCH FIT 5、WATCH FIT 5 Pro。", kind = CouiTextKind.ItemSummary) }
-    }
-    Group(title = "公测版 · 平板") {
-        Item { Text(text = "MatePad Pro 13.2 英寸 2023、MatePad Pro 13.2 英寸 2023 典藏版、MatePad Pro 12.2 英寸 2024、MatePad Pro 11 英寸 2024、MatePad Air 12 英寸 2024、MatePad 11.5 S 2024、MatePad 11.5 S 灵动款 2024。", kind = CouiTextKind.ItemSummary) }
-    }
-    Group(title = "官方说明") {
-        Item(onClick = onOpenOfficial, summary = { Text(text = "打开华为官方 HarmonyOS 7 支持机型页面，查看更新后的名单", kind = CouiTextKind.ItemSummary) }) { Text(text = "HarmonyOS 7 官方支持机型", kind = CouiTextKind.ItemTitle) }
-        Item { Text(text = "各机型对 HarmonyOS 7 特性的支持情况因产品而异，请以华为实际公告为准。", kind = CouiTextKind.ItemSummary) }
-    }
+    RemoteAdaptationPage(section = "harmony", title = "HarmonyOS 官方适配计划", onOpenOfficial = onOpenOfficial)
 }
 
 @Composable
