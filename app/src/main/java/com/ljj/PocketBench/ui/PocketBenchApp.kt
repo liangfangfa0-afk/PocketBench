@@ -119,22 +119,17 @@ fun PocketBenchApp(
                         ),
                         selectedIndex = selectedTab,
                         onSelection = {
+                            val previousTab = selectedTab
+                            navigationForward = it > previousTab
                             selectedTab = it
-                            navigationForward = it > selectedTab
                             currentPage = if (it == 0) "home" else "settings"
                         },
                     )
             }
         },
     ) { contentPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(contentPadding)
-                .consumeWindowInsets(contentPadding),
-        ) {
-            AnimatedContent(
+        AnimatedContent(
+            modifier = Modifier.fillMaxSize(),
                 targetState = currentPage,
                 transitionSpec = {
                     val enter = if (navigationForward) {
@@ -154,7 +149,14 @@ fun PocketBenchApp(
                     enter togetherWith exit
                 },
                 label = "PocketBenchPageTransition",
-            ) { page ->
+        ) { page ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(contentPadding)
+                    .consumeWindowInsets(contentPadding),
+            ) {
                 when (page) {
                     "live" -> LiveUpdatePage(controller, onStart)
                     "announcement" -> AnnouncementPage()
@@ -171,8 +173,8 @@ fun PocketBenchApp(
                         onOpenLiveUpdate = { navigate("live") },
                     )
                 }
+                Spacer(Modifier.height(16.dp))
             }
-            Spacer(Modifier.height(16.dp))
         }
     }
 }
@@ -371,8 +373,8 @@ private fun SettingsPage(
     controller: LiveUpdateController,
     onOpenNotificationSettings: () -> Unit,
     onOpenPromotionSettings: () -> Unit,
-    darkTheme: Boolean,
-    onDarkThemeChange: (Boolean) -> Unit,
+    themeMode: String,
+    onThemeModeChange: (String) -> Unit,
 ) {
     Group(title = "权限管理", footer = "权限由 Android 系统管理，点击后进入对应系统设置页面。") {
         StatusItem(
@@ -421,7 +423,7 @@ private fun SettingsPage(
             Text(text = "刷新应用状态", kind = CouiTextKind.ItemTitle)
         }
         Item(
-            summary = { Text(text = "PocketBench 1.0.0.6", kind = CouiTextKind.ItemSummary) },
+            summary = { Text(text = "PocketBench 1.0.0.8", kind = CouiTextKind.ItemSummary) },
         ) {
             Text(text = "应用版本", kind = CouiTextKind.ItemTitle)
         }
@@ -434,7 +436,27 @@ private fun AnnouncementPage() {
         Item(
             summary = {
                 Text(
-                    text = "保留通知标题、短文本和进度的自定义编辑；修复首页与设置页布局重叠；新增 COUI 深浅色模式切换。",
+                    text = "修复浅色与深色主题下设置页分组重叠；将滚动约束放回各自页面，保持二级页面切换动画；修正主题参数和版本显示。",
+                    kind = CouiTextKind.ItemSummary,
+                )
+            },
+        ) {
+            Text(text = "PocketBench 1.0.0.8", kind = CouiTextKind.ItemTitle)
+        }
+        Item(
+            summary = {
+                Text(
+                    text = "恢复二级页面方向性切换动画；增加跟随系统、浅色模式、深色模式三种外观选择。",
+                    kind = CouiTextKind.ItemSummary,
+                )
+            },
+        ) {
+            Text(text = "PocketBench 1.0.0.7", kind = CouiTextKind.ItemTitle)
+        }
+        Item(
+            summary = {
+                Text(
+                    text = "保留通知标题、短文本和进度的自定义编辑；加入 COUI 主题选择。",
                     kind = CouiTextKind.ItemSummary,
                 )
             },
@@ -444,17 +466,7 @@ private fun AnnouncementPage() {
         Item(
             summary = {
                 Text(
-                    text = "上一版本：COUI 页面导航与系统原生实况通知接入。",
-                    kind = CouiTextKind.ItemSummary,
-                )
-            },
-        ) {
-            Text(text = "PocketBench 1.0.0.5", kind = CouiTextKind.ItemTitle)
-        }
-        Item(
-            summary = {
-                Text(
-                    text = "重做 COUI 页面导航与交互；加入二级页面转场；通知继续由 Android 原生 API 创建和管理。",
+                    text = "使用 COUI 页面导航和二级页面转场；通知由 Android 原生 API 创建和管理。",
                     kind = CouiTextKind.ItemSummary,
                 )
             },
@@ -463,7 +475,6 @@ private fun AnnouncementPage() {
         }
     }
 }
-
 @Composable
 private fun StatusItem(label: String, value: String) {
     Item(

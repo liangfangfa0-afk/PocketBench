@@ -9,8 +9,8 @@ android {
         applicationId = "com.ljj.PocketBench"
         minSdk = 34
         targetSdk = 36
-        versionCode = 6
-        versionName = "1.0.0.7"
+        versionCode = 7
+        versionName = "1.0.0.8"
     }
     buildFeatures { compose = true }
     compileOptions {

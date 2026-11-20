@@ -1,6 +1,6 @@
 # PocketBench
 
-PocketBench 是一个专注于 Android 实时动态（Live Updates）的 Compose 应用，提供可编辑的通知标题、胶囊短文本与进度，并通过同一通知 ID 实时更新。当前版本：1.0.0.7。
+PocketBench 是一个专注于 Android 实时动态（Live Updates）的 Compose 应用，提供可编辑的通知标题、胶囊短文本与进度，并通过同一通知 ID 实时更新。当前版本：1.0.0.8。
 
 ## 功能
 
@@ -9,7 +9,8 @@ PocketBench 是一个专注于 Android 实时动态（Live Updates）的 Compose
 - 请求系统实时动态提升，并读取实际的 `FLAG_PROMOTED_ONGOING` 状态。
 - 系统未授权时，跳转到实时动态授权设置页。
 - 应用内主题、颜色、文字与所有可见交互控件统一使用 COUI-Kit，包括导航栏、顶栏按钮、列表、开关、滑块、输入弹窗与 COUI 图标。
-- 设置页提供可持久保存的 COUI 深色模式开关；关闭时使用 COUI 浅色预设。
+- 设置页提供可持久保存的 COUI 跟随系统、浅色模式、深色模式三种外观选择。
+- 各页面在有界转场视口内独立滚动，避免设置分组在页面切换测量时发生重叠。
 
 ## 项目信息
 
