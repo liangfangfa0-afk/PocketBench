@@ -17,14 +17,22 @@ import kotlin.concurrent.thread
 class DeviceMonitorController(context: Context) {
     private val appContext = context.applicationContext
     private val mainHandler = Handler(Looper.getMainLooper())
-    var batteryPercent by mutableStateOf(0); private set
-    var batteryStatus by mutableStateOf("读取中"); private set
-    var batteryTemperature by mutableStateOf("暂不可用"); private set
-    var batteryVoltage by mutableStateOf("暂不可用"); private set
-    var cpuCoreCount by mutableStateOf(Runtime.getRuntime().availableProcessors().toString()); private set
-    var thermalStatus by mutableStateOf("系统未提供热状态"); private set
-    var rootGranted by mutableStateOf(false); private set
-    var isCheckingRoot by mutableStateOf(false); private set
+    var batteryPercent by mutableStateOf(0)
+        private set
+    var batteryStatus by mutableStateOf("读取中")
+        private set
+    var batteryTemperature by mutableStateOf("暂不可用")
+        private set
+    var batteryVoltage by mutableStateOf("暂不可用")
+        private set
+    var cpuCoreCount by mutableStateOf(Runtime.getRuntime().availableProcessors().toString())
+        private set
+    var thermalStatus by mutableStateOf("系统未提供热状态")
+        private set
+    var rootGranted by mutableStateOf(false)
+        private set
+    var isCheckingRoot by mutableStateOf(false)
+        private set
     var rootStatus by mutableStateOf("尚未请求 Root 授权")
     init { refreshDeviceInfo() }
 
@@ -73,13 +81,14 @@ class DeviceMonitorController(context: Context) {
             var process: Process? = null
             val result = try {
                 // 固定的只读身份查询；不接受用户输入，不拼接或执行其他 SU 命令。
-                process = ProcessBuilder("su", "-c", "id").redirectErrorStream(true).start()
-                if (!process.waitFor(6, TimeUnit.SECONDS)) {
-                    process.destroyForcibly()
+                val rootProcess = ProcessBuilder("su", "-c", "id").redirectErrorStream(true).start()
+                process = rootProcess
+                if (!rootProcess.waitFor(6, TimeUnit.SECONDS)) {
+                    rootProcess.destroyForcibly()
                     "Root 请求超时，请检查本机 Root 管理器"
                 } else {
-                    val output = process.inputStream.bufferedReader().use { it.readText() }.trim()
-                    if (process.exitValue() == 0 && output.contains("uid=0")) "已获得 UID 0；本页不会执行其他 SU 命令" else "未获得 Root 授权或本机未安装可用的 SU 管理器"
+                    val output = rootProcess.inputStream.bufferedReader().use { it.readText() }.trim()
+                    if (rootProcess.exitValue() == 0 && output.contains("uid=0")) "已获得 UID 0；本页不会执行其他 SU 命令" else "未获得 Root 授权或本机未安装可用的 SU 管理器"
                 }
             } catch (_: Exception) {
                 "Root 请求失败；普通设备信息仍可读取"
