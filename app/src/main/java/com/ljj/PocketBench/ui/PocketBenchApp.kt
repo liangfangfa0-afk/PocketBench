@@ -68,6 +68,7 @@ fun PocketBenchApp(
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
     var currentPage by rememberSaveable { mutableStateOf("home") }
     var navigationForward by remember { mutableStateOf(true) }
+    var returnPage by rememberSaveable { mutableStateOf("home") }
     var announcementVisible by rememberSaveable { mutableStateOf(false) }
     val uriHandler = LocalUriHandler.current
     val pageColors = CouiPageDefaults.themeColors()
@@ -75,6 +76,7 @@ fun PocketBenchApp(
     val isSubPage = currentPage in setOf("live", "device", "opensource", "coloros", "harmony")
 
     fun navigate(page: String) {
+        if (page != "home" && page != "settings") returnPage = currentPage
         navigationForward = page != "home"
         currentPage = page
         selectedTab = if (page == "settings") 1 else 0
@@ -82,8 +84,9 @@ fun PocketBenchApp(
 
     fun goBack() {
         navigationForward = false
-        currentPage = "home"
-        selectedTab = 0
+        currentPage = if (returnPage == "settings") "settings" else "home"
+        selectedTab = if (currentPage == "settings") 1 else 0
+        returnPage = "home"
     }
 
     BackHandler(enabled = isSubPage) { goBack() }
@@ -198,7 +201,6 @@ fun PocketBenchApp(
             }
         }
     }
-}
 
     Dialog(
         visible = announcementVisible,
