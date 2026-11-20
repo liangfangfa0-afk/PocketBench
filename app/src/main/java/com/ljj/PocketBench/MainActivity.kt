@@ -10,6 +10,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,8 +49,13 @@ private fun CouiThemeHost(controller: LiveUpdateController) {
     val preferences = remember(activity) {
         activity.getSharedPreferences("pocketbench_preferences", Activity.MODE_PRIVATE)
     }
-    var darkTheme by remember {
-        mutableStateOf(preferences.getBoolean("dark_theme", false))
+    var themeMode by remember {
+        mutableStateOf(preferences.getString("theme_mode", "system") ?: "system")
+    }
+    val darkTheme = when (themeMode) {
+        "light" -> false
+        "dark" -> true
+        else -> isSystemInDarkTheme()
     }
 
     CouiTheme(darkTheme = darkTheme) {
@@ -65,10 +71,10 @@ private fun CouiThemeHost(controller: LiveUpdateController) {
                 else permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             },
             onOpenPromotionSettings = { controller.openPromotionSettings(activity) },
-            darkTheme = darkTheme,
-            onDarkThemeChange = { enabled ->
-                darkTheme = enabled
-                preferences.edit().putBoolean("dark_theme", enabled).apply()
+            themeMode = themeMode,
+            onThemeModeChange = { mode ->
+                themeMode = mode
+                preferences.edit().putString("theme_mode", mode).apply()
             },
             onOpenNotificationSettings = {
                 val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)

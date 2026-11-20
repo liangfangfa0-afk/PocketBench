@@ -4,6 +4,13 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.rememberScrollState
@@ -50,21 +57,24 @@ fun PocketBenchApp(
     onStart: () -> Unit,
     onOpenPromotionSettings: () -> Unit,
     onOpenNotificationSettings: () -> Unit,
-    darkTheme: Boolean,
-    onDarkThemeChange: (Boolean) -> Unit,
+    themeMode: String,
+    onThemeModeChange: (String) -> Unit,
 ) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
     var currentPage by rememberSaveable { mutableStateOf("home") }
+    var navigationForward by remember { mutableStateOf(true) }
     val pageColors = CouiPageDefaults.themeColors()
     val bottomRenderer = remember { CouiFloatingRenderer() }
     val isSubPage = currentPage == "live" || currentPage == "announcement"
 
     fun navigate(page: String) {
+        navigationForward = page != "home"
         currentPage = page
         selectedTab = if (page == "settings") 1 else 0
     }
 
     fun goBack() {
+        navigationForward = false
         currentPage = "home"
         selectedTab = 0
     }
@@ -110,6 +120,7 @@ fun PocketBenchApp(
                         selectedIndex = selectedTab,
                         onSelection = {
                             selectedTab = it
+                            navigationForward = it > selectedTab
                             currentPage = if (it == 0) "home" else "settings"
                         },
                     )
@@ -123,21 +134,43 @@ fun PocketBenchApp(
                 .padding(contentPadding)
                 .consumeWindowInsets(contentPadding),
         ) {
-            when (currentPage) {
-                "live" -> LiveUpdatePage(controller, onStart)
-                "announcement" -> AnnouncementPage()
-                "settings" -> SettingsPage(
-                    controller = controller,
-                    onOpenNotificationSettings = onOpenNotificationSettings,
-                    onOpenPromotionSettings = onOpenPromotionSettings,
-                    darkTheme = darkTheme,
-                    onDarkThemeChange = onDarkThemeChange,
-                )
-                else -> HomePage(
-                    controller = controller,
-                    onStart = onStart,
-                    onOpenLiveUpdate = { navigate("live") },
-                )
+            AnimatedContent(
+                targetState = currentPage,
+                transitionSpec = {
+                    val enter = if (navigationForward) {
+                        slideInHorizontally(initialOffsetX = { it / 5 }, animationSpec = tween(280)) +
+                            fadeIn(animationSpec = tween(220))
+                    } else {
+                        slideInHorizontally(initialOffsetX = { -it / 5 }, animationSpec = tween(280)) +
+                            fadeIn(animationSpec = tween(220))
+                    }
+                    val exit = if (navigationForward) {
+                        slideOutHorizontally(targetOffsetX = { -it / 8 }, animationSpec = tween(220)) +
+                            fadeOut(animationSpec = tween(180))
+                    } else {
+                        slideOutHorizontally(targetOffsetX = { it / 8 }, animationSpec = tween(220)) +
+                            fadeOut(animationSpec = tween(180))
+                    }
+                    enter togetherWith exit
+                },
+                label = "PocketBenchPageTransition",
+            ) { page ->
+                when (page) {
+                    "live" -> LiveUpdatePage(controller, onStart)
+                    "announcement" -> AnnouncementPage()
+                    "settings" -> SettingsPage(
+                        controller = controller,
+                        onOpenNotificationSettings = onOpenNotificationSettings,
+                        onOpenPromotionSettings = onOpenPromotionSettings,
+                        themeMode = themeMode,
+                        onThemeModeChange = onThemeModeChange,
+                    )
+                    else -> HomePage(
+                        controller = controller,
+                        onStart = onStart,
+                        onOpenLiveUpdate = { navigate("live") },
+                    )
+                }
             }
             Spacer(Modifier.height(16.dp))
         }
@@ -364,17 +397,19 @@ private fun SettingsPage(
         }
     }
 
-    Group(title = "外观") {
-        Item(
-            summary = { Text(text = if (darkTheme) "已开启深色模式" else "已开启浅色模式", kind = CouiTextKind.ItemSummary) },
-            trailing = {
-                Switch(
-                    checked = darkTheme,
-                    onCheckedChange = onDarkThemeChange,
-                )
-            },
-        ) {
-            Text(text = "深色模式", kind = CouiTextKind.ItemTitle)
+    Group(title = "外观", footer = "跟随系统会自动匹配设备当前的浅色或深色外观。") {
+        listOf("system" to "跟随系统", "light" to "浅色模式", "dark" to "深色模式").forEach { (mode, label) ->
+            Item(
+                onClick = { onThemeModeChange(mode) },
+                trailing = {
+                    Text(
+                        text = if (themeMode == mode) "已选择" else "",
+                        kind = CouiTextKind.ItemSummary,
+                    )
+                },
+            ) {
+                Text(text = label, kind = CouiTextKind.ItemTitle)
+            }
         }
     }
 
