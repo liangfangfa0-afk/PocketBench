@@ -1,0 +1,380 @@
+{
+  "schema_version": 1,
+  "config_version": "2026.11.21.1",
+  "updated_at": "2026-11-21",
+  "description": "厂商公开升级计划与支持机型数据。官方未公布的时间不作推测。",
+  "sources": [
+    {
+      "name": "ColorOS 17 中国官网升级计划",
+      "url": "https://www.coloros.com/upgrade/",
+      "checked_at": "2026-11-21"
+    },
+    {
+      "name": "ColorOS 16 官方版本升级计划（OPPO Global）",
+      "url": "https://www.oppo.com/ke/coloros16/",
+      "checked_at": "2026-11-21"
+    },
+    {
+      "name": "HarmonyOS 7 华为官网支持机型",
+      "url": "https://consumer.huawei.com/cn/support/harmonyos/models-7/",
+      "checked_at": "2026-11-21"
+    },
+    {
+      "name": "HarmonyOS 6 华为官网支持机型",
+      "url": "https://consumer.huawei.com/cn/support/harmonyos/models-6/",
+      "checked_at": "2026-11-21"
+    }
+  ],
+  "coloros": [
+    {
+      "version": "ColorOS 16",
+      "region": "OPPO Global 官方页面；地区/运营商可能影响推送",
+      "schedule": [
+        {
+          "period": "2025 年 11 月",
+          "models": [
+            "OPPO Find N5",
+            "OPPO Find N3",
+            "OPPO Find N3 Flip",
+            "OPPO Find X8 Pro",
+            "OPPO Find X8",
+            "OPPO Reno14 Pro 5G",
+            "OPPO Reno14 5G",
+            "OPPO Reno14 5G Diwali Edition",
+            "OPPO Reno14 F 5G",
+            "OPPO Reno13 Pro 5G",
+            "OPPO Reno13 5G",
+            "OPPO Reno13 F 5G",
+            "OPPO Pad 3 Pro"
+          ]
+        },
+        {
+          "period": "2025 年 12 月",
+          "models": [
+            "OPPO Find N2 Flip",
+            "OPPO Reno13 F",
+            "OPPO K13 Turbo Pro 5G",
+            "OPPO K13 Turbo 5G"
+          ]
+        },
+        {
+          "period": "2026 年 Q1",
+          "models": [
+            "OPPO Find X5 Pro",
+            "OPPO Reno12 Pro 5G",
+            "OPPO Reno12 5G",
+            "OPPO Reno12 F 5G",
+            "OPPO Reno12 FS 5G",
+            "OPPO Reno12 F Harry Potter Edition",
+            "OPPO Reno12 F",
+            "OPPO Reno12 FS",
+            "OPPO Reno11 Pro 5G",
+            "OPPO Reno11 5G",
+            "OPPO Reno11 F 5G",
+            "OPPO Reno11 FS",
+            "OPPO Reno10 Pro+ 5G",
+            "OPPO F31 Pro+ 5G",
+            "OPPO F31 Pro 5G",
+            "OPPO F31 5G",
+            "OPPO F29 Pro 5G",
+            "OPPO F27 Pro+ 5G",
+            "OPPO K13 5G",
+            "OPPO K13x 5G",
+            "OPPO K12x 5G",
+            "OPPO Pad 3",
+            "OPPO Pad 2",
+            "OPPO Pad SE"
+          ]
+        }
+      ],
+      "notes": [
+        "此时间表来自 OPPO Global 官方页面，不能直接等同中国大陆各运营商/地区推送进度。官方注明计划为预估，且机型排列不代表推送顺序。"
+      ]
+    },
+    {
+      "version": "ColorOS 17",
+      "region": "ColorOS 中国官网升级计划",
+      "schedule": [
+        {
+          "period": "2026 年 11 月 5 日",
+          "models": [
+            "OPPO Pad 6",
+            "OPPO Pad 6 柔光版",
+            "OPPO Pad 5",
+            "OPPO Pad 5 柔光版",
+            "一加 Ace 5 Pro",
+            "一加 Ace 5",
+            "一加 Ace 5 至尊版",
+            "一加 Ace 5 竞速版",
+            "一加平板 2",
+            "真我 GT7",
+            "真我 GT7 阿斯顿马丁 F1 限量版",
+            "真我 Neo7",
+            "真我 Neo7 不良人限定版",
+            "真我 Neo7 Turbo"
+          ]
+        },
+        {
+          "period": "2026 年 11 月 17 日",
+          "models": [
+            "OPPO Find X7 Ultra",
+            "OPPO Find X7 Ultra 卫星通信版",
+            "OPPO Find X7",
+            "一加 12"
+          ]
+        },
+        {
+          "period": "2026 年 11 月 18 日",
+          "models": [
+            "OPPO Reno15 Pro",
+            "OPPO Reno15",
+            "OPPO Reno15c",
+            "OPPO Pad 4 Pro",
+            "一加平板 2 Pro",
+            "真我 Neo7 SE"
+          ]
+        },
+        {
+          "period": "2026 年 11 月 19 日",
+          "models": [
+            "真我 15 Pro",
+            "真我 15 Pro《权力的游戏》限定版",
+            "真我 15",
+            "真我 15T"
+          ]
+        },
+        {
+          "period": "2026 年 11 月 24 日",
+          "models": [
+            "OPPO Find N3",
+            "OPPO Find N3 典藏版",
+            "OPPO Find N3 Flip",
+            "OPPO Reno14 Pro",
+            "OPPO Reno14",
+            "真我 GT5 Pro"
+          ]
+        },
+        {
+          "period": "2026 年 11 月 26 日",
+          "models": [
+            "OPPO K15 Pro+",
+            "OPPO K15 Pro",
+            "OPPO K15",
+            "一加 Turbo 6",
+            "一加 Turbo 6V"
+          ]
+        },
+        {
+          "period": "2026 年 11 月 30 日",
+          "models": [
+            "OPPO Watch S"
+          ]
+        },
+        {
+          "period": "2026 年 12 月",
+          "models": [
+            "OPPO Find X6 Pro",
+            "OPPO Find X6",
+            "OPPO Reno13 Pro",
+            "OPPO Reno13",
+            "OPPO K13 Turbo Pro",
+            "OPPO K13 Turbo",
+            "OPPO K12s",
+            "OPPO Pad Air5",
+            "OPPO Pad Air5 柔光版",
+            "OPPO Pad 3 Pro",
+            "OPPO Pad 3",
+            "一加 11",
+            "一加 11 木星岩定制版",
+            "一加 Ace 3 Pro",
+            "一加 Ace 3",
+            "一加 Ace 3 原神刻晴定制机",
+            "一加 Ace 3V",
+            "一加 Turbo 6X Pro",
+            "一加 Turbo 6X",
+            "一加平板 Pro",
+            "一加平板",
+            "真我 GT6",
+            "真我 Neo6",
+            "真我 Neo6 SE",
+            "真我 Neo7x",
+            "真我 14 Pro+",
+            "真我 14 Pro",
+            "真我 14",
+            "真我 V70",
+            "真我 V70s"
+          ]
+        },
+        {
+          "period": "2027 年 Q1",
+          "models": [
+            "OPPO Find N2",
+            "OPPO Find N2 Flip"
+          ]
+        }
+      ],
+      "notes": [
+        "中国官网公布的是版本开始推送的时间，不代表全量推送完成。官网说明计划可能因研发进展调整，机型排列不代表推送先后。"
+      ]
+    }
+  ],
+  "harmony": {
+    "versions": [
+      {
+        "version": "HarmonyOS 7",
+        "source": "华为官网支持机型页",
+        "categories": [
+          {
+            "name": "正式版 · 手机",
+            "models": [
+              "HUAWEI Mate 80",
+              "HUAWEI Mate 80 Pro",
+              "HUAWEI Mate 80 Pro Max",
+              "HUAWEI Mate 80 Pro Max 风驰版",
+              "HUAWEI Mate 80 RS 非凡大师",
+              "HUAWEI Mate 70",
+              "HUAWEI Mate 70 Pro",
+              "HUAWEI Mate 70 Pro 优享版",
+              "HUAWEI Mate 70 Pro+",
+              "HUAWEI Mate 70 RS 非凡大师",
+              "HUAWEI Mate 70 Air",
+              "HUAWEI Mate 60",
+              "HUAWEI Mate 60 Pro",
+              "HUAWEI Mate 60 Pro+",
+              "HUAWEI Mate 60 RS 非凡大师",
+              "HUAWEI Mate X7",
+              "HUAWEI Mate X7 典藏版",
+              "HUAWEI Mate X6",
+              "HUAWEI Mate X6 典藏版",
+              "HUAWEI Mate X5",
+              "HUAWEI Mate X5 典藏版",
+              "HUAWEI Mate XTs 非凡大师",
+              "HUAWEI Mate XT 非凡大师",
+              "HUAWEI Pura 90",
+              "HUAWEI Pura 90 Pro",
+              "HUAWEI Pura 90 Pro Max",
+              "HUAWEI Pura 80",
+              "HUAWEI Pura 80 Pro",
+              "HUAWEI Pura 80 Pro+",
+              "HUAWEI Pura 80 Ultra",
+              "HUAWEI Pura 70",
+              "HUAWEI Pura 70 北斗卫星消息版",
+              "HUAWEI Pura 70 Pro",
+              "HUAWEI Pura 70 Pro+",
+              "HUAWEI Pura 70 Ultra",
+              "HUAWEI Pura X Max",
+              "HUAWEI Pura X Max 典藏版",
+              "HUAWEI Pura X",
+              "HUAWEI Pura X 典藏版",
+              "HUAWEI Pocket 2",
+              "HUAWEI Pocket 2 艺术定制版",
+              "HUAWEI Pocket 2 优享版",
+              "HUAWEI nova 16",
+              "HUAWEI nova 16 Pro",
+              "HUAWEI nova 16 Ultra",
+              "HUAWEI nova 16 SE",
+              "HUAWEI nova 16z",
+              "HUAWEI nova 15",
+              "HUAWEI nova 15 Pro",
+              "HUAWEI nova 15 Ultra",
+              "HUAWEI nova 14",
+              "HUAWEI nova 14 Pro",
+              "HUAWEI nova 14 Ultra",
+              "HUAWEI nova 14 活力版",
+              "HUAWEI nova 13",
+              "HUAWEI nova 13 Pro",
+              "HUAWEI nova 12",
+              "HUAWEI nova 12 Pro",
+              "HUAWEI nova 12 Ultra",
+              "HUAWEI nova 12 Ultra 星耀版",
+              "HUAWEI nova Flip S",
+              "HUAWEI nova Flip",
+              "华为畅享 90",
+              "华为畅享 90 Plus",
+              "华为畅享 90m Plus",
+              "华为畅享 90 Pro Max",
+              "华为畅享 70X",
+              "华为畅享 70X 尊享版"
+            ]
+          },
+          {
+            "name": "正式版 · 平板",
+            "models": [
+              "HUAWEI MatePad Edge",
+              "HUAWEI MatePad Pro Max",
+              "HUAWEI MatePad Pro 13.2 英寸 2025",
+              "HUAWEI MatePad Pro 12.2 英寸 2025",
+              "HUAWEI MatePad Pro 12 英寸",
+              "HUAWEI MatePad Mini",
+              "HUAWEI MatePad Air 12 英寸 2026",
+              "HUAWEI MatePad Air 12 英寸 2025",
+              "HUAWEI MatePad 11.5 2026",
+              "HUAWEI MatePad 11.5 S 2025",
+              "HUAWEI MatePad 11.5 S 灵动款 2025",
+              "HUAWEI MatePad 11.5 S 活力版 2025"
+            ]
+          },
+          {
+            "name": "正式版 · PC",
+            "models": [
+              "HUAWEI MateBook Fold 非凡大师 麒麟X90 Plus",
+              "HUAWEI MateBook Fold 非凡大师",
+              "HUAWEI MateBook Pro 麒麟X90 Plus",
+              "HUAWEI MateBook Pro",
+              "HUAWEI MateBook Pro S",
+              "HUAWEI MateBook 14 鸿蒙版"
+            ]
+          },
+          {
+            "name": "正式版 · 穿戴",
+            "models": [
+              "HUAWEI WATCH Ultimate 2 非凡探索",
+              "HUAWEI WATCH ULTIMATE DESIGN 非凡大师 紫金款",
+              "HUAWEI WATCH ULTIMATE DESIGN 非凡大师 尊界定制款",
+              "HUAWEI WATCH GT 7",
+              "HUAWEI WATCH GT 7 Pro",
+              "HUAWEI WATCH GT 6",
+              "HUAWEI WATCH GT 6 Pro",
+              "HUAWEI WATCH GT Runner 2",
+              "HUAWEI WATCH FIT 5",
+              "HUAWEI WATCH FIT 5 Pro"
+            ]
+          },
+          {
+            "name": "公测版 · 平板",
+            "models": [
+              "HUAWEI MatePad Pro 13.2 英寸 2023",
+              "HUAWEI MatePad Pro 13.2 英寸 2023 典藏版",
+              "HUAWEI MatePad Pro 12.2 英寸 2024",
+              "HUAWEI MatePad Pro 11 英寸 2024",
+              "HUAWEI MatePad Air 12 英寸 2024",
+              "HUAWEI MatePad 11.5 S 2024",
+              "HUAWEI MatePad 11.5 S 灵动款 2024"
+            ]
+          }
+        ],
+        "notes": [
+          "华为官方支持机型页只列出可升级尝鲜的正式版/公测版设备，没有为每个机型公布季度推送日程。"
+        ]
+      }
+    ],
+    "timeline": [
+      {
+        "period": "2025 年 Q4（10 月 22 日起）",
+        "version": "HarmonyOS 6",
+        "status": "华为发布会公布首批公测与花粉 Beta 计划；本配置仅保留官方支持页可核对的机型状态，不将媒体汇总当作官方逐机型排期。"
+      },
+      {
+        "period": "2026 年",
+        "version": "HarmonyOS 6.1 / HarmonyOS 7",
+        "status": "官方支持机型页面持续更新；未在支持页明确公布统一季度推送表。具体机型以对应版本官方支持名单为准。"
+      },
+      {
+        "period": "2027 年",
+        "version": "HarmonyOS 7",
+        "status": "截至本次核对，华为官方支持机型页面未公布 2027 年季度适配时间表。"
+      }
+    ],
+    "region": "中国大陆（华为官方页面注明适用地区限制）"
+  }
+}
