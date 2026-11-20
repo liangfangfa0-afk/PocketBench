@@ -39,6 +39,7 @@ import com.itos.coui.navigation.NavigationBar
 import com.itos.coui.slider.Slider
 import com.itos.coui.switch.Switch
 import com.itos.coui.text.CouiTextKind
+import com.itos.coui.theme.LocalCouiTextStyle
 import com.itos.coui.text.Text
 import com.itos.coui.topappbar.TopAppBar
 import com.ljj.PocketBench.notification.LiveUpdateController
@@ -68,7 +69,7 @@ fun PocketBenchApp(
                 title = {
                     androidx.compose.foundation.text.BasicText(
                         text = "PocketBench",
-                        style = com.itos.coui.text.LocalCouiTextStyle.current,
+                        style = LocalCouiTextStyle.current,
                     )
                 },
             )
@@ -132,20 +133,20 @@ private fun EditorPage(controller: LiveUpdateController, onStart: () -> Unit) {
 
     Group(title = "胶囊内容", footer = "短文本建议控制在 7 个字符以内，避免系统胶囊显示拥挤。") {
         Item(
-            summary = { Text("显示在通知主标题位置", kind = CouiTextKind.ItemSummary) },
+            summary = { Text(text = "显示在通知主标题位置", kind = CouiTextKind.ItemSummary) },
             trailing = {
                 TextEditor(controller.title, controller::updateTitle, "输入标题")
             },
         ) {
-            Text("标题", kind = CouiTextKind.ItemTitle)
+            Text(text = "标题", kind = CouiTextKind.ItemTitle)
         }
         Item(
-            summary = { Text("用于系统实时动态的短文本字段", kind = CouiTextKind.ItemSummary) },
+            summary = { Text(text = "用于系统实时动态的短文本字段", kind = CouiTextKind.ItemSummary) },
             trailing = {
                 TextEditor(controller.shortText, controller::updateShortText, "短文本")
             },
         ) {
-            Text("胶囊短文本", kind = CouiTextKind.ItemTitle)
+            Text(text = "胶囊短文本", kind = CouiTextKind.ItemTitle)
         }
     }
 
@@ -155,7 +156,7 @@ private fun EditorPage(controller: LiveUpdateController, onStart: () -> Unit) {
                 Text(text = "${controller.progress}%", kind = CouiTextKind.ItemTitle)
             },
         ) {
-            Text("当前进度", kind = CouiTextKind.ItemTitle)
+            Text(text = "当前进度", kind = CouiTextKind.ItemTitle)
         }
         Slider(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
@@ -169,15 +170,15 @@ private fun EditorPage(controller: LiveUpdateController, onStart: () -> Unit) {
     Group(title = "操作") {
         Item(
             onClick = onStart,
-            summary = { Text("发布或更新同一条实时动态通知", kind = CouiTextKind.ItemSummary) },
+            summary = { Text(text = "发布或更新同一条实时动态通知", kind = CouiTextKind.ItemSummary) },
         ) {
-            Text("启动 / 更新", kind = CouiTextKind.ItemTitle)
+            Text(text = "启动 / 更新", kind = CouiTextKind.ItemTitle)
         }
         Item(
             onClick = controller::stop,
-            summary = { Text("取消 PocketBench 当前通知", kind = CouiTextKind.ItemSummary) },
+            summary = { Text(text = "取消 PocketBench 当前通知", kind = CouiTextKind.ItemSummary) },
         ) {
-            Text("停止实时动态", kind = CouiTextKind.ItemTitle)
+            Text(text = "停止实时动态", kind = CouiTextKind.ItemTitle)
         }
     }
 }
@@ -200,16 +201,16 @@ private fun StatusPage(
         )
         Item(
             onClick = controller::refreshStatus,
-            summary = { Text("重新读取通知标记与系统授权状态", kind = CouiTextKind.ItemSummary) },
+            summary = { Text(text = "重新读取通知标记与系统授权状态", kind = CouiTextKind.ItemSummary) },
         ) {
-            Text("刷新状态", kind = CouiTextKind.ItemTitle)
+            Text(text = "刷新状态", kind = CouiTextKind.ItemTitle)
         }
         if (!controller.canPromote) {
             Item(
                 onClick = onOpenPromotionSettings,
-                summary = { Text("前往系统通知设置中的实时动态授权页", kind = CouiTextKind.ItemSummary) },
+                summary = { Text(text = "前往系统通知设置中的实时动态授权页", kind = CouiTextKind.ItemSummary) },
             ) {
-                Text("开启系统实时动态授权", kind = CouiTextKind.ItemTitle)
+                Text(text = "开启系统实时动态授权", kind = CouiTextKind.ItemTitle)
             }
         }
     }
@@ -226,7 +227,7 @@ private fun StatusItem(label: String, value: String) {
     Item(
         trailing = { Text(text = value, kind = CouiTextKind.ItemSummary) },
     ) {
-        Text(label, kind = CouiTextKind.ItemTitle)
+        Text(text = label, kind = CouiTextKind.ItemTitle)
     }
 }
 
