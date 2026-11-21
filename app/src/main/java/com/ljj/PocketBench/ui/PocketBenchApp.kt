@@ -62,6 +62,11 @@ import com.itos.coui.dialog.Dialog
 import com.itos.coui.dialog.InputDialog
 import androidx.compose.ui.platform.LocalUriHandler
 import com.ljj.PocketBench.notification.LiveUpdateController
+import top.yukonga.miuix.kmp.basic.Card as KsuStatusCard
+import top.yukonga.miuix.kmp.basic.CardDefaults as KsuCardDefaults
+import top.yukonga.miuix.kmp.basic.Text as KsuCardText
+import top.yukonga.miuix.kmp.theme.MiuixTheme
+import top.yukonga.miuix.kmp.utils.PressFeedbackType
 
 @Composable
 fun PocketBenchApp(
@@ -500,11 +505,34 @@ private fun RootPage(controller: DeviceMonitorController) {
         footer = if (controller.rootGranted) "SU 已返回 UID 0，PocketBench ROOT 权限可用。" else "授权后通过固定的 SU 身份查询确认 UID 0。",
     ) {
         if (controller.rootGranted) {
-            Item(
-                summary = { Text(text = "✓  工作中", kind = CouiTextKind.ItemTitle) },
-                trailing = { Text(text = "UID 0", kind = CouiTextKind.ItemSummary) },
-            ) {
-                Text(text = "ROOT", kind = CouiTextKind.ItemTitle)
+            MiuixTheme {
+                KsuStatusCard(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(112.dp),
+                    colors = KsuCardDefaults.defaultColors(color = Color(0xFFDFFAE4)),
+                    onClick = {},
+                    showIndication = true,
+                    pressFeedbackType = PressFeedbackType.Tilt,
+                ) {
+                    androidx.compose.foundation.layout.Box(
+                        modifier = Modifier.fillMaxSize().padding(horizontal = 18.dp, vertical = 14.dp),
+                    ) {
+                        KsuCardText(
+                            text = "工作中",
+                            fontSize = 22.sp,
+                            fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+                            color = Color(0xFF176B35),
+                        )
+                        KsuCardText(
+                            text = "✓",
+                            modifier = Modifier.align(androidx.compose.ui.Alignment.BottomEnd),
+                            fontSize = 54.sp,
+                            fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+                            color = Color(0xFF36D167),
+                        )
+                    }
+                }
             }
         } else {
             Item(

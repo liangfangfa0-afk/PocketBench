@@ -21,6 +21,7 @@ android {
 dependencies {
     implementation("io.github.itoseo:coui:0.0.1-alpha12")
     implementation("io.github.itoseo:coui-icons:0.0.1-alpha12")
+    implementation("top.yukonga.miuix.kmp:miuix-ui-android:0.9.4")
     implementation(platform("androidx.compose:compose-bom-alpha:2026.08.01"))
     implementation("androidx.compose.animation:animation")
     implementation("androidx.compose.foundation:foundation")
