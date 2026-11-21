@@ -32,7 +32,6 @@ class DeviceMonitorController(context: Context) {
     var rootGranted by mutableStateOf(false)
     var rootKsuVersion by mutableStateOf("暂不可用")
         private set
-        private set
     var isCheckingRoot by mutableStateOf(false)
         private set
     var rootStatus by mutableStateOf("尚未请求 ROOT 授权")
