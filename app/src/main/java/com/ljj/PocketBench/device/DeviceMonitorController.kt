@@ -133,7 +133,4 @@ class DeviceMonitorController(context: Context) {
             }
         }
     }
-
-
-    }
 }
