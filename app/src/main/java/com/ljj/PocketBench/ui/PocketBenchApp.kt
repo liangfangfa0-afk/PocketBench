@@ -81,7 +81,7 @@ fun PocketBenchApp(
     val uriHandler = LocalUriHandler.current
     val pageColors = CouiPageDefaults.themeColors()
     val bottomRenderer = remember { CouiFloatingRenderer() }
-    val isSubPage = currentPage in setOf("live", "device", "opensource", "coloros", "harmony", "originos", "adaptationHub", "adaptation_coloros", "adaptation_harmony", "adaptation_originos", "adaptation_xiaomi", "adaptation_honor", "adaptation_apple")
+    val isSubPage = currentPage in setOf("live", "device", "root", "systemWebsites", "opensource", "coloros", "harmony", "originos", "adaptationHub", "adaptation_coloros", "adaptation_harmony", "adaptation_originos", "adaptation_xiaomi", "adaptation_honor", "adaptation_apple")
 
     fun navigate(page: String) {
         if (page != "home" && page != "settings") returnPage = currentPage
@@ -109,6 +109,8 @@ fun PocketBenchApp(
                         text = when (currentPage) {
                             "live" -> "实况通知"
                             "device" -> "电池与温度"
+                            "root" -> "ROOT"
+                            "systemWebsites" -> "各系统官网"
                             "opensource" -> "开源与组件"
                             "coloros" -> "ColorOS 17 适配"
                             "harmony" -> "HarmonyOS 7 适配"
@@ -189,6 +191,8 @@ fun PocketBenchApp(
                 when (page) {
                     "live" -> LiveUpdatePage(controller, onStart)
                     "device" -> DeviceMonitorPage(deviceMonitor)
+                    "root" -> RootPage(deviceMonitor)
+                    "systemWebsites" -> SystemWebsitesPage(onOpenOfficial = { uriHandler.openUri(it) })
                     "opensource" -> OpenSourcePage(
                         onOpenPocketBench = { uriHandler.openUri("https://github.com/liangfangfa0-afk/PocketBench") },
                         onOpenCoui = { uriHandler.openUri("https://github.com/ItosEO/COUI-Kit") },
@@ -217,9 +221,8 @@ fun PocketBenchApp(
                         onStart = onStart,
                         onOpenLiveUpdate = { navigate("live") },
                         onOpenDeviceMonitor = { deviceMonitor.refreshDeviceInfo(); navigate("device") },
-                        onOpenColorOs = { navigate("coloros") },
-                        onOpenHarmony = { navigate("harmony") },
-                        onOpenOriginOs = { navigate("originos") },
+                        onOpenRoot = { navigate("root") },
+                        onOpenSystemWebsites = { navigate("systemWebsites") },
                         onOpenAdaptationHub = { navigate("adaptationHub") },
                     )
                 }
@@ -232,7 +235,7 @@ fun PocketBenchApp(
         visible = announcementVisible,
         onDismissRequest = { announcementVisible = false },
         title = "PocketBench 更新公告",
-        message = "1.0.0.14\n\n新增「各厂商新系统适配名单」独立入口，汇总 ColorOS、HarmonyOS、OriginOS、Xiaomi HyperOS、荣耀 MagicOS 与 Apple iOS 官方适配信息。每个机型单独一行，并区分测试计划、升级批次与兼容名单。",
+        message = "1.0.0.15\n\n新增各系统官网快捷入口；ROOT 信息页独立展示，可在用户授权后补充读取只读系统属性；隐藏云端配置接口地址，不再提供复制入口。电池与温度页面仅保留设备监测信息。",
         confirmAction = CouiDialogAction(text = "知道了", onClick = { announcementVisible = false }),
     )
 }
@@ -266,9 +269,8 @@ private fun HomePage(
     onStart: () -> Unit,
     onOpenLiveUpdate: () -> Unit,
     onOpenDeviceMonitor: () -> Unit,
-    onOpenColorOs: () -> Unit,
-    onOpenHarmony: () -> Unit,
-    onOpenOriginOs: () -> Unit,
+    onOpenRoot: () -> Unit,
+    onOpenSystemWebsites: () -> Unit,
     onOpenAdaptationHub: () -> Unit,
 ) {
     Group(title = "PocketBench", footer = "轻量、清晰，尽量使用 Android 系统能力。") {
@@ -302,6 +304,18 @@ private fun HomePage(
     Group(title = "系统适配") {
         Item(onClick = onOpenAdaptationHub, summary = { Text(text = "集中查看各厂商最新系统版本、官方适配名单与升级批次", kind = CouiTextKind.ItemSummary) }) {
             Text(text = "各厂商新系统适配名单", kind = CouiTextKind.ItemTitle)
+        }
+    }
+
+    Group(title = "系统工具") {
+        Item(onClick = onOpenRoot, summary = { Text(text = "查看设备型号、Android 版本与系统属性；需要时可申请 ROOT 只读补充读取", kind = CouiTextKind.ItemSummary) }) {
+            Text(text = "ROOT", kind = CouiTextKind.ItemTitle)
+        }
+    }
+
+    Group(title = "官方资源") {
+        Item(onClick = onOpenSystemWebsites, summary = { Text(text = "直达各手机厂商操作系统官方网站", kind = CouiTextKind.ItemSummary) }) {
+            Text(text = "各系统官网", kind = CouiTextKind.ItemTitle)
         }
     }
 }
@@ -465,19 +479,134 @@ private fun LiveUpdatePage(controller: LiveUpdateController, onStart: () -> Unit
 @Composable
 private fun DeviceMonitorPage(controller: DeviceMonitorController) {
     val champagne = Color(0xFFC9A66B)
-    Group(title = "设备概览", footer = "基础数据由 Android 系统接口读取；电池温度为电池传感器读数，设备热状态为系统热状态等级。") {
-        Item(summary = { Text(text = "电量 ${controller.batteryPercent}% · ${controller.batteryStatus}", kind = CouiTextKind.ItemSummary, color = champagne) }, trailing = { Text(text = "${controller.batteryPercent}%", kind = CouiTextKind.ItemTitle, color = champagne) }) { Text(text = "当前电量", kind = CouiTextKind.ItemTitle) }
+    Group(title = "设备概览", footer = "数据由 Android 系统公开接口读取；电池温度为电池传感器读数，设备热状态为系统热状态等级。") {
+        Item(summary = { Text(text = "${controller.batteryPercent}% · ${controller.batteryStatus}", kind = CouiTextKind.ItemSummary, color = champagne) }, trailing = { Text(text = "${controller.batteryPercent}%", kind = CouiTextKind.ItemTitle, color = champagne) }) { Text(text = "当前电量", kind = CouiTextKind.ItemTitle) }
         Item(summary = { Text(text = controller.batteryTemperature, kind = CouiTextKind.ItemSummary, color = champagne) }) { Text(text = "电池温度", kind = CouiTextKind.ItemTitle) }
         Item(summary = { Text(text = controller.batteryVoltage, kind = CouiTextKind.ItemSummary, color = champagne) }) { Text(text = "电池电压", kind = CouiTextKind.ItemTitle) }
         Item(summary = { Text(text = controller.cpuCoreCount, kind = CouiTextKind.ItemSummary, color = champagne) }) { Text(text = "CPU 核心数", kind = CouiTextKind.ItemTitle) }
         Item(summary = { Text(text = controller.thermalStatus, kind = CouiTextKind.ItemSummary, color = champagne) }) { Text(text = "系统热状态", kind = CouiTextKind.ItemTitle) }
     }
-    Group(title = "Root 授权", footer = "仅请求一次只读身份确认（su -c id），用于确认 SU 是否授予 UID 0。不会执行写入、改权限、挂载、刷写、删除或调频命令；基础设备数据仍通过 Android 系统 API 读取。") {
-        Item(summary = { Text(text = controller.rootStatus, kind = CouiTextKind.ItemSummary) }, trailing = { Text(text = if (controller.isCheckingRoot) "检查中…" else if (controller.rootGranted) "已授权" else "未授权", kind = CouiTextKind.ItemTitle, color = champagne) }) { Text(text = "SU 状态", kind = CouiTextKind.ItemTitle) }
-        Item(onClick = controller::requestRootAuthorization, enabled = !controller.isCheckingRoot, summary = { Text(text = "点击后由本机 Root 管理器显示授权请求；拒绝不会影响普通设备信息读取。", kind = CouiTextKind.ItemSummary) }) { Text(text = if (controller.rootGranted) "重新检查 Root 授权" else "请求 Root 授权", kind = CouiTextKind.ItemTitle) }
-        Item(onClick = controller::refreshDeviceInfo, summary = { Text(text = "重新读取 Android 系统提供的电池与温度数据", kind = CouiTextKind.ItemSummary) }) { Text(text = "刷新设备信息", kind = CouiTextKind.ItemTitle) }
+    Group(title = "操作") {
+        Item(onClick = controller::refreshDeviceInfo, summary = { Text(text = "重新读取 Android 系统提供的电池与温度数据", kind = CouiTextKind.ItemSummary) }) {
+            Text(text = "刷新设备信息", kind = CouiTextKind.ItemTitle)
+        }
     }
 }
+
+@Composable
+private fun RootPage(controller: DeviceMonitorController) {
+    val rootProperties = controller.rootSystemProperties
+    fun resolved(normal: String, key: String): String =
+        normal.takeIf { it.isNotBlank() } ?: rootProperties[key]?.takeIf { it.isNotBlank() } ?: "系统未提供"
+
+    Group(
+        title = "ROOT 权限",
+        footer = "先由本机 Root 管理器确认授权。未授权时仍会通过 Android 公开接口读取基础信息；只有普通接口缺少的信息，才尝试使用 ROOT 补充读取。拒绝授权不会影响普通信息显示。"
+    ) {
+        Item(
+            summary = { Text(text = controller.rootStatus, kind = CouiTextKind.ItemSummary) },
+            trailing = {
+                Text(
+                    text = if (controller.isCheckingRoot) "请求中…" else if (controller.rootGranted) "已授权" else "未授权",
+                    kind = CouiTextKind.ItemTitle
+                )
+            }
+        ) { Text(text = "授权状态", kind = CouiTextKind.ItemTitle) }
+        Item(
+            onClick = controller::requestRootAuthorization,
+            enabled = !controller.isCheckingRoot,
+            summary = { Text(text = "点击后会弹出本机 Root 管理器的授权提示；本页只执行固定的只读身份与系统属性查询。", kind = CouiTextKind.ItemSummary) }
+        ) {
+            Text(text = if (controller.rootGranted) "重新检查 ROOT 授权" else "获得 ROOT 权限", kind = CouiTextKind.ItemTitle)
+        }
+    }
+
+    Group(
+        title = "设备与系统信息",
+        footer = "优先使用 Android Build 公开字段读取。ROOT 不会改变这些信息，只在普通接口未返回内容时作为补充来源。"
+    ) {
+        StatusItem("制造商", resolved(Build.MANUFACTURER.orEmpty(), "ro.product.manufacturer"))
+        StatusItem("设备品牌", resolved(Build.BRAND.orEmpty(), "ro.product.brand"))
+        StatusItem("设备型号", resolved(Build.MODEL.orEmpty(), "ro.product.model"))
+        StatusItem("设备代号", resolved(Build.DEVICE.orEmpty(), "ro.product.device"))
+        StatusItem("产品名称", resolved(Build.PRODUCT.orEmpty(), "ro.product.name"))
+        StatusItem("Android 版本", resolved(Build.VERSION.RELEASE.orEmpty(), "ro.build.version.release"))
+        StatusItem("Android API", Build.VERSION.SDK_INT.toString())
+        StatusItem("系统显示版本", resolved(Build.DISPLAY.orEmpty(), "ro.build.display.id"))
+        StatusItem("系统增量版本", resolved(Build.VERSION.INCREMENTAL.orEmpty(), "ro.build.version.incremental"))
+        StatusItem("Build ID", resolved(Build.ID.orEmpty(), "ro.build.id"))
+        StatusItem("安全补丁级别", resolved(Build.VERSION.SECURITY_PATCH.orEmpty(), "ro.build.version.security_patch"))
+    }
+
+    if (controller.rootGranted) {
+        val extraProperties = listOf(
+            "ro.build.fingerprint" to "系统构建指纹",
+            "ro.boot.hardware" to "底层硬件标识",
+            "ro.product.cpu.abi" to "首选 CPU ABI",
+            "ro.build.version.codename" to "系统版本代号",
+        )
+        Group(
+            title = "ROOT 补充系统属性",
+            footer = "以下为白名单内的只读属性，不展示完整属性转储，也不会执行 setprop 或其他写入操作。"
+        ) {
+            var displayed = 0
+            extraProperties.forEach { (key, label) ->
+                val value = rootProperties[key]
+                if (!value.isNullOrBlank()) {
+                    StatusItem(label, value)
+                    displayed++
+                }
+            }
+            if (displayed == 0) {
+                Item { Text(text = "已获得 ROOT 授权，但系统没有返回额外属性；基础信息仍可正常查看。", kind = CouiTextKind.ItemSummary) }
+            }
+        }
+    }
+
+    Group(title = "读取说明") {
+        Item {
+            Text(
+                text = "ROOT 授权由设备上已安装的 Root 管理器控制。PocketBench 只读取设备型号、系统版本和少量白名单系统属性；不会执行写入、改权限、挂载、刷写、删除、调频或清理操作。不同厂商系统可能隐藏部分属性，因此个别项目可能显示“系统未提供”。",
+                kind = CouiTextKind.ItemSummary
+            )
+        }
+    }
+}
+
+@Composable
+private fun SystemWebsitesPage(onOpenOfficial: (String) -> Unit) {
+    Group(title = "OPPO") {
+        Item(onClick = { onOpenOfficial("https://www.coloros.com/") }, summary = { Text(text = "ColorOS 官方网站", kind = CouiTextKind.ItemSummary) }) {
+            Text(text = "ColorOS", kind = CouiTextKind.ItemTitle)
+        }
+    }
+    Group(title = "华为") {
+        Item(onClick = { onOpenOfficial("https://www.harmonyos.com/") }, summary = { Text(text = "HarmonyOS 官方网站", kind = CouiTextKind.ItemSummary) }) {
+            Text(text = "HarmonyOS", kind = CouiTextKind.ItemTitle)
+        }
+    }
+    Group(title = "vivo") {
+        Item(onClick = { onOpenOfficial("https://www.vivo.com.cn/originos/") }, summary = { Text(text = "OriginOS 官方网站", kind = CouiTextKind.ItemSummary) }) {
+            Text(text = "OriginOS", kind = CouiTextKind.ItemTitle)
+        }
+    }
+    Group(title = "小米") {
+        Item(onClick = { onOpenOfficial("https://os1.hyperos.mi.com/") }, summary = { Text(text = "Xiaomi HyperOS 官方网站", kind = CouiTextKind.ItemSummary) }) {
+            Text(text = "Xiaomi HyperOS", kind = CouiTextKind.ItemTitle)
+        }
+    }
+    Group(title = "荣耀") {
+        Item(onClick = { onOpenOfficial("https://www.honor.com/cn/magic-os/") }, summary = { Text(text = "荣耀 MagicOS 官方网站", kind = CouiTextKind.ItemSummary) }) {
+            Text(text = "荣耀 MagicOS", kind = CouiTextKind.ItemTitle)
+        }
+    }
+    Group(title = "Apple") {
+        Item(onClick = { onOpenOfficial("https://www.apple.com.cn/ios/") }, summary = { Text(text = "Apple iOS 官方网站", kind = CouiTextKind.ItemSummary) }) {
+            Text(text = "iOS", kind = CouiTextKind.ItemTitle)
+        }
+    }
+}
+
 @Composable
 private fun SettingsPage(
     controller: LiveUpdateController,
@@ -637,7 +766,7 @@ private fun RemoteAdaptationPage(
 
     Group(
         title = title,
-        footer = "数据来自 PocketBench GitHub 公开配置。刷新只读取 JSON，不执行远程代码或系统命令。"
+        footer = "数据由应用在后台读取并缓存；接口地址仅作为内部数据源使用，不在页面中展示或提供复制。刷新只读取 JSON，不执行远程代码或系统命令。"
     ) {
         Item(
             onClick = { refreshKey++ },
@@ -655,12 +784,6 @@ private fun RemoteAdaptationPage(
                 )
             }
         ) { Text(text = "云端数据", kind = CouiTextKind.ItemTitle) }
-        Item(
-            onClick = { android.content.ClipData.newPlainText("JSON URL", REMOTE_ADAPTATION_URL).also { clip ->
-                (context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager).setPrimaryClip(clip)
-            } },
-            summary = { Text(text = "公开只读 Raw JSON · 点击复制接口地址", kind = CouiTextKind.ItemSummary) }
-        ) { Text(text = "远程配置接口", kind = CouiTextKind.ItemTitle) }
     }
 
     if (config == null) {

@@ -1,6 +1,6 @@
 # PocketBench
 
-PocketBench 是一个专注于 Android 实时动态（Live Updates）的 Compose 应用，提供可编辑的通知标题、胶囊短文本与进度，并通过同一通知 ID 实时更新。当前版本：1.0.0.14。
+PocketBench 是一个专注于 Android 实时动态（Live Updates）的 Compose 应用，提供可编辑的通知标题、胶囊短文本与进度，并通过同一通知 ID 实时更新。当前版本：1.0.0.15。
 
 ## 功能
 
@@ -12,9 +12,11 @@ PocketBench 是一个专注于 Android 实时动态（Live Updates）的 Compose
 - 设置页提供可持久保存的 COUI 跟随系统、浅色模式、深色模式三种外观选择。
 - 各页面在有界转场视口内独立滚动，避免设置分组在页面切换测量时发生重叠。
 - 新增电池与温度设备监测页，读取电量、电池温度、电压、CPU 核心数和 Android 系统热状态。
-- 可选 Root 授权仅进行 `su -c id` 只读身份确认；不执行写入、改权限、挂载、刷写、删除或调频操作。
+- 首页提供独立 ROOT 页面：先由本机 Root 管理器确认授权，再以只读方式补充读取白名单系统属性；普通 Android Build 字段优先读取，ROOT 不执行写入、改权限、挂载、刷写、删除或调频操作。
 - 首页仅展示工具入口；实况通知使用说明归入实况通知子页面。
 - 新增「各厂商新系统适配名单」独立入口，汇总 ColorOS、HarmonyOS、OriginOS、Xiaomi HyperOS、荣耀 MagicOS 与 Apple iOS 官方适配信息；各机型逐行展示，并区分 Beta、内测、正式升级计划与兼容名单。
+- 新增「各系统官网」页面，可直接跳转六家厂商的操作系统官方网站。
+- 电池与温度页面仅保留设备监测；ROOT 授权与系统信息读取独立到首页 ROOT 子页面。
 - 设置页新增项目开源与 COUI-Kit 官方依赖/组件示例说明；公告使用 COUI 原生 Dialog 弹窗。
 
 ## 项目信息
@@ -34,11 +36,20 @@ PocketBench 是一个专注于 Android 实时动态（Live Updates）的 Compose
 
 ## 远程适配配置
 
-APP 从 `https://raw.githubusercontent.com/liangfangfa0-afk/PocketBench/main/data/device_adaptation.json` 读取公开只读 JSON，保留上次成功获取的本地缓存。远程文件只包含展示数据，不执行代码或系统命令。适配名单与时间表以文件内列出的官方来源为准；未公布的时间标记为未公布，不自行推测。
+APP 在内部从 GitHub Raw 数据源读取公开只读 JSON，并保留上次成功获取的本地缓存。数据源地址仅用于应用内部请求，不在界面展示，也不提供复制入口。远程文件只包含展示数据，不执行代码或系统命令。适配名单与时间表以文件内列出的官方来源为准；未公布的时间标记为未公布，不自行推测。
 
 ## 官方适配信息来源
 
 - [ColorOS 17 官方升级计划](https://www.coloros.com/upgrade/)
 - [华为 HarmonyOS 7 官方支持机型](https://consumer.huawei.com/cn/support/harmonyos/models-7/)\n- [vivo OriginOS 官方升级计划](https://www.vivo.com.cn/originos/)\n- [小米 Xiaomi HyperOS 官方推送计划](https://os.mi.com/)\n- [荣耀 MagicOS 官方升级计划](https://www.honor.com/cn/magic-os/)\n- [Apple iOS 27 官方兼容机型](https://support.apple.com/zh-cn/guide/iphone/iphe3fa5df43/27/ios/27)
+
+## 各系统官方网站
+
+- [ColorOS](https://www.coloros.com/)
+- [HarmonyOS](https://www.harmonyos.com/)
+- [OriginOS](https://www.vivo.com.cn/originos/)
+- [Xiaomi HyperOS](https://os1.hyperos.mi.com/)
+- [荣耀 MagicOS](https://www.honor.com/cn/magic-os/)
+- [Apple iOS](https://www.apple.com.cn/ios/)
 
 适配名单与计划节点按公开信息展示。ColorOS 计划启动日期不代表全量推送完成；HarmonyOS 官方未公布整体适配百分比，PocketBench 不自行推算或虚构完成率。

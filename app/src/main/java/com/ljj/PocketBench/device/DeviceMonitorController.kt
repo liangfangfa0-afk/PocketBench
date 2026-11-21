@@ -33,7 +33,9 @@ class DeviceMonitorController(context: Context) {
         private set
     var isCheckingRoot by mutableStateOf(false)
         private set
-    var rootStatus by mutableStateOf("尚未请求 Root 授权")
+    var rootStatus by mutableStateOf("尚未请求 ROOT 授权")
+    var rootSystemProperties by mutableStateOf<Map<String, String>>(emptyMap())
+        private set
     init { refreshDeviceInfo() }
 
     fun refreshDeviceInfo() {
@@ -76,28 +78,62 @@ class DeviceMonitorController(context: Context) {
     fun requestRootAuthorization() {
         if (isCheckingRoot) return
         isCheckingRoot = true
-        rootStatus = "正在请求本机 Root 管理器确认…"
+        rootStatus = "正在请求本机 ROOT 管理器确认…"
         thread(name = "PocketBench-RootCheck", isDaemon = true) {
             var process: Process? = null
+            var properties = emptyMap<String, String>()
             val result = try {
-                // 固定的只读身份查询；不接受用户输入，不拼接或执行其他 SU 命令。
-                val rootProcess = ProcessBuilder("su", "-c", "id").redirectErrorStream(true).start()
-                process = rootProcess
-                if (!rootProcess.waitFor(6, TimeUnit.SECONDS)) {
-                    rootProcess.destroyForcibly()
-                    "Root 请求超时，请检查本机 Root 管理器"
+                // 第一步只确认授权身份；命令固定，不接受用户输入。
+                val authProcess = ProcessBuilder("su", "-c", "id").redirectErrorStream(true).start()
+                process = authProcess
+                if (!authProcess.waitFor(6, TimeUnit.SECONDS)) {
+                    authProcess.destroyForcibly()
+                    "ROOT 请求超时，请检查本机 ROOT 管理器"
                 } else {
-                    val output = rootProcess.inputStream.bufferedReader().use { it.readText() }.trim()
-                    if (rootProcess.exitValue() == 0 && output.contains("uid=0")) "已获得 UID 0；本页不会执行其他 SU 命令" else "未获得 Root 授权或本机未安装可用的 SU 管理器"
+                    val identity = authProcess.inputStream.bufferedReader().use { it.readText() }.trim()
+                    if (authProcess.exitValue() != 0 || !identity.contains("uid=0")) {
+                        "未获得 ROOT 授权或本机未安装可用的 SU 管理器"
+                    } else {
+                        // 仅执行 Android getprop 只读查询；界面只展示白名单字段。
+                        process = ProcessBuilder("su", "-c", "getprop").redirectErrorStream(true).start()
+                        val propertyProcess = process!!
+                        if (propertyProcess.waitFor(6, TimeUnit.SECONDS)) {
+                            val allowed = setOf(
+                                "ro.product.manufacturer", "ro.product.brand", "ro.product.model",
+                                "ro.product.device", "ro.product.name", "ro.build.version.release",
+                                "ro.build.version.incremental", "ro.build.display.id", "ro.build.id",
+                                "ro.build.version.security_patch", "ro.build.fingerprint",
+                                "ro.boot.hardware", "ro.product.cpu.abi", "ro.build.version.codename"
+                            )
+                            properties = propertyProcess.inputStream.bufferedReader().useLines { lines ->
+                                lines.mapNotNull { line ->
+                                    val match = Regex("""^\[([^]]+)]\s*:\s*\[(.*)]$""").matchEntire(line.trim())
+                                    val key = match?.groupValues?.getOrNull(1)
+                                    val value = match?.groupValues?.getOrNull(2)
+                                    if (key != null && key in allowed && !value.isNullOrBlank()) key to value else null
+                                }.toMap()
+                            }
+                            "已获得 UID 0；只读读取到 ${properties.size} 项白名单系统属性"
+                        } else {
+                            propertyProcess.destroyForcibly()
+                            "已获得 UID 0；系统属性读取超时，基础信息仍可查看"
+                        }
+                    }
                 }
             } catch (_: Exception) {
-                "Root 请求失败；普通设备信息仍可读取"
-            } finally { process?.destroy() }
+                "ROOT 请求或属性读取失败；普通设备信息仍可读取"
+            } finally {
+                process?.destroy()
+            }
             mainHandler.post {
                 rootGranted = result.startsWith("已获得 UID 0")
+                rootSystemProperties = if (rootGranted) properties else emptyMap()
                 rootStatus = result
                 isCheckingRoot = false
             }
         }
+    }
+
+
     }
 }
