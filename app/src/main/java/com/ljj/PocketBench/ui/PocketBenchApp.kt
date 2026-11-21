@@ -639,7 +639,9 @@ private fun RemoteAdaptationPage(
                     val models = batch.optJSONArray("models") ?: JSONArray()
                     val names = (0 until models.length()).mapNotNull { models.optString(it).takeIf(String::isNotBlank) }
                     Group(title = batch.optString("period")) {
-                        Item { Text(text = names.joinToString("、"), kind = CouiTextKind.ItemSummary) }
+                        names.forEach { model ->
+                            Item { Text(text = model, kind = CouiTextKind.ItemSummary) }
+                        }
                     }
                 }
                 val notes = version.optJSONArray("notes") ?: JSONArray()
@@ -669,7 +671,9 @@ private fun RemoteAdaptationPage(
                     val models = category.optJSONArray("models") ?: JSONArray()
                     val names = (0 until models.length()).mapNotNull { models.optString(it).takeIf(String::isNotBlank) }
                     Group(title = category.optString("name")) {
-                        Item { Text(text = names.joinToString("、"), kind = CouiTextKind.ItemSummary) }
+                        names.forEach { model ->
+                            Item { Text(text = model, kind = CouiTextKind.ItemSummary) }
+                        }
                     }
                 }
                 val notes = version.optJSONArray("notes") ?: JSONArray()
