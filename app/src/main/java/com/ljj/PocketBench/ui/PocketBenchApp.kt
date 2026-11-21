@@ -81,7 +81,7 @@ fun PocketBenchApp(
     val uriHandler = LocalUriHandler.current
     val pageColors = CouiPageDefaults.themeColors()
     val bottomRenderer = remember { CouiFloatingRenderer() }
-    val isSubPage = currentPage in setOf("live", "device", "opensource", "coloros", "harmony")
+    val isSubPage = currentPage in setOf("live", "device", "opensource", "coloros", "harmony", "originos")
 
     fun navigate(page: String) {
         if (page != "home" && page != "settings") returnPage = currentPage
@@ -112,6 +112,7 @@ fun PocketBenchApp(
                             "opensource" -> "开源与组件"
                             "coloros" -> "ColorOS 17 适配"
                             "harmony" -> "HarmonyOS 7 适配"
+                            "originos" -> "OriginOS 7 适配"
                             "settings" -> "设置"
                             else -> "PocketBench"
                         },
@@ -188,6 +189,7 @@ fun PocketBenchApp(
                     )
                     "coloros" -> ColorOsAdaptationPage(onOpenOfficial = { uriHandler.openUri("https://www.coloros.com/upgrade/") })
                     "harmony" -> HarmonyAdaptationPage(onOpenOfficial = { uriHandler.openUri("https://consumer.huawei.com/cn/support/harmonyos/models-7/") })
+                    "originos" -> OriginOsAdaptationPage(onOpenOfficial = { uriHandler.openUri("https://www.vivo.com.cn/originos/") })
                     "settings" -> SettingsPage(
                         controller = controller,
                         onOpenNotificationSettings = onOpenNotificationSettings,
@@ -203,6 +205,7 @@ fun PocketBenchApp(
                         onOpenDeviceMonitor = { deviceMonitor.refreshDeviceInfo(); navigate("device") },
                         onOpenColorOs = { navigate("coloros") },
                         onOpenHarmony = { navigate("harmony") },
+                        onOpenOriginOs = { navigate("originos") },
                     )
                 }
                 Spacer(Modifier.height(16.dp))
@@ -214,7 +217,7 @@ fun PocketBenchApp(
         visible = announcementVisible,
         onDismissRequest = { announcementVisible = false },
         title = "PocketBench 更新公告",
-        message = "1.0.0.11\n\n新增 GitHub 远程只读适配数据接口，ColorOS 与 HarmonyOS 适配页面支持手动刷新和离线缓存；按官方公开计划展示时间与机型。\n\n适配批次以厂商公开计划为准，计划启动日期不代表全量推送完成。",
+        message = "1.0.0.13\n\n新增 OriginOS 7 官方升级计划，支持按批次查看 vivo 与 iQOO 机型；适配名单逐机型独立换行显示。\n\n适配批次以厂商公开计划为准，计划启动日期不代表全量推送完成。",
         confirmAction = CouiDialogAction(text = "知道了", onClick = { announcementVisible = false }),
     )
 }
@@ -250,6 +253,7 @@ private fun HomePage(
     onOpenDeviceMonitor: () -> Unit,
     onOpenColorOs: () -> Unit,
     onOpenHarmony: () -> Unit,
+    onOpenOriginOs: () -> Unit,
 ) {
     Group(title = "PocketBench", footer = "轻量、清晰，尽量使用 Android 系统能力。") {
         Item(
@@ -285,6 +289,9 @@ private fun HomePage(
         }
         Item(onClick = onOpenHarmony, summary = { Text(text = "查看 HarmonyOS 7 正式版与公测版支持机型", kind = CouiTextKind.ItemSummary) }) {
             Text(text = "鸿蒙机型适配", kind = CouiTextKind.ItemTitle)
+        }
+        Item(onClick = onOpenOriginOs, summary = { Text(text = "查看 OriginOS 7 官方升级批次、vivo 与 iQOO 机型", kind = CouiTextKind.ItemSummary) }) {
+            Text(text = "OriginOS 7 机型适配", kind = CouiTextKind.ItemTitle)
         }
     }
 }
@@ -501,7 +508,7 @@ private fun SettingsPage(
             Text(text = "刷新应用状态", kind = CouiTextKind.ItemTitle)
         }
         Item(
-            summary = { Text(text = "PocketBench 1.0.0.11", kind = CouiTextKind.ItemSummary) },
+            summary = { Text(text = "PocketBench 1.0.0.13", kind = CouiTextKind.ItemSummary) },
         ) {
             Text(text = "应用版本", kind = CouiTextKind.ItemTitle)
         }
@@ -533,6 +540,11 @@ private fun OpenSourcePage(onOpenPocketBench: () -> Unit, onOpenCoui: () -> Unit
 }
 
 
+
+@Composable
+private fun OriginOsAdaptationPage(onOpenOfficial: () -> Unit) {
+    RemoteAdaptationPage(section = "originos", title = "OriginOS 7 官方适配计划", onOpenOfficial = onOpenOfficial)
+}
 
 private const val REMOTE_ADAPTATION_URL =
     "https://raw.githubusercontent.com/liangfangfa0-afk/PocketBench/main/data/device_adaptation.json"
@@ -575,7 +587,7 @@ private fun RemoteAdaptationPage(
             val latest = withContext(Dispatchers.IO) { fetchAdaptationJson() }
             val parsed = JSONObject(latest)
             require(parsed.optInt("schema_version") == 1) { "不支持的数据格式版本" }
-            require(parsed.has("coloros") && parsed.has("harmony")) { "配置缺少必要字段" }
+            require(parsed.has("coloros") && parsed.has("harmony") && parsed.has("originos")) { "配置缺少必要字段" }
             rawJson = latest
             preferences.edit().putString("adaptation_json", latest).apply()
         } catch (error: Exception) {
@@ -649,6 +661,31 @@ private fun RemoteAdaptationPage(
                     Item { Text(text = notes.optString(noteIndex), kind = CouiTextKind.ItemSummary) }
                 }
             }
+        }
+    } else if (section == "originos") {
+        val originos = config.optJSONObject("originos") ?: JSONObject()
+        val schedule = originos.optJSONArray("schedule") ?: JSONArray()
+        Group(title = originos.optString("version"), footer = originos.optString("region")) {
+            for (periodIndex in 0 until schedule.length()) {
+                val period = schedule.optJSONObject(periodIndex) ?: continue
+                Group(title = period.optString("period")) {
+                    val brands = period.optJSONArray("brands") ?: JSONArray()
+                    for (brandIndex in 0 until brands.length()) {
+                        val brand = brands.optJSONObject(brandIndex) ?: continue
+                        Group(title = brand.optString("name")) {
+                            val models = brand.optJSONArray("models") ?: JSONArray()
+                            for (modelIndex in 0 until models.length()) {
+                                val model = models.optString(modelIndex)
+                                if (model.isNotBlank()) Item { Text(text = model, kind = CouiTextKind.ItemSummary) }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        val notes = originos.optJSONArray("notes") ?: JSONArray()
+        for (noteIndex in 0 until notes.length()) {
+            Item { Text(text = notes.optString(noteIndex), kind = CouiTextKind.ItemSummary) }
         }
     } else {
         val harmony = config.optJSONObject("harmony") ?: JSONObject()

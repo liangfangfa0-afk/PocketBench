@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "config_version": "2026.11.21.1",
+  "config_version": "2026.11.21.2",
   "updated_at": "2026-11-21",
   "description": "厂商公开升级计划与支持机型数据。官方未公布的时间不作推测。",
   "sources": [
@@ -27,6 +27,11 @@
     {
       "name": "HarmonyOS 6 华为官网产品页（首批公测计划）",
       "url": "https://consumer.huawei.com/cn/harmonyos-6/",
+      "checked_at": "2026-11-21"
+    },
+    {
+      "name": "OriginOS 7 vivo 官方升级计划",
+      "url": "https://www.vivo.com.cn/originos/",
       "checked_at": "2026-11-21"
     }
   ],
@@ -381,5 +386,165 @@
       }
     ],
     "region": "中国大陆（华为官方页面注明适用地区限制）"
+  },
+  "originos": {
+    "version": "OriginOS 7",
+    "region": "vivo 中国官网升级计划；实际推送以设备收到的版本为准",
+    "schedule": [
+      {
+        "period": "2026 年 10 月 9 日开启",
+        "brands": [
+          {
+            "name": "vivo",
+            "models": [
+              "X Fold6",
+              "X Fold5",
+              "X300 Ultra 卫星通信版",
+              "X300 Ultra",
+              "X300 Pro 卫星通信版",
+              "X300 Pro",
+              "X300s",
+              "X300",
+              "X300 E",
+              "vivo Pad6 Pro"
+            ]
+          },
+          {
+            "name": "iQOO",
+            "models": [
+              "iQOO 15 Ultra",
+              "iQOO 15",
+              "iQOO 15T",
+              "iQOO Neo11 至尊版",
+              "iQOO Neo11",
+              "iQOO Pad6 Pro"
+            ]
+          }
+        ]
+      },
+      {
+        "period": "2026 年 10 月 29 日开启",
+        "brands": [
+          {
+            "name": "vivo",
+            "models": [
+              "X Fold3 Pro",
+              "X Fold3",
+              "X200 Ultra",
+              "X200 Pro 卫星通信版",
+              "X200 Pro",
+              "X200 Pro mini",
+              "X200s",
+              "X200",
+              "S60",
+              "S60 元气版",
+              "vivo Pad5 Pro"
+            ]
+          },
+          {
+            "name": "iQOO",
+            "models": [
+              "iQOO 13",
+              "iQOO Neo10 Pro+",
+              "iQOO Neo10 Pro",
+              "iQOO Neo10",
+              "iQOO Pad5 Pro"
+            ]
+          }
+        ]
+      },
+      {
+        "period": "2026 年 11 月底",
+        "brands": [
+          {
+            "name": "vivo",
+            "models": [
+              "X Fold2",
+              "X100 Ultra",
+              "X100s Pro",
+              "X100 Pro",
+              "X100s",
+              "X100",
+              "S50 Pro mini",
+              "S50",
+              "S50t",
+              "S50t 元气版",
+              "vivo Pad5",
+              "vivo Pad5e",
+              "vivo Pad5c"
+            ]
+          },
+          {
+            "name": "iQOO",
+            "models": [
+              "iQOO 12 Pro",
+              "iQOO 12",
+              "iQOO Neo9S Pro+",
+              "iQOO Neo9S Pro",
+              "iQOO Neo9 Pro",
+              "iQOO Neo9",
+              "iQOO Z11 Turbo",
+              "iQOO Pad5",
+              "iQOO Pad5e",
+              "iQOO Pad5c"
+            ]
+          }
+        ]
+      },
+      {
+        "period": "2026 年 12 月底",
+        "brands": [
+          {
+            "name": "vivo",
+            "models": [
+              "X90 Pro+",
+              "X90 Pro",
+              "X90s",
+              "X90",
+              "S30",
+              "S30 Pro mini"
+            ]
+          },
+          {
+            "name": "iQOO",
+            "models": [
+              "iQOO 11 Pro",
+              "iQOO 11S",
+              "iQOO 11",
+              "iQOO Z11",
+              "iQOO Z11S",
+              "iQOO Z10 Turbo+"
+            ]
+          }
+        ]
+      },
+      {
+        "period": "2027 年 1 月底",
+        "brands": [
+          {
+            "name": "vivo",
+            "models": [
+              "S20 Pro",
+              "S20",
+              "Y600 Pro",
+              "Y600 Turbo",
+              "Y500 Pro",
+              "Y500i",
+              "Y500s"
+            ]
+          },
+          {
+            "name": "iQOO",
+            "models": [
+              "iQOO Z10 Turbo Pro",
+              "iQOO Z10 Turbo"
+            ]
+          }
+        ]
+      }
+    ],
+    "notes": [
+      "以上为 vivo 中国官网公布的升级计划。计划日期为开启时间，具体推送节奏及实际收到时间以官方公告和设备系统更新提示为准。"
+    ]
   }
 }
