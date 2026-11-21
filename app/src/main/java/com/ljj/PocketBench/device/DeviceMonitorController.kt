@@ -78,57 +78,47 @@ class DeviceMonitorController(context: Context) {
     fun requestRootAuthorization() {
         if (isCheckingRoot) return
         isCheckingRoot = true
-        rootStatus = "正在请求本机 ROOT 管理器确认…"
+        rootStatus = "正在等待 ROOT 管理器授权…"
         thread(name = "PocketBench-RootCheck", isDaemon = true) {
             var process: Process? = null
-            var properties = emptyMap<String, String>()
-            val result = try {
-                // 第一步只确认授权身份；命令固定，不接受用户输入。
-                val authProcess = ProcessBuilder("su", "-c", "id").redirectErrorStream(true).start()
-                process = authProcess
-                if (!authProcess.waitFor(6, TimeUnit.SECONDS)) {
+            var granted = false
+            var ksuVersion = "暂不可用"
+            val status = try {
+                process = ProcessBuilder("su", "-c", "id").redirectErrorStream(true).start()
+                val authProcess = process!!
+                if (!authProcess.waitFor(8, TimeUnit.SECONDS)) {
                     authProcess.destroyForcibly()
-                    "ROOT 请求超时，请检查本机 ROOT 管理器"
+                    "授权请求超时"
                 } else {
                     val identity = authProcess.inputStream.bufferedReader().use { it.readText() }.trim()
-                    if (authProcess.exitValue() != 0 || !identity.contains("uid=0")) {
-                        "未获得 ROOT 授权或本机未安装可用的 SU 管理器"
+                    granted = authProcess.exitValue() == 0 &&
+                        Regex("""(^|\\s)uid=0(?:\\(|\\s|$)""").containsMatchIn(identity)
+                    if (!granted) {
+                        "未获得 UID 0 授权"
                     } else {
-                        // 仅执行 Android getprop 只读查询；界面只展示白名单字段。
-                        process = ProcessBuilder("su", "-c", "getprop").redirectErrorStream(true).start()
-                        val propertyProcess = process!!
-                        if (propertyProcess.waitFor(6, TimeUnit.SECONDS)) {
-                            val allowed = setOf(
-                                "ro.product.manufacturer", "ro.product.brand", "ro.product.model",
-                                "ro.product.device", "ro.product.name", "ro.build.version.release",
-                                "ro.build.version.incremental", "ro.build.display.id", "ro.build.id",
-                                "ro.build.version.security_patch", "ro.build.fingerprint",
-                                "ro.boot.hardware", "ro.product.cpu.abi", "ro.build.version.codename"
-                            )
-                            properties = propertyProcess.inputStream.bufferedReader().useLines { lines ->
-                                lines.mapNotNull { line ->
-                                    val match = Regex("""^\[([^]]+)]\s*:\s*\[(.*)]$""").matchEntire(line.trim())
-                                    val key = match?.groupValues?.getOrNull(1)
-                                    val value = match?.groupValues?.getOrNull(2)
-                                    if (key != null && key in allowed && !value.isNullOrBlank()) key to value else null
-                                }.toMap()
+                        // 只读取 KernelSU userspace 提供的内核版本信息；命令固定且只读。
+                        process = ProcessBuilder("su", "-c", "ksud debug version").redirectErrorStream(true).start()
+                        val versionProcess = process!!
+                        if (versionProcess.waitFor(5, TimeUnit.SECONDS)) {
+                            val output = versionProcess.inputStream.bufferedReader().use { it.readText() }.trim()
+                            if (versionProcess.exitValue() == 0 && output.isNotBlank()) {
+                                ksuVersion = output.lineSequence().first().take(48)
                             }
-                            "已获得 UID 0；只读读取到 ${properties.size} 项白名单系统属性"
                         } else {
-                            propertyProcess.destroyForcibly()
-                            "已获得 UID 0；系统属性读取超时，基础信息仍可查看"
+                            versionProcess.destroyForcibly()
                         }
+                        "已获得 UID 0"
                     }
                 }
             } catch (_: Exception) {
-                "ROOT 请求或属性读取失败；普通设备信息仍可读取"
+                if (granted) "已获得 UID 0" else "ROOT 授权检查失败"
             } finally {
                 process?.destroy()
             }
             mainHandler.post {
-                rootGranted = result.startsWith("已获得 UID 0")
-                rootSystemProperties = if (rootGranted) properties else emptyMap()
-                rootStatus = result
+                rootGranted = granted
+                rootKsuVersion = if (granted) ksuVersion else "暂不可用"
+                rootStatus = status
                 isCheckingRoot = false
             }
         }

@@ -495,81 +495,43 @@ private fun DeviceMonitorPage(controller: DeviceMonitorController) {
 
 @Composable
 private fun RootPage(controller: DeviceMonitorController) {
-    val rootProperties = controller.rootSystemProperties
-    fun resolved(normal: String, key: String): String =
-        normal.takeIf { it.isNotBlank() } ?: rootProperties[key]?.takeIf { it.isNotBlank() } ?: "系统未提供"
-
     Group(
-        title = "ROOT 权限",
-        footer = "先由本机 Root 管理器确认授权。未授权时仍会通过 Android 公开接口读取基础信息；只有普通接口缺少的信息，才尝试使用 ROOT 补充读取。拒绝授权不会影响普通信息显示。"
+        title = "ROOT",
+        footer = if (controller.rootGranted) "SU 已返回 UID 0，PocketBench ROOT 权限可用。" else "授权后通过固定的 SU 身份查询确认 UID 0。",
     ) {
-        Item(
-            summary = { Text(text = controller.rootStatus, kind = CouiTextKind.ItemSummary) },
-            trailing = {
-                Text(
-                    text = if (controller.isCheckingRoot) "请求中…" else if (controller.rootGranted) "已授权" else "未授权",
-                    kind = CouiTextKind.ItemTitle
-                )
+        if (controller.rootGranted) {
+            Item(
+                summary = { Text(text = "✓  工作中", kind = CouiTextKind.ItemTitle) },
+                trailing = { Text(text = "UID 0", kind = CouiTextKind.ItemSummary) },
+            ) {
+                Text(text = "ROOT", kind = CouiTextKind.ItemTitle)
             }
-        ) { Text(text = "授权状态", kind = CouiTextKind.ItemTitle) }
-        Item(
-            onClick = controller::requestRootAuthorization,
-            enabled = !controller.isCheckingRoot,
-            summary = { Text(text = "点击后会弹出本机 Root 管理器的授权提示；本页只执行固定的只读身份与系统属性查询。", kind = CouiTextKind.ItemSummary) }
-        ) {
-            Text(text = if (controller.rootGranted) "重新检查 ROOT 授权" else "获得 ROOT 权限", kind = CouiTextKind.ItemTitle)
-        }
-    }
-
-    Group(
-        title = "设备与系统信息",
-        footer = "优先使用 Android Build 公开字段读取。ROOT 不会改变这些信息，只在普通接口未返回内容时作为补充来源。"
-    ) {
-        StatusItem("制造商", resolved(Build.MANUFACTURER.orEmpty(), "ro.product.manufacturer"))
-        StatusItem("设备品牌", resolved(Build.BRAND.orEmpty(), "ro.product.brand"))
-        StatusItem("设备型号", resolved(Build.MODEL.orEmpty(), "ro.product.model"))
-        StatusItem("设备代号", resolved(Build.DEVICE.orEmpty(), "ro.product.device"))
-        StatusItem("产品名称", resolved(Build.PRODUCT.orEmpty(), "ro.product.name"))
-        StatusItem("Android 版本", resolved(Build.VERSION.RELEASE.orEmpty(), "ro.build.version.release"))
-        StatusItem("Android API", Build.VERSION.SDK_INT.toString())
-        StatusItem("系统显示版本", resolved(Build.DISPLAY.orEmpty(), "ro.build.display.id"))
-        StatusItem("系统增量版本", resolved(Build.VERSION.INCREMENTAL.orEmpty(), "ro.build.version.incremental"))
-        StatusItem("Build ID", resolved(Build.ID.orEmpty(), "ro.build.id"))
-        StatusItem("安全补丁级别", resolved(Build.VERSION.SECURITY_PATCH.orEmpty(), "ro.build.version.security_patch"))
-    }
-
-    if (controller.rootGranted) {
-        val extraProperties = listOf(
-            "ro.build.fingerprint" to "系统构建指纹",
-            "ro.boot.hardware" to "底层硬件标识",
-            "ro.product.cpu.abi" to "首选 CPU ABI",
-            "ro.build.version.codename" to "系统版本代号",
-        )
-        Group(
-            title = "ROOT 补充系统属性",
-            footer = "以下为白名单内的只读属性，不展示完整属性转储，也不会执行 setprop 或其他写入操作。"
-        ) {
-            var displayed = 0
-            extraProperties.forEach { (key, label) ->
-                val value = rootProperties[key]
-                if (!value.isNullOrBlank()) {
-                    StatusItem(label, value)
-                    displayed++
-                }
-            }
-            if (displayed == 0) {
-                Item { Text(text = "已获得 ROOT 授权，但系统没有返回额外属性；基础信息仍可正常查看。", kind = CouiTextKind.ItemSummary) }
+        } else {
+            Item(
+                onClick = controller::requestRootAuthorization,
+                enabled = !controller.isCheckingRoot,
+                summary = {
+                    Text(
+                        text = if (controller.isCheckingRoot) "正在等待管理器授权…" else "点击后由本机 ROOT 管理器弹出授权提示",
+                        kind = CouiTextKind.ItemSummary,
+                    )
+                },
+                trailing = {
+                    Text(
+                        text = if (controller.isCheckingRoot) "请求中…" else "授权",
+                        kind = CouiTextKind.ItemTitle,
+                    )
+                },
+            ) {
+                Text(text = "ROOT 授权", kind = CouiTextKind.ItemTitle)
             }
         }
     }
 
-    Group(title = "读取说明") {
-        Item {
-            Text(
-                text = "ROOT 授权由设备上已安装的 Root 管理器控制。PocketBench 只读取设备型号、系统版本和少量白名单系统属性；不会执行写入、改权限、挂载、刷写、删除、调频或清理操作。不同厂商系统可能隐藏部分属性，因此个别项目可能显示“系统未提供”。",
-                kind = CouiTextKind.ItemSummary
-            )
-        }
+    Group(title = "设备信息") {
+        StatusItem("机型", Build.MODEL.orEmpty().ifBlank { "系统未提供" })
+        StatusItem("系统版本", Build.DISPLAY.orEmpty().ifBlank { Build.VERSION.RELEASE.orEmpty().ifBlank { "系统未提供" } })
+        StatusItem("KSU 版本", controller.rootKsuVersion)
     }
 }
 
