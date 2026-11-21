@@ -92,7 +92,7 @@ class DeviceMonitorController(context: Context) {
                 } else {
                     val identity = authProcess.inputStream.bufferedReader().use { it.readText() }.trim()
                     granted = authProcess.exitValue() == 0 &&
-                        Regex("""(^|\\s)uid=0(?:\\(|\\s|$)""").containsMatchIn(identity)
+                        Regex("""(^|\s)uid=0(?:\(|\s|$)""").containsMatchIn(identity)
                     if (!granted) {
                         "未获得 UID 0 授权"
                     } else {
