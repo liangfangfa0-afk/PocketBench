@@ -81,7 +81,7 @@ fun PocketBenchApp(
     val uriHandler = LocalUriHandler.current
     val pageColors = CouiPageDefaults.themeColors()
     val bottomRenderer = remember { CouiFloatingRenderer() }
-    val isSubPage = currentPage in setOf("live", "device", "opensource", "coloros", "harmony", "originos")
+    val isSubPage = currentPage in setOf("live", "device", "opensource", "coloros", "harmony", "originos", "adaptationHub", "adaptation_coloros", "adaptation_harmony", "adaptation_originos", "adaptation_xiaomi", "adaptation_honor", "adaptation_apple")
 
     fun navigate(page: String) {
         if (page != "home" && page != "settings") returnPage = currentPage
