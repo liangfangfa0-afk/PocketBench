@@ -92,9 +92,9 @@ fun PocketBenchApp(
 
     fun goBack() {
         navigationForward = false
-        currentPage = if (returnPage == "settings") "settings" else "home"
+        currentPage = returnPage
         selectedTab = if (currentPage == "settings") 1 else 0
-        returnPage = "home"
+        returnPage = if (currentPage == "adaptationHub") "home" else "home"
     }
 
     BackHandler(enabled = isSubPage) { goBack() }
@@ -113,6 +113,13 @@ fun PocketBenchApp(
                             "coloros" -> "ColorOS 17 适配"
                             "harmony" -> "HarmonyOS 7 适配"
                             "originos" -> "OriginOS 7 适配"
+                            "adaptationHub" -> "各厂商新系统适配名单"
+                            "adaptation_coloros" -> "ColorOS 17"
+                            "adaptation_harmony" -> "HarmonyOS 7"
+                            "adaptation_originos" -> "OriginOS 7"
+                            "adaptation_xiaomi" -> "Xiaomi HyperOS 4"
+                            "adaptation_honor" -> "荣耀 MagicOS 11"
+                            "adaptation_apple" -> "Apple iOS 27"
                             "settings" -> "设置"
                             else -> "PocketBench"
                         },
@@ -190,6 +197,13 @@ fun PocketBenchApp(
                     "coloros" -> ColorOsAdaptationPage(onOpenOfficial = { uriHandler.openUri("https://www.coloros.com/upgrade/") })
                     "harmony" -> HarmonyAdaptationPage(onOpenOfficial = { uriHandler.openUri("https://consumer.huawei.com/cn/support/harmonyos/models-7/") })
                     "originos" -> OriginOsAdaptationPage(onOpenOfficial = { uriHandler.openUri("https://www.vivo.com.cn/originos/") })
+                    "adaptationHub" -> AdaptationHubPage(onOpenSystem = { navigate(it) })
+                    "adaptation_coloros" -> ColorOsAdaptationPage(onOpenOfficial = { uriHandler.openUri("https://www.coloros.com/upgrade/") })
+                    "adaptation_harmony" -> HarmonyAdaptationPage(onOpenOfficial = { uriHandler.openUri("https://consumer.huawei.com/cn/support/harmonyos/models-7/") })
+                    "adaptation_originos" -> OriginOsAdaptationPage(onOpenOfficial = { uriHandler.openUri("https://www.vivo.com.cn/originos/") })
+                    "adaptation_xiaomi" -> RemoteAdaptationPage(section = "xiaomi", title = "Xiaomi HyperOS 4", onOpenOfficial = { uriHandler.openUri("https://os.mi.com/") })
+                    "adaptation_honor" -> RemoteAdaptationPage(section = "honor", title = "荣耀 MagicOS 11", onOpenOfficial = { uriHandler.openUri("https://www.honor.com/cn/magic-os/") })
+                    "adaptation_apple" -> RemoteAdaptationPage(section = "apple", title = "Apple iOS 27", onOpenOfficial = { uriHandler.openUri("https://support.apple.com/zh-cn/guide/iphone/iphe3fa5df43/27/ios/27") })
                     "settings" -> SettingsPage(
                         controller = controller,
                         onOpenNotificationSettings = onOpenNotificationSettings,
@@ -206,6 +220,7 @@ fun PocketBenchApp(
                         onOpenColorOs = { navigate("coloros") },
                         onOpenHarmony = { navigate("harmony") },
                         onOpenOriginOs = { navigate("originos") },
+                        onOpenAdaptationHub = { navigate("adaptationHub") },
                     )
                 }
                 Spacer(Modifier.height(16.dp))
@@ -217,7 +232,7 @@ fun PocketBenchApp(
         visible = announcementVisible,
         onDismissRequest = { announcementVisible = false },
         title = "PocketBench 更新公告",
-        message = "1.0.0.13\n\n新增 OriginOS 7 官方升级计划，支持按批次查看 vivo 与 iQOO 机型；适配名单逐机型独立换行显示。\n\n适配批次以厂商公开计划为准，计划启动日期不代表全量推送完成。",
+        message = "1.0.0.14\n\n新增「各厂商新系统适配名单」独立入口，汇总 ColorOS、HarmonyOS、OriginOS、Xiaomi HyperOS、荣耀 MagicOS 与 Apple iOS 官方适配信息。每个机型单独一行，并区分测试计划、升级批次与兼容名单。",
         confirmAction = CouiDialogAction(text = "知道了", onClick = { announcementVisible = false }),
     )
 }
@@ -254,6 +269,7 @@ private fun HomePage(
     onOpenColorOs: () -> Unit,
     onOpenHarmony: () -> Unit,
     onOpenOriginOs: () -> Unit,
+    onOpenAdaptationHub: () -> Unit,
 ) {
     Group(title = "PocketBench", footer = "轻量、清晰，尽量使用 Android 系统能力。") {
         Item(
@@ -284,15 +300,31 @@ private fun HomePage(
     }
 
     Group(title = "系统适配") {
-        Item(onClick = onOpenColorOs, summary = { Text(text = "查看 ColorOS 17 官方升级批次、机型与计划节点", kind = CouiTextKind.ItemSummary) }) {
-            Text(text = "ColorOS 17 机型适配", kind = CouiTextKind.ItemTitle)
+        Item(onClick = onOpenAdaptationHub, summary = { Text(text = "集中查看各厂商最新系统版本、官方适配名单与升级批次", kind = CouiTextKind.ItemSummary) }) {
+            Text(text = "各厂商新系统适配名单", kind = CouiTextKind.ItemTitle)
         }
-        Item(onClick = onOpenHarmony, summary = { Text(text = "查看 HarmonyOS 7 正式版与公测版支持机型", kind = CouiTextKind.ItemSummary) }) {
-            Text(text = "鸿蒙机型适配", kind = CouiTextKind.ItemTitle)
-        }
-        Item(onClick = onOpenOriginOs, summary = { Text(text = "查看 OriginOS 7 官方升级批次、vivo 与 iQOO 机型", kind = CouiTextKind.ItemSummary) }) {
-            Text(text = "OriginOS 7 机型适配", kind = CouiTextKind.ItemTitle)
-        }
+    }
+}
+
+@Composable
+private fun AdaptationHubPage(onOpenSystem: (String) -> Unit) {
+    Group(title = "OPPO") {
+        Item(onClick = { onOpenSystem("adaptation_coloros") }, summary = { Text(text = "ColorOS 17 · 官方升级计划", kind = CouiTextKind.ItemSummary) }) { Text(text = "ColorOS 17", kind = CouiTextKind.ItemTitle) }
+    }
+    Group(title = "华为") {
+        Item(onClick = { onOpenSystem("adaptation_harmony") }, summary = { Text(text = "HarmonyOS 7 · 正式版与公测版支持机型", kind = CouiTextKind.ItemSummary) }) { Text(text = "HarmonyOS 7", kind = CouiTextKind.ItemTitle) }
+    }
+    Group(title = "vivo") {
+        Item(onClick = { onOpenSystem("adaptation_originos") }, summary = { Text(text = "OriginOS 7 · vivo 与 iQOO 官方升级计划", kind = CouiTextKind.ItemSummary) }) { Text(text = "OriginOS 7", kind = CouiTextKind.ItemTitle) }
+    }
+    Group(title = "小米") {
+        Item(onClick = { onOpenSystem("adaptation_xiaomi") }, summary = { Text(text = "Xiaomi HyperOS 4 · 官方 Beta 推送计划", kind = CouiTextKind.ItemSummary) }) { Text(text = "Xiaomi HyperOS 4", kind = CouiTextKind.ItemTitle) }
+    }
+    Group(title = "荣耀") {
+        Item(onClick = { onOpenSystem("adaptation_honor") }, summary = { Text(text = "荣耀 MagicOS 11 · 官方升级计划", kind = CouiTextKind.ItemSummary) }) { Text(text = "荣耀 MagicOS 11", kind = CouiTextKind.ItemTitle) }
+    }
+    Group(title = "Apple") {
+        Item(onClick = { onOpenSystem("adaptation_apple") }, summary = { Text(text = "iOS 27 · Apple 官方兼容机型名单", kind = CouiTextKind.ItemSummary) }) { Text(text = "iOS 27", kind = CouiTextKind.ItemTitle) }
     }
 }
 
@@ -587,7 +619,7 @@ private fun RemoteAdaptationPage(
             val latest = withContext(Dispatchers.IO) { fetchAdaptationJson() }
             val parsed = JSONObject(latest)
             require(parsed.optInt("schema_version") == 1) { "不支持的数据格式版本" }
-            require(parsed.has("coloros") && parsed.has("harmony") && parsed.has("originos")) { "配置缺少必要字段" }
+            require(listOf("coloros", "harmony", "originos", "xiaomi", "honor", "apple").all(parsed::has)) { "配置缺少必要字段" }
             rawJson = latest
             preferences.edit().putString("adaptation_json", latest).apply()
         } catch (error: Exception) {
@@ -687,6 +719,42 @@ private fun RemoteAdaptationPage(
         for (noteIndex in 0 until notes.length()) {
             Item { Text(text = notes.optString(noteIndex), kind = CouiTextKind.ItemSummary) }
         }
+    } else if (section == "xiaomi" || section == "honor") {
+        val vendor = config.optJSONObject(section) ?: JSONObject()
+        Group(title = vendor.optString("version"), footer = vendor.optString("region")) {
+            val schedule = vendor.optJSONArray("schedule") ?: JSONArray()
+            for (index in 0 until schedule.length()) {
+                val entry = schedule.optJSONObject(index) ?: continue
+                Group(title = entry.optString("period")) {
+                    val category = entry.optString("category")
+                    if (category.isNotBlank()) Item { Text(text = category, kind = CouiTextKind.ItemTitle) }
+                    val models = entry.optJSONArray("models") ?: JSONArray()
+                    for (modelIndex in 0 until models.length()) {
+                        val model = models.optString(modelIndex)
+                        if (model.isNotBlank()) Item { Text(text = model, kind = CouiTextKind.ItemSummary) }
+                    }
+                }
+            }
+        }
+        val notes = vendor.optJSONArray("notes") ?: JSONArray()
+        for (index in 0 until notes.length()) Item { Text(text = notes.optString(index), kind = CouiTextKind.ItemSummary) }
+    } else if (section == "apple") {
+        val apple = config.optJSONObject("apple") ?: JSONObject()
+        Group(title = apple.optString("version"), footer = apple.optString("region")) {
+            val categories = apple.optJSONArray("categories") ?: JSONArray()
+            for (index in 0 until categories.length()) {
+                val category = categories.optJSONObject(index) ?: continue
+                Group(title = category.optString("name")) {
+                    val models = category.optJSONArray("models") ?: JSONArray()
+                    for (modelIndex in 0 until models.length()) {
+                        val model = models.optString(modelIndex)
+                        if (model.isNotBlank()) Item { Text(text = model, kind = CouiTextKind.ItemSummary) }
+                    }
+                }
+            }
+        }
+        val notes = apple.optJSONArray("notes") ?: JSONArray()
+        for (index in 0 until notes.length()) Item { Text(text = notes.optString(index), kind = CouiTextKind.ItemSummary) }
     } else {
         val harmony = config.optJSONObject("harmony") ?: JSONObject()
         Group(title = "HarmonyOS 官方时间信息", footer = harmony.optString("region")) {

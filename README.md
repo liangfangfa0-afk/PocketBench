@@ -1,6 +1,6 @@
 # PocketBench
 
-PocketBench 是一个专注于 Android 实时动态（Live Updates）的 Compose 应用，提供可编辑的通知标题、胶囊短文本与进度，并通过同一通知 ID 实时更新。当前版本：1.0.0.11。
+PocketBench 是一个专注于 Android 实时动态（Live Updates）的 Compose 应用，提供可编辑的通知标题、胶囊短文本与进度，并通过同一通知 ID 实时更新。当前版本：1.0.0.14。
 
 ## 功能
 
@@ -14,7 +14,7 @@ PocketBench 是一个专注于 Android 实时动态（Live Updates）的 Compose
 - 新增电池与温度设备监测页，读取电量、电池温度、电压、CPU 核心数和 Android 系统热状态。
 - 可选 Root 授权仅进行 `su -c id` 只读身份确认；不执行写入、改权限、挂载、刷写、删除或调频操作。
 - 首页仅展示工具入口；实况通知使用说明归入实况通知子页面。
-- 新增 ColorOS 17 与 HarmonyOS 7 官方机型适配页面，按厂商公开名单和计划批次展示。
+- 新增「各厂商新系统适配名单」独立入口，汇总 ColorOS、HarmonyOS、OriginOS、Xiaomi HyperOS、荣耀 MagicOS 与 Apple iOS 官方适配信息；各机型逐行展示，并区分 Beta、内测、正式升级计划与兼容名单。
 - 设置页新增项目开源与 COUI-Kit 官方依赖/组件示例说明；公告使用 COUI 原生 Dialog 弹窗。
 
 ## 项目信息
@@ -39,6 +39,6 @@ APP 从 `https://raw.githubusercontent.com/liangfangfa0-afk/PocketBench/main/dat
 ## 官方适配信息来源
 
 - [ColorOS 17 官方升级计划](https://www.coloros.com/upgrade/)
-- [华为 HarmonyOS 7 官方支持机型](https://consumer.huawei.com/cn/support/harmonyos/models-7/)
+- [华为 HarmonyOS 7 官方支持机型](https://consumer.huawei.com/cn/support/harmonyos/models-7/)\n- [vivo OriginOS 官方升级计划](https://www.vivo.com.cn/originos/)\n- [小米 Xiaomi HyperOS 官方推送计划](https://os.mi.com/)\n- [荣耀 MagicOS 官方升级计划](https://www.honor.com/cn/magic-os/)\n- [Apple iOS 27 官方兼容机型](https://support.apple.com/zh-cn/guide/iphone/iphe3fa5df43/27/ios/27)
 
 适配名单与计划节点按公开信息展示。ColorOS 计划启动日期不代表全量推送完成；HarmonyOS 官方未公布整体适配百分比，PocketBench 不自行推算或虚构完成率。
