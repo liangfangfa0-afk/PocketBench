@@ -30,6 +30,8 @@ class DeviceMonitorController(context: Context) {
     var thermalStatus by mutableStateOf("系统未提供热状态")
         private set
     var rootGranted by mutableStateOf(false)
+    var rootKsuVersion by mutableStateOf("暂不可用")
+        private set
         private set
     var isCheckingRoot by mutableStateOf(false)
         private set
