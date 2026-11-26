@@ -1,0 +1,427 @@
+{
+  "schema_version": 1,
+  "config_version": "1.1.6",
+  "updated_at": "2026-11-26",
+  "categories": [
+    {
+      "id": "1",
+      "name": "ROOT 管理器"
+    },
+    {
+      "id": "2",
+      "name": "KSU 模块"
+    },
+    {
+      "id": "3",
+      "name": "LSPosed 模块"
+    },
+    {
+      "id": "4",
+      "name": "使用须知"
+    },
+    {
+      "id": "5",
+      "name": "待添加资源"
+    },
+    {
+      "id": "6",
+      "name": "待添加资源"
+    },
+    {
+      "id": "7",
+      "name": "待添加资源"
+    },
+    {
+      "id": "8",
+      "name": "待添加资源"
+    },
+    {
+      "id": "9",
+      "name": "待添加资源"
+    },
+    {
+      "id": "10",
+      "name": "待添加资源"
+    },
+    {
+      "id": "11",
+      "name": "待添加资源"
+    },
+    {
+      "id": "12",
+      "name": "待添加资源"
+    },
+    {
+      "id": "13",
+      "name": "待添加资源"
+    },
+    {
+      "id": "14",
+      "name": "待添加资源"
+    },
+    {
+      "id": "15",
+      "name": "待添加资源"
+    },
+    {
+      "id": "16",
+      "name": "待添加资源"
+    },
+    {
+      "id": "17",
+      "name": "待添加资源"
+    },
+    {
+      "id": "18",
+      "name": "待添加资源"
+    },
+    {
+      "id": "19",
+      "name": "待添加资源"
+    },
+    {
+      "id": "20",
+      "name": "待添加资源"
+    },
+    {
+      "id": "21",
+      "name": "待添加资源"
+    },
+    {
+      "id": "22",
+      "name": "待添加资源"
+    },
+    {
+      "id": "23",
+      "name": "待添加资源"
+    },
+    {
+      "id": "24",
+      "name": "待添加资源"
+    },
+    {
+      "id": "25",
+      "name": "待添加资源"
+    },
+    {
+      "id": "26",
+      "name": "待添加资源"
+    },
+    {
+      "id": "27",
+      "name": "待添加资源"
+    }
+  ],
+  "resources": [
+    {
+      "id": "ksu",
+      "category_id": "1",
+      "name": "KSU 管理器",
+      "official_url": "https://github.com/tiann/KernelSU/releases/latest",
+      "description": "GKI 内核的原版 KernelSU 管理器，随官方 Release 发布；适用于内核 5.10 以上的机型，旧内核需要自行编译。",
+      "links": [
+        {
+          "label": "GitHub 仓库",
+          "url": "https://github.com/tiann/KernelSU"
+        },
+        {
+          "label": "Telegram 频道",
+          "url": "https://t.me/KernelSU"
+        }
+      ],
+      "info": [
+        {
+          "label": "版本",
+          "value": "v3.3.1"
+        },
+        {
+          "label": "适用内核",
+          "value": "GKI 5.10+（4.14+ 需自行编译内核）"
+        },
+        {
+          "label": "Android 版本",
+          "value": "Android 12+"
+        }
+      ]
+    },
+    {
+      "id": "msk",
+      "category_id": "1",
+      "name": "MSK 管理器",
+      "official_url": "https://github.com/topjohnwu/Magisk/releases/latest",
+      "description": "面向 4.x 内核及更早机型的老牌管理器，即 Magisk 面具；官方仅通过 GitHub 发布，没有设立 Telegram 频道。",
+      "links": [
+        {
+          "label": "GitHub 仓库",
+          "url": "https://github.com/topjohnwu/Magisk"
+        }
+      ],
+      "info": [
+        {
+          "label": "版本",
+          "value": "v31.1"
+        },
+        {
+          "label": "适用内核",
+          "value": "4.x 及更早（非 GKI）"
+        },
+        {
+          "label": "Android 版本",
+          "value": "Android 6.0+"
+        }
+      ]
+    },
+    {
+      "id": "apatch",
+      "category_id": "1",
+      "name": "APatch 管理器",
+      "info": [
+        {
+          "label": "版本",
+          "value": "11282"
+        },
+        {
+          "label": "适用内核",
+          "value": "3.18 - 6.12"
+        },
+        {
+          "label": "架构",
+          "value": "仅 ARM64"
+        }
+      ],
+      "official_url": "https://github.com/bmax121/APatch/releases/latest",
+      "links": [
+        {
+          "label": "GitHub 仓库",
+          "url": "https://github.com/bmax121/APatch"
+        },
+        {
+          "label": "Telegram 频道",
+          "url": "https://t.me/APatchChannel"
+        }
+      ],
+      "description": "基于 KernelPatch 的内核级 ROOT 方案，支持 APM 模块与 KPM 内核模块；只支持 ARM64 设备。"
+    },
+    {
+      "id": "ksunext",
+      "category_id": "1",
+      "name": "KernelSU Next 管理器",
+      "info": [
+        {
+          "label": "版本",
+          "value": "v3.4.2"
+        },
+        {
+          "label": "适用内核",
+          "value": "5.10+ GKI；4.19 - 5.4 需内置驱动"
+        },
+        {
+          "label": "旧内核",
+          "value": "4.14 以下需自行编译，3.18 起为实验性支持"
+        }
+      ],
+      "official_url": "https://github.com/KernelSU-Next/KernelSU-Next/releases/latest",
+      "links": [
+        {
+          "label": "GitHub 仓库",
+          "url": "https://github.com/KernelSU-Next/KernelSU-Next"
+        }
+      ],
+      "description": "基于 KernelSU 的内核级 ROOT 方案；GKI 2.0 可直接使用预制镜像与 LKM，GKI 1.0 需要把驱动内置到内核。官方没有设立 Telegram 频道。"
+    },
+    {
+      "id": "yuehong-hide",
+      "category_id": "2",
+      "name": "月虹一键隐藏",
+      "description": "支持 KernelSU、APatch、Magisk 全分支的环境隐藏模块，也支持越狱、免解等特殊 ROOT 方式；内置教程，官网自动提供最新版。",
+      "info": [
+        {
+          "label": "版本",
+          "value": "5.5.6（以官网最新版为准）"
+        },
+        {
+          "label": "适用环境",
+          "value": "KernelSU / APatch / Magisk 全分支"
+        },
+        {
+          "label": "特殊 ROOT",
+          "value": "支持越狱、免解"
+        },
+        {
+          "label": "作者",
+          "value": "月虹yh"
+        },
+        {
+          "label": "提供者",
+          "value": "原作者官方渠道"
+        },
+        {
+          "label": "开源情况",
+          "value": "模块本体未单独开源，GitHub 仅作者主页"
+        }
+      ],
+      "links": [
+        {
+          "label": "官方网站",
+          "url": "https://yhyun.asia/"
+        },
+        {
+          "label": "酷安发布帖",
+          "url": "https://www.coolapk.com/feed/68653508"
+        },
+        {
+          "label": "作者 GitHub 主页",
+          "url": "https://github.com/qq2070006042-create"
+        }
+      ]
+    },
+    {
+      "id": "lsposed",
+      "category_id": "2",
+      "name": "LSPosed",
+      "official_url": "https://github.com/LSPosed/LSPosed/releases/latest",
+      "description": "Xposed 运行时钩子框架，通过 Zygisk 或 Riru 加载；官方 Release 停在 v1.9.2，支持 Android 8.1–14。",
+      "info": [
+        {
+          "label": "版本",
+          "value": "v1.9.2（官方最后发行）"
+        },
+        {
+          "label": "适用系统",
+          "value": "Android 8.1 - 14"
+        },
+        {
+          "label": "加载方式",
+          "value": "Zygisk / Riru"
+        },
+        {
+          "label": "作者",
+          "value": "LSPosed 团队"
+        },
+        {
+          "label": "提供者",
+          "value": "原作者官方渠道"
+        }
+      ],
+      "links": [
+        {
+          "label": "GitHub 仓库",
+          "url": "https://github.com/LSPosed/LSPosed"
+        },
+        {
+          "label": "官方网站",
+          "url": "https://lsposed.org"
+        },
+        {
+          "label": "Telegram 频道",
+          "url": "https://t.me/LSPosed"
+        }
+      ]
+    },
+    {
+      "id": "zygisknext",
+      "category_id": "2",
+      "name": "Zygisk Next",
+      "official_url": "https://github.com/Dr-TSNG/ZygiskNext/releases/latest",
+      "description": "zynext，独立的 Zygisk 实现：给 KernelSU 提供 Zygisk API，也可在关闭内置 Zygisk 的 Magisk 上替代使用。",
+      "info": [
+        {
+          "label": "版本",
+          "value": "v1.5.3"
+        },
+        {
+          "label": "KernelSU",
+          "value": "管理器版本不低于 11575，内核版本不低于 10940"
+        },
+        {
+          "label": "Magisk",
+          "value": "需关闭内置 Zygisk"
+        },
+        {
+          "label": "作者",
+          "value": "Dr-TSNG"
+        },
+        {
+          "label": "提供者",
+          "value": "原作者官方渠道"
+        }
+      ],
+      "links": [
+        {
+          "label": "GitHub 仓库",
+          "url": "https://github.com/Dr-TSNG/ZygiskNext"
+        }
+      ]
+    },
+    {
+      "id": "vector",
+      "category_id": "2",
+      "name": "Vector（LSPosed 分支）",
+      "official_url": "https://github.com/JingMatrix/Vector/releases/latest",
+      "description": "原 JingMatrix/LSPosed，现更名 Vector。支持 Android 8.1 到 17 Beta，仍在活跃维护，新系统上可替代停更的原版 LSPosed。",
+      "info": [
+        {
+          "label": "版本",
+          "value": "v2.2（GitHub 最新稳定版）"
+        },
+        {
+          "label": "适用系统",
+          "value": "Android 8.1 - 17 Beta"
+        },
+        {
+          "label": "作者",
+          "value": "JingMatrix"
+        },
+        {
+          "label": "提供者",
+          "value": "原作者官方渠道"
+        }
+      ],
+      "links": [
+        {
+          "label": "GitHub 仓库",
+          "url": "https://github.com/JingMatrix/Vector"
+        }
+      ]
+    },
+    {
+      "id": "antidizzy",
+      "category_id": "2",
+      "name": "晕动舒缓显示补全（欧加通用）",
+      "official_url": "https://github.com/MieAiiii/oplus-antidizzy-module/releases/latest",
+      "description": "给缺少「晕动舒缓显示」的 OPPO / 一加 / realme ColorOS 16 机型补全原生防晕动圆点；圆点由原厂 AntiDizzyView 绘制，模块只解锁开关、用系统传感器补位，并加边缘抗锯齿，不改分区。",
+      "info": [
+        {
+          "label": "版本",
+          "value": "v7.5"
+        },
+        {
+          "label": "适用系统",
+          "value": "ColorOS 16（Android 16）主力适配；ColorOS 15 及更早未验证"
+        },
+        {
+          "label": "依赖",
+          "value": "KernelSU + LSPosed"
+        },
+        {
+          "label": "LSPosed 作用域",
+          "value": "只勾系统框架"
+        },
+        {
+          "label": "作者",
+          "value": "MieAiiii"
+        },
+        {
+          "label": "提供者",
+          "value": "原作者官方渠道"
+        }
+      ],
+      "links": [
+        {
+          "label": "GitHub 仓库",
+          "url": "https://github.com/MieAiiii/oplus-antidizzy-module"
+        }
+      ]
+    }
+  ]
+}

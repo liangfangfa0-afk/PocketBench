@@ -1,0 +1,936 @@
+{
+  "schema_version": 1,
+  "config_version": "2026.11.23.1",
+  "updated_at": "2026-11-23",
+  "description": "厂商公开升级计划与支持机型数据。官方未公布的时间不作推测。",
+  "sources": [
+    {
+      "name": "ColorOS 17 中国官网升级计划",
+      "url": "https://www.coloros.com/upgrade/",
+      "checked_at": "2026-11-21"
+    },
+    {
+      "name": "HarmonyOS 7 华为官网支持机型",
+      "url": "https://consumer.huawei.com/cn/support/harmonyos/models-7/",
+      "checked_at": "2026-11-21"
+    },
+    {
+      "name": "HarmonyOS 6 华为官网支持机型",
+      "url": "https://consumer.huawei.com/cn/support/harmonyos/models-6/",
+      "checked_at": "2026-11-21"
+    },
+    {
+      "name": "HarmonyOS 6 华为官网产品页（首批公测计划）",
+      "url": "https://consumer.huawei.com/cn/harmonyos-6/",
+      "checked_at": "2026-11-21"
+    },
+    {
+      "name": "OriginOS 7 vivo 官方升级计划",
+      "url": "https://www.vivo.com.cn/originos/",
+      "checked_at": "2026-11-21"
+    },
+    {
+      "name": "小米 Xiaomi HyperOS 4 官方 Beta 推送计划",
+      "url": "https://os.mi.com/",
+      "checked_at": "2026-11-21"
+    },
+    {
+      "name": "荣耀 MagicOS 11 官方升级计划",
+      "url": "https://www.honor.com/cn/magic-os/",
+      "checked_at": "2026-11-21"
+    },
+    {
+      "name": "Apple iOS 27 官方兼容机型",
+      "url": "https://support.apple.com/zh-cn/guide/iphone/iphe3fa5df43/27/ios/27",
+      "checked_at": "2026-11-21"
+    },
+    {
+      "name": "ColorOS 16 中国大陆正式版升级计划（官方公布信息整理）",
+      "url": "https://www.ithome.com/0/889/569.htm",
+      "checked_at": "2026-11-23"
+    },
+    {
+      "name": "ColorOS 16 中国大陆实际推送批次（官方公告信息整理）",
+      "url": "https://www.ithome.com/0/894/407.htm",
+      "checked_at": "2026-11-23"
+    },
+    {
+      "name": "ColorOS 16 中国大陆 2026 年第一季度推送记录",
+      "url": "https://www.ithome.com/0/911/730.htm",
+      "checked_at": "2026-11-23"
+    }
+  ],
+  "coloros": [
+    {
+      "version": "ColorOS 16",
+      "region": "中国大陆版 · OPPO / 一加官方正式版升级安排；不包含海外地区及国际版机型",
+      "schedule": [
+        {
+          "period": "2025 年 10 月 30 日",
+          "models": [
+            "OPPO Find N5",
+            "OPPO Find N5 卫星通信版",
+            "OPPO Find X8 Ultra",
+            "OPPO Find X8 Ultra 卫星通信版",
+            "OPPO Find X8 Pro",
+            "OPPO Find X8 Pro 卫星通信版",
+            "OPPO Find X8s+",
+            "OPPO Find X8s",
+            "OPPO Find X8",
+            "一加 13",
+            "一加 13T"
+          ]
+        },
+        {
+          "period": "2025 年 11 月",
+          "models": [
+            "OPPO Find N3",
+            "OPPO Find N3 典藏版",
+            "OPPO Find N3 Flip",
+            "OPPO Find X7 Ultra",
+            "OPPO Find X7 Ultra 卫星通信版",
+            "OPPO Find X7",
+            "OPPO Reno14 Pro",
+            "OPPO Reno14",
+            "OPPO Reno13 Pro",
+            "OPPO Reno13",
+            "OPPO Pad 4 Pro",
+            "OPPO Pad 3 Pro",
+            "一加 12",
+            "一加 Ace 5 Pro",
+            "一加 Ace 5",
+            "一加 Ace 5 至尊版",
+            "一加 Ace 5 竞速版",
+            "一加 Ace 3 Pro",
+            "一加 Ace 3",
+            "一加 Ace 3 原神刻晴定制机",
+            "一加 Ace 3V",
+            "一加平板 2 Pro",
+            "一加平板 Pro"
+          ]
+        },
+        {
+          "period": "2025 年 12 月",
+          "models": [
+            "OPPO Find N2",
+            "OPPO Find N2 Flip",
+            "OPPO Find X6 Pro",
+            "OPPO Find X6",
+            "OPPO K13 Turbo Pro",
+            "OPPO K13 Turbo",
+            "一加 11",
+            "一加 11 木星岩定制版",
+            "一加 Ace 2 Pro",
+            "一加 Ace 2 Pro 原神派蒙主题礼盒",
+            "一加 Ace 2",
+            "一加 Ace 2 原神定制礼盒",
+            "一加 Ace 2V"
+          ]
+        },
+        {
+          "period": "2026 年第一季度",
+          "models": [
+            "OPPO Find X5 Pro",
+            "OPPO Find X5 Pro 天玑版",
+            "OPPO Reno12 Pro",
+            "OPPO Reno12",
+            "OPPO Reno11 Pro",
+            "OPPO Reno11",
+            "OPPO Reno10 Pro+",
+            "OPPO Reno9 Pro+",
+            "OPPO K13s",
+            "OPPO K13x",
+            "OPPO K12",
+            "OPPO K12 Plus",
+            "OPPO K12s",
+            "OPPO K12x",
+            "OPPO Pad 3",
+            "OPPO Pad 2",
+            "OPPO Pad SE",
+            "一加 10 Pro",
+            "一加平板"
+          ]
+        }
+      ],
+      "actual": [
+        {
+          "period": "2025 年 10 月 30 日 · 首批正式版尝鲜",
+          "models": [
+            "OPPO Find N5",
+            "OPPO Find N5 卫星通信版",
+            "OPPO Find X8 Ultra",
+            "OPPO Find X8 Ultra 卫星通信版",
+            "OPPO Find X8 Pro",
+            "OPPO Find X8 Pro 卫星通信版",
+            "OPPO Find X8s+",
+            "OPPO Find X8s",
+            "OPPO Find X8",
+            "一加 13",
+            "一加 13T"
+          ]
+        },
+        {
+          "period": "2025 年 11 月 10 日",
+          "models": [
+            "OPPO Pad 4 Pro",
+            "一加 Ace 5 Pro",
+            "一加 Ace 5",
+            "一加 Ace 5 至尊版",
+            "一加 Ace 5 竞速版",
+            "一加平板 2 Pro"
+          ]
+        },
+        {
+          "period": "2025 年 11 月 11 日",
+          "models": [
+            "OPPO Find N3",
+            "OPPO Find N3 典藏版",
+            "OPPO Find N3 Flip",
+            "OPPO Find X7 Ultra",
+            "OPPO Find X7 Ultra 卫星通信版",
+            "OPPO Find X7",
+            "OPPO Pad 3 Pro",
+            "一加 12",
+            "一加平板 Pro"
+          ]
+        },
+        {
+          "period": "2025 年 11 月 28 日",
+          "models": [
+            "一加 Ace 3 Pro",
+            "一加 Ace 3",
+            "一加 Ace 3 原神刻晴定制版",
+            "一加 Ace 3V"
+          ]
+        },
+        {
+          "period": "2025 年 11 月 30 日",
+          "models": [
+            "OPPO Reno14 Pro",
+            "OPPO Reno14",
+            "OPPO Reno13 Pro",
+            "OPPO Reno13"
+          ]
+        },
+        {
+          "period": "2026 年 1 月 9 日",
+          "models": [
+            "OPPO Pad 3",
+            "一加平板"
+          ]
+        },
+        {
+          "period": "2026 年 1 月 13 日",
+          "models": [
+            "OPPO Reno12 Pro",
+            "OPPO K12s",
+            "OPPO Reno12",
+            "OPPO K12x",
+            "OPPO K12",
+            "OPPO Pad 2",
+            "OPPO K12 Plus"
+          ]
+        },
+        {
+          "period": "2026 年 1 月 20 日",
+          "models": [
+            "OPPO Reno11 Pro",
+            "OPPO Reno11"
+          ]
+        },
+        {
+          "period": "2026 年 1 月 22 日",
+          "models": [
+            "OPPO Reno10 Pro+"
+          ]
+        },
+        {
+          "period": "2026 年 1 月 27 日",
+          "models": [
+            "OPPO Reno9 Pro+"
+          ]
+        },
+        {
+          "period": "2026 年 2 月 5 日",
+          "models": [
+            "OPPO Find X5 Pro",
+            "OPPO Find X5 Pro 天玑版",
+            "一加 10 Pro"
+          ]
+        },
+        {
+          "period": "2026 年 2 月 27 日",
+          "models": [
+            "OPPO Pad SE"
+          ]
+        }
+      ],
+      "notes": [
+        "升级计划按中国大陆官方公布的机型与批次整理；计划日期代表开始推送时间，不代表所有用户同日收到。",
+        "实际推送区按可查证的中国大陆正式版推送公告整理，仅列出有明确推送记录的批次；并非逐台设备的实时升级状态。",
+        "本页不引用 OPPO Global 海外升级名单。不同机型批次、运营商及分批推送可能造成实际收到时间差异。"
+      ]
+    },
+    {
+      "version": "ColorOS 17",
+      "region": "ColorOS 中国官网升级计划",
+      "schedule": [
+        {
+          "period": "2026 年 11 月 5 日",
+          "models": [
+            "OPPO Pad 6",
+            "OPPO Pad 6 柔光版",
+            "OPPO Pad 5",
+            "OPPO Pad 5 柔光版",
+            "一加 Ace 5 Pro",
+            "一加 Ace 5",
+            "一加 Ace 5 至尊版",
+            "一加 Ace 5 竞速版",
+            "一加平板 2",
+            "真我 GT7",
+            "真我 GT7 阿斯顿马丁 F1 限量版",
+            "真我 Neo7",
+            "真我 Neo7 不良人限定版",
+            "真我 Neo7 Turbo"
+          ]
+        },
+        {
+          "period": "2026 年 11 月 17 日",
+          "models": [
+            "OPPO Find X7 Ultra",
+            "OPPO Find X7 Ultra 卫星通信版",
+            "OPPO Find X7",
+            "一加 12"
+          ]
+        },
+        {
+          "period": "2026 年 11 月 18 日",
+          "models": [
+            "OPPO Reno15 Pro",
+            "OPPO Reno15",
+            "OPPO Reno15c",
+            "OPPO Pad 4 Pro",
+            "一加平板 2 Pro",
+            "真我 Neo7 SE"
+          ]
+        },
+        {
+          "period": "2026 年 11 月 19 日",
+          "models": [
+            "真我 15 Pro",
+            "真我 15 Pro《权力的游戏》限定版",
+            "真我 15",
+            "真我 15T"
+          ]
+        },
+        {
+          "period": "2026 年 11 月 24 日",
+          "models": [
+            "OPPO Find N3",
+            "OPPO Find N3 典藏版",
+            "OPPO Find N3 Flip",
+            "OPPO Reno14 Pro",
+            "OPPO Reno14",
+            "真我 GT5 Pro"
+          ]
+        },
+        {
+          "period": "2026 年 11 月 26 日",
+          "models": [
+            "OPPO K15 Pro+",
+            "OPPO K15 Pro",
+            "OPPO K15",
+            "一加 Turbo 6",
+            "一加 Turbo 6V"
+          ]
+        },
+        {
+          "period": "2026 年 11 月 30 日",
+          "models": [
+            "OPPO Watch S"
+          ]
+        },
+        {
+          "period": "2026 年 12 月",
+          "models": [
+            "OPPO Find X6 Pro",
+            "OPPO Find X6",
+            "OPPO Reno13 Pro",
+            "OPPO Reno13",
+            "OPPO K13 Turbo Pro",
+            "OPPO K13 Turbo",
+            "OPPO K12s",
+            "OPPO Pad Air5",
+            "OPPO Pad Air5 柔光版",
+            "OPPO Pad 3 Pro",
+            "OPPO Pad 3",
+            "一加 11",
+            "一加 11 木星岩定制版",
+            "一加 Ace 3 Pro",
+            "一加 Ace 3",
+            "一加 Ace 3 原神刻晴定制机",
+            "一加 Ace 3V",
+            "一加 Turbo 6X Pro",
+            "一加 Turbo 6X",
+            "一加平板 Pro",
+            "一加平板",
+            "真我 GT6",
+            "真我 Neo6",
+            "真我 Neo6 SE",
+            "真我 Neo7x",
+            "真我 14 Pro+",
+            "真我 14 Pro",
+            "真我 14",
+            "真我 V70",
+            "真我 V70s"
+          ]
+        },
+        {
+          "period": "2027 年 Q1",
+          "models": [
+            "OPPO Find N2",
+            "OPPO Find N2 Flip"
+          ]
+        }
+      ],
+      "notes": [
+        "中国官网公布的是版本开始推送的时间，不代表全量推送完成。官网说明计划可能因研发进展调整，机型排列不代表推送先后。"
+      ]
+    }
+  ],
+  "harmony": {
+    "versions": [
+      {
+        "version": "HarmonyOS 7",
+        "source": "华为官网支持机型页",
+        "categories": [
+          {
+            "name": "正式版 · 手机",
+            "models": [
+              "HUAWEI Mate 80",
+              "HUAWEI Mate 80 Pro",
+              "HUAWEI Mate 80 Pro Max",
+              "HUAWEI Mate 80 Pro Max 风驰版",
+              "HUAWEI Mate 80 RS 非凡大师",
+              "HUAWEI Mate 70",
+              "HUAWEI Mate 70 Pro",
+              "HUAWEI Mate 70 Pro 优享版",
+              "HUAWEI Mate 70 Pro+",
+              "HUAWEI Mate 70 RS 非凡大师",
+              "HUAWEI Mate 70 Air",
+              "HUAWEI Mate 60",
+              "HUAWEI Mate 60 Pro",
+              "HUAWEI Mate 60 Pro+",
+              "HUAWEI Mate 60 RS 非凡大师",
+              "HUAWEI Mate X7",
+              "HUAWEI Mate X7 典藏版",
+              "HUAWEI Mate X6",
+              "HUAWEI Mate X6 典藏版",
+              "HUAWEI Mate X5",
+              "HUAWEI Mate X5 典藏版",
+              "HUAWEI Mate XTs 非凡大师",
+              "HUAWEI Mate XT 非凡大师",
+              "HUAWEI Pura 90",
+              "HUAWEI Pura 90 Pro",
+              "HUAWEI Pura 90 Pro Max",
+              "HUAWEI Pura 80",
+              "HUAWEI Pura 80 Pro",
+              "HUAWEI Pura 80 Pro+",
+              "HUAWEI Pura 80 Ultra",
+              "HUAWEI Pura 70",
+              "HUAWEI Pura 70 北斗卫星消息版",
+              "HUAWEI Pura 70 Pro",
+              "HUAWEI Pura 70 Pro+",
+              "HUAWEI Pura 70 Ultra",
+              "HUAWEI Pura X Max",
+              "HUAWEI Pura X Max 典藏版",
+              "HUAWEI Pura X",
+              "HUAWEI Pura X 典藏版",
+              "HUAWEI Pocket 2",
+              "HUAWEI Pocket 2 艺术定制版",
+              "HUAWEI Pocket 2 优享版",
+              "HUAWEI nova 16",
+              "HUAWEI nova 16 Pro",
+              "HUAWEI nova 16 Ultra",
+              "HUAWEI nova 16 SE",
+              "HUAWEI nova 16z",
+              "HUAWEI nova 15",
+              "HUAWEI nova 15 Pro",
+              "HUAWEI nova 15 Ultra",
+              "HUAWEI nova 14",
+              "HUAWEI nova 14 Pro",
+              "HUAWEI nova 14 Ultra",
+              "HUAWEI nova 14 活力版",
+              "HUAWEI nova 13",
+              "HUAWEI nova 13 Pro",
+              "HUAWEI nova 12",
+              "HUAWEI nova 12 Pro",
+              "HUAWEI nova 12 Ultra",
+              "HUAWEI nova 12 Ultra 星耀版",
+              "HUAWEI nova Flip S",
+              "HUAWEI nova Flip",
+              "华为畅享 90",
+              "华为畅享 90 Plus",
+              "华为畅享 90m Plus",
+              "华为畅享 90 Pro Max",
+              "华为畅享 70X",
+              "华为畅享 70X 尊享版"
+            ]
+          },
+          {
+            "name": "正式版 · 平板",
+            "models": [
+              "HUAWEI MatePad Edge",
+              "HUAWEI MatePad Pro Max",
+              "HUAWEI MatePad Pro 13.2 英寸 2025",
+              "HUAWEI MatePad Pro 12.2 英寸 2025",
+              "HUAWEI MatePad Pro 12 英寸",
+              "HUAWEI MatePad Mini",
+              "HUAWEI MatePad Air 12 英寸 2026",
+              "HUAWEI MatePad Air 12 英寸 2025",
+              "HUAWEI MatePad 11.5 2026",
+              "HUAWEI MatePad 11.5 S 2025",
+              "HUAWEI MatePad 11.5 S 灵动款 2025",
+              "HUAWEI MatePad 11.5 S 活力版 2025"
+            ]
+          },
+          {
+            "name": "正式版 · PC",
+            "models": [
+              "HUAWEI MateBook Fold 非凡大师 麒麟X90 Plus",
+              "HUAWEI MateBook Fold 非凡大师",
+              "HUAWEI MateBook Pro 麒麟X90 Plus",
+              "HUAWEI MateBook Pro",
+              "HUAWEI MateBook Pro S",
+              "HUAWEI MateBook 14 鸿蒙版"
+            ]
+          },
+          {
+            "name": "正式版 · 穿戴",
+            "models": [
+              "HUAWEI WATCH Ultimate 2 非凡探索",
+              "HUAWEI WATCH ULTIMATE DESIGN 非凡大师 紫金款",
+              "HUAWEI WATCH ULTIMATE DESIGN 非凡大师 尊界定制款",
+              "HUAWEI WATCH GT 7",
+              "HUAWEI WATCH GT 7 Pro",
+              "HUAWEI WATCH GT 6",
+              "HUAWEI WATCH GT 6 Pro",
+              "HUAWEI WATCH GT Runner 2",
+              "HUAWEI WATCH FIT 5",
+              "HUAWEI WATCH FIT 5 Pro"
+            ]
+          },
+          {
+            "name": "公测版 · 平板",
+            "models": [
+              "HUAWEI MatePad Pro 13.2 英寸 2023",
+              "HUAWEI MatePad Pro 13.2 英寸 2023 典藏版",
+              "HUAWEI MatePad Pro 12.2 英寸 2024",
+              "HUAWEI MatePad Pro 11 英寸 2024",
+              "HUAWEI MatePad Air 12 英寸 2024",
+              "HUAWEI MatePad 11.5 S 2024",
+              "HUAWEI MatePad 11.5 S 灵动款 2024"
+            ]
+          }
+        ],
+        "notes": [
+          "华为官方支持机型页只列出可升级尝鲜的正式版/公测版设备，没有为每个机型公布季度推送日程。"
+        ]
+      }
+    ],
+    "timeline": [
+      {
+        "period": "2025 年 Q4（10 月 22 日）",
+        "version": "HarmonyOS 6",
+        "status": "华为官网产品页标注已开启首批公测计划；官网该页面未提供逐机型季度推送表。"
+      },
+      {
+        "period": "2026 年（截至 11 月 21 日）",
+        "version": "HarmonyOS 6.1 / HarmonyOS 7",
+        "status": "按华为官网当前支持机型页展示正式版与公测版设备。官网未公布统一的逐机型季度时间表。"
+      },
+      {
+        "period": "2027 年",
+        "version": "HarmonyOS 7",
+        "status": "截至 2026 年 11 月 21 日，华为官网尚未公布 2027 年季度适配时间表；待官方发布后再补充。"
+      }
+    ],
+    "region": "中国大陆（华为官方页面注明适用地区限制）"
+  },
+  "originos": {
+    "version": "OriginOS 7",
+    "region": "vivo 中国官网升级计划；实际推送以设备收到的版本为准",
+    "schedule": [
+      {
+        "period": "2026 年 10 月 9 日开启",
+        "brands": [
+          {
+            "name": "vivo",
+            "models": [
+              "X Fold6",
+              "X Fold5",
+              "X300 Ultra 卫星通信版",
+              "X300 Ultra",
+              "X300 Pro 卫星通信版",
+              "X300 Pro",
+              "X300s",
+              "X300",
+              "X300 E",
+              "vivo Pad6 Pro"
+            ]
+          },
+          {
+            "name": "iQOO",
+            "models": [
+              "iQOO 15 Ultra",
+              "iQOO 15",
+              "iQOO 15T",
+              "iQOO Neo11 至尊版",
+              "iQOO Neo11",
+              "iQOO Pad6 Pro"
+            ]
+          }
+        ]
+      },
+      {
+        "period": "2026 年 10 月 29 日开启",
+        "brands": [
+          {
+            "name": "vivo",
+            "models": [
+              "X Fold3 Pro",
+              "X Fold3",
+              "X200 Ultra",
+              "X200 Pro 卫星通信版",
+              "X200 Pro",
+              "X200 Pro mini",
+              "X200s",
+              "X200",
+              "S60",
+              "S60 元气版",
+              "vivo Pad5 Pro"
+            ]
+          },
+          {
+            "name": "iQOO",
+            "models": [
+              "iQOO 13",
+              "iQOO Neo10 Pro+",
+              "iQOO Neo10 Pro",
+              "iQOO Neo10",
+              "iQOO Pad5 Pro"
+            ]
+          }
+        ]
+      },
+      {
+        "period": "2026 年 11 月底",
+        "brands": [
+          {
+            "name": "vivo",
+            "models": [
+              "X Fold2",
+              "X100 Ultra",
+              "X100s Pro",
+              "X100 Pro",
+              "X100s",
+              "X100",
+              "S50 Pro mini",
+              "S50",
+              "S50t",
+              "S50t 元气版",
+              "vivo Pad5",
+              "vivo Pad5e",
+              "vivo Pad5c"
+            ]
+          },
+          {
+            "name": "iQOO",
+            "models": [
+              "iQOO 12 Pro",
+              "iQOO 12",
+              "iQOO Neo9S Pro+",
+              "iQOO Neo9S Pro",
+              "iQOO Neo9 Pro",
+              "iQOO Neo9",
+              "iQOO Z11 Turbo",
+              "iQOO Pad5",
+              "iQOO Pad5e",
+              "iQOO Pad5c"
+            ]
+          }
+        ]
+      },
+      {
+        "period": "2026 年 12 月底",
+        "brands": [
+          {
+            "name": "vivo",
+            "models": [
+              "X90 Pro+",
+              "X90 Pro",
+              "X90s",
+              "X90",
+              "S30",
+              "S30 Pro mini"
+            ]
+          },
+          {
+            "name": "iQOO",
+            "models": [
+              "iQOO 11 Pro",
+              "iQOO 11S",
+              "iQOO 11",
+              "iQOO Z11",
+              "iQOO Z11S",
+              "iQOO Z10 Turbo+"
+            ]
+          }
+        ]
+      },
+      {
+        "period": "2027 年 1 月底",
+        "brands": [
+          {
+            "name": "vivo",
+            "models": [
+              "S20 Pro",
+              "S20",
+              "Y600 Pro",
+              "Y600 Turbo",
+              "Y500 Pro",
+              "Y500i",
+              "Y500s"
+            ]
+          },
+          {
+            "name": "iQOO",
+            "models": [
+              "iQOO Z10 Turbo Pro",
+              "iQOO Z10 Turbo"
+            ]
+          }
+        ]
+      }
+    ],
+    "notes": [
+      "以上为 vivo 中国官网公布的升级计划。计划日期为开启时间，具体推送节奏及实际收到时间以官方公告和设备系统更新提示为准。"
+    ]
+  },
+  "xiaomi": {
+    "version": "Xiaomi HyperOS 4",
+    "region": "小米官方页面公布的中国大陆 Beta 推送计划；该名单是 Beta 计划，不等同正式版全量推送名单。",
+    "schedule": [
+      {
+        "period": "2026 年 8 月 14 日开启陆续推送",
+        "category": "Beta 测试 · 手机",
+        "models": [
+          "Xiaomi 17 Ultra",
+          "Xiaomi 17 Ultra 徕卡版",
+          "Xiaomi 17 Pro Max",
+          "Xiaomi 17 Pro",
+          "Xiaomi 17",
+          "REDMI K90 Pro Max",
+          "REDMI K90 Pro Max 冠军版",
+          "REDMI K90"
+        ]
+      },
+      {
+        "period": "2026 年 8 月 14 日开启陆续推送",
+        "category": "Beta 测试 · 平板",
+        "models": [
+          "Xiaomi Pad 8 Pro",
+          "Xiaomi Pad 8"
+        ]
+      },
+      {
+        "period": "2026 年 8 月 27 日起开启陆续推送",
+        "category": "Beta 测试 · 手机",
+        "models": [
+          "Xiaomi 17 Max",
+          "Xiaomi 17T Pro",
+          "Xiaomi 17T",
+          "Xiaomi 15 Ultra",
+          "Xiaomi 15 Ultra 双卫星版",
+          "Xiaomi 15S Pro",
+          "Xiaomi 15 Pro",
+          "Xiaomi 15",
+          "REDMI K90 Max",
+          "REDMI K90 至尊版"
+        ]
+      },
+      {
+        "period": "2026 年 8 月 27 日起开启陆续推送",
+        "category": "Beta 测试 · 平板",
+        "models": [
+          "REDMI K Pad 2"
+        ]
+      },
+      {
+        "period": "2026 年 9 月 17 日起开启陆续推送",
+        "category": "Beta 测试 · 手机",
+        "models": [
+          "REDMI K100 Pro Max",
+          "REDMI K100 Pro",
+          "REDMI K80 Pro",
+          "REDMI K80 至尊版",
+          "REDMI K80",
+          "Xiaomi MIX Flip 2"
+        ]
+      },
+      {
+        "period": "2026 年 9 月 17 日起开启陆续推送",
+        "category": "Beta 测试 · 平板",
+        "models": [
+          "Xiaomi Pad 7 Ultra",
+          "Xiaomi Pad 7S Pro 12.5"
+        ]
+      }
+    ],
+    "notes": [
+      "官方页面明确标注为 Beta 版推送计划。支持机型和推送时间可能调整，具体以小米社区官方公告为准。当前未将第三方整理的正式版时间表混入此名单。"
+    ]
+  },
+  "honor": {
+    "version": "荣耀 MagicOS 11",
+    "region": "荣耀中国官网升级计划；适用于中国大陆（不含港澳台地区），实际升级以设备收到的 OTA 为准。",
+    "schedule": [
+      {
+        "period": "2026 年 9 月 15 日 · 不限量尝鲜",
+        "category": "不限量尝鲜",
+        "models": [
+          "荣耀 Magic V6",
+          "荣耀 WIN",
+          "荣耀 Magic V5",
+          "荣耀 WIN RT",
+          "荣耀 Magic8 RSR | 保时捷设计",
+          "荣耀 GT Pro",
+          "荣耀 Magic8 Pro",
+          "荣耀 600 Pro",
+          "荣耀 Magic8 Pro Air",
+          "荣耀 600 超级版",
+          "荣耀 Magic8",
+          "荣耀 600 元气版",
+          "荣耀 Magic7 RSR | 保时捷设计",
+          "荣耀 MagicPad3 Pro 12.3",
+          "荣耀 Magic7 Pro",
+          "荣耀 MagicPad3 Pro",
+          "荣耀 Magic7",
+          "荣耀手表 6 Plus"
+        ]
+      },
+      {
+        "period": "2026 年 9 月 15 日 · 内测报名",
+        "category": "内测报名",
+        "models": [
+          "荣耀 Magic V3",
+          "荣耀 400",
+          "荣耀 Magic6 RSR | 保时捷设计",
+          "荣耀 Power2",
+          "荣耀 Magic6 至臻版",
+          "荣耀 MagicPad3 12.5",
+          "荣耀 Magic6 Pro",
+          "荣耀 MagicPad3",
+          "荣耀 Magic6",
+          "荣耀 MagicPad2",
+          "荣耀 WIN Turbo",
+          "荣耀平板 GT2 Pro",
+          "荣耀 500 Pro Molly 20周年限定版",
+          "荣耀平板 GT Pro",
+          "荣耀 500 Pro",
+          "荣耀平板 GT",
+          "荣耀 500",
+          "荣耀平板 V9",
+          "荣耀 400 Pro",
+          "荣耀平板 10 Pro"
+        ]
+      },
+      {
+        "period": "2026 年 10 月～11 月 · 更多产品开启升级",
+        "category": "更多产品开启升级",
+        "models": [
+          "荣耀 Robot Phone",
+          "荣耀 100 Pro",
+          "荣耀 Magic Vs3",
+          "荣耀 100",
+          "荣耀 Magic V2 RSR | 保时捷设计",
+          "荣耀 90 GT",
+          "荣耀 Magic V2 至臻版",
+          "荣耀 Power",
+          "荣耀 Magic V2",
+          "荣耀 X80 Pro Max",
+          "荣耀 Magic V Flip2",
+          "荣耀 X70 Pro Max",
+          "荣耀 Magic5 至臻版",
+          "荣耀 X70 焕新版",
+          "荣耀 Magic5 Pro",
+          "荣耀 X70",
+          "荣耀 Magic5",
+          "荣耀 X80i",
+          "荣耀 GT",
+          "荣耀平板 20",
+          "荣耀 300 Ultra",
+          "荣耀平板 10",
+          "荣耀 300 Pro",
+          "荣耀手表 5 Ultra",
+          "荣耀 300",
+          "荣耀手表 5 Pro",
+          "荣耀 200 Pro",
+          "荣耀手表 5",
+          "荣耀 200"
+        ]
+      }
+    ],
+    "notes": [
+      "不限量尝鲜与内测报名是不同升级通道，不代表同一批次全量正式版已推送。官方说明部分功能可能因机型和版本而异，具体以实际为准。"
+    ]
+  },
+  "apple": {
+    "version": "iOS 27",
+    "region": "Apple 中国官方兼容性名单。Apple 公布的是系统兼容机型，不提供按机型划分的升级批次时间表。",
+    "categories": [
+      {
+        "name": "iPhone 机型",
+        "models": [
+          "iPhone Duo",
+          "iPhone 18 Pro Max",
+          "iPhone 18 Pro",
+          "iPhone 17",
+          "iPhone 17 Pro",
+          "iPhone 17 Pro Max",
+          "iPhone 17e",
+          "iPhone Air",
+          "iPhone 16e",
+          "iPhone 16",
+          "iPhone 16 Plus",
+          "iPhone 16 Pro",
+          "iPhone 16 Pro Max",
+          "iPhone 15",
+          "iPhone 15 Plus",
+          "iPhone 15 Pro",
+          "iPhone 15 Pro Max",
+          "iPhone 14",
+          "iPhone 14 Plus",
+          "iPhone 14 Pro",
+          "iPhone 14 Pro Max",
+          "iPhone 13",
+          "iPhone 13 mini",
+          "iPhone 13 Pro",
+          "iPhone 13 Pro Max",
+          "iPhone 12",
+          "iPhone 12 mini",
+          "iPhone 12 Pro",
+          "iPhone 12 Pro Max",
+          "iPhone 11",
+          "iPhone 11 Pro",
+          "iPhone 11 Pro Max",
+          "iPhone SE（第 2 代）",
+          "iPhone SE（第 3 代）"
+        ]
+      }
+    ],
+    "notes": [
+      "此处列出 iOS 27 兼容机型，不代表所有机型均可获得全部新功能；功能可用性可能因设备、地区和语言而异。Apple 未公布逐机型升级批次表。"
+    ]
+  }
+}
