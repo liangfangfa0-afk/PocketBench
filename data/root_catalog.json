@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "config_version": "1.1.6",
+  "config_version": "1.1.8",
   "updated_at": "2026-11-26",
   "categories": [
     {
@@ -420,6 +420,116 @@
         {
           "label": "GitHub 仓库",
           "url": "https://github.com/MieAiiii/oplus-antidizzy-module"
+        }
+      ]
+    },
+    {
+      "id": "opcamerapro",
+      "category_id": "3",
+      "name": "OPCameraPro（黑厂相机功能补全）",
+      "official_url": "https://github.com/Xposed-Modules-Repo/com.tlsu.opluscamerapro/releases/latest",
+      "description": "面向 ColorOS 与 realmeUI 的相机/相册增强型 Xposed 模块，重点适配 ColorOS 16、realmeUI 7.0；支持 LUT 导入、ProXDR、实况照片、AI 相册等增强功能。",
+      "info": [
+        {
+          "label": "版本",
+          "value": "v3.1.22（官方模块仓库最新）"
+        },
+        {
+          "label": "适用系统",
+          "value": "ColorOS 16 / realmeUI 7.0；兼容 ColorOS 15 / realmeUI 6.0"
+        },
+        {
+          "label": "框架要求",
+          "value": "LSPosed v2.0+（API 101），不再兼容旧版 LSPosed"
+        },
+        {
+          "label": "挂载建议",
+          "value": "KernelSU LKM + Mountify / Hybrid Mount；相机与相册 App Profile 取消“默认卸载模块”"
+        },
+        {
+          "label": "作者",
+          "value": "Weverse"
+        },
+        {
+          "label": "提供者",
+          "value": "原作者官方渠道"
+        },
+        {
+          "label": "开源情况",
+          "value": "主仓库已转私有，GitHub 仅保留参考镜像"
+        }
+      ],
+      "links": [
+        {
+          "label": "LSPosed 官方模块页",
+          "url": "https://modules.lsposed.org/module/com.tlsu.opluscamerapro/"
+        },
+        {
+          "label": "GitHub 源码镜像",
+          "url": "https://github.com/Weverses/OPCameraPro"
+        },
+        {
+          "label": "官方 Releases",
+          "url": "https://github.com/Xposed-Modules-Repo/com.tlsu.opluscamerapro/releases/"
+        },
+        {
+          "label": "Telegram 频道",
+          "url": "https://t.me/+awg-7X5Ggrs5NzZl"
+        }
+      ]
+    },
+    {
+      "id": "oshin",
+      "category_id": "3",
+      "name": "OShin（O神 / 原 OPatch）",
+      "official_url": "https://github.com/suqi8/OShin/releases/latest",
+      "description": "面向 ColorOS 16 的系统增强 Xposed 模块，覆盖状态栏、控制中心、桌面、锁屏和系统框架等 70 多个系统应用，提供 2000 多个可调选项，默认关闭、按需开启。",
+      "info": [
+        {
+          "label": "版本",
+          "value": "v16.14.1912（1455，2026-10-26）"
+        },
+        {
+          "label": "适用系统",
+          "value": "ColorOS 16 / realmeUI 7.0 / OxygenOS 16（Android 16）"
+        },
+        {
+          "label": "框架要求",
+          "value": "LSPosed；作用域按功能选择“系统框架（android）”等"
+        },
+        {
+          "label": "Root 方案",
+          "value": "Magisk / KernelSU / APatch"
+        },
+        {
+          "label": "作者",
+          "value": "suqi8"
+        },
+        {
+          "label": "提供者",
+          "value": "原作者官方渠道"
+        },
+        {
+          "label": "开源情况",
+          "value": "2025-11-12 起主仓库转为私有，公开仓库仅作参考镜像"
+        }
+      ],
+      "links": [
+        {
+          "label": "LSPosed 官方模块页",
+          "url": "https://modules.lsposed.org/module/com.suqi8.oshin/"
+        },
+        {
+          "label": "GitHub Releases",
+          "url": "https://github.com/suqi8/OShin/releases"
+        },
+        {
+          "label": "GitHub 镜像仓库",
+          "url": "https://github.com/suqi8/OShin"
+        },
+        {
+          "label": "Telegram 官方频道",
+          "url": "https://t.me/OPatchA"
         }
       ]
     }
