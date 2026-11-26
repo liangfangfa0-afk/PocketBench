@@ -2,6 +2,7 @@ package com.ljj.PocketBench.ui
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import android.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import com.ljj.PocketBench.device.DeviceMonitorController
 
@@ -65,6 +66,7 @@ import com.itos.coui.navigation.NavigationBar
 import com.itos.coui.switch.Switch
 import com.itos.coui.text.CouiTextKind
 import com.itos.coui.text.Text
+import com.itos.coui.navigation.CouiNavigationBarDefaults
 import com.itos.coui.theme.CouiTheme
 import com.itos.coui.topappbar.TopAppBar
 import com.itos.coui.topappbar.TopAppBarButton
@@ -274,8 +276,17 @@ fun PocketBenchApp(
         bottomBar = {
             if (!isSubPage) {
                 if (bottomRenderer != null) {
+                    val dark = CouiTheme.isDark
+                    val barMaterial = CouiNavigationBarDefaults.material(dark = dark).copy(
+                        firstColor = if (dark) Color(0x80666666) else Color(0xA3666666),
+                        firstBlendMode = if (dark) BlendMode.OVERLAY else BlendMode.COLOR_DODGE,
+                        secondColor = if (dark) Color(0xB3262626) else Color(0x80F0F0F0),
+                        lightColor = Color.White,
+                        themeTint = Color.Transparent,
+                    )
                     NavigationBar(
                         renderer = bottomRenderer,
+                        material = barMaterial,
                         items = listOf(
                             CouiNavigationItem("首页", CouiIcons.Filled.Grid, CouiIcons.Filled.Grid),
                             CouiNavigationItem("设置", CouiIcons.Filled.Setting, CouiIcons.Filled.Setting),
