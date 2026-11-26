@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "config_version": "1.1.8",
+  "config_version": "1.1.9",
   "updated_at": "2026-11-26",
   "categories": [
     {
@@ -530,6 +530,61 @@
         {
           "label": "Telegram 官方频道",
           "url": "https://t.me/OPatchA"
+        }
+      ]
+    },
+    {
+      "id": "luckytool",
+      "category_id": "3",
+      "name": "LuckyTool（LT）",
+      "official_url": "https://github.com/Xposed-Modules-Repo/com.luckyzyx.luckytool/releases/latest",
+      "description": "对 ColorOS 进行扩展优化的 Xposed 模块，永久免费；覆盖系统框架、SystemUI、桌面、设置以及 40 多个系统应用，开关改动可实时生效。",
+      "info": [
+        {
+          "label": "版本",
+          "value": "v1.3.4（20950，2026-04-27）"
+        },
+        {
+          "label": "适用系统",
+          "value": "ColorOS 12–17（OPPO / 一加 / realme）"
+        },
+        {
+          "label": "框架要求",
+          "value": "LSPosed；作用域按模块推荐勾选"
+        },
+        {
+          "label": "权限与架构",
+          "value": "部分功能需要 Root；仅 arm64-v8a"
+        },
+        {
+          "label": "作者",
+          "value": "忆清鸣、luckyzyx"
+        },
+        {
+          "label": "提供者",
+          "value": "原作者官方渠道"
+        },
+        {
+          "label": "开源情况",
+          "value": "永久免费，源码公开（GPL-3.0）"
+        }
+      ],
+      "links": [
+        {
+          "label": "LSPosed 官方模块页",
+          "url": "https://modules.lsposed.org/module/com.luckyzyx.luckytool/"
+        },
+        {
+          "label": "官方文档",
+          "url": "https://luckyzyx.gitlab.io/LuckyTool_Doc/"
+        },
+        {
+          "label": "GitHub 源码",
+          "url": "https://github.com/luckyzyx/LuckyTool"
+        },
+        {
+          "label": "GitHub Releases",
+          "url": "https://github.com/Xposed-Modules-Repo/com.luckyzyx.luckytool/releases"
         }
       ]
     }
