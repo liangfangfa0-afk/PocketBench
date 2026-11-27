@@ -489,13 +489,13 @@ fun PocketBenchApp(
 1.0.0.19
 
 本次更新
-• 资源专区新增 15 个 KSU 模块，全部来自 KernelSU 官方模块库收录的不可变 Release，可追溯到原作者 GitHub；应用只保留官方入口与说明，不内置模块代码，也不在应用内执行模块。
+• 「资源专区」本次补齐 15 个 KSU 模块，可以直接查看模块说明、适用系统、作者和来源，点一下就能打开官方页面。
 • 新增：Play Integrity Fix、Hybrid Mount、Magic Mount-rs、KernelSU Tuner、HyperCool、QSC 充电控制、ColorOS 温控与云控、ColorOS16 优化版、ColorOS WIFI 感知、Bye Blur、别动我的剪切板、证书桥、Zygisk FuseHide、MoveCertificate、KernelSU Grant Toast。
-• KSU 分类现在共 21 条；连同上一轮的 HMA-OSS，资源目录从 13 条扩到 28 条，config_version 1.3.0。
-• 云端目录继续四源并行同步：GitHub Raw、ghproxy.net、gh-proxy.com、jsDelivr；按 config_version 取最高有效版本，旧数据不回滚；内置副本与磁盘缓存兜底，首次打开不再空白。
-• 资源详情统一展示版本、适用系统、框架依赖、作者、来源与许可证；详情页只打开官方链接，不在应用内下载或执行模块。
-• 继续使用 COUI 原生组件：底栏三项、资源宫格圆角、公告弹窗、搜索与设置交互均不做手绘替代。
-• 版本号 1.0.0.19 / versionCode 18；资源目录 1.3.0 已推送云端。
+• 上一轮加入的 HMA-OSS 继续保留；资源目录现在共 28 条，KSU 分类 21 条。
+• 应用会自动从几个公开地址获取最新资源目录，哪个版本新就用哪个；断网时也能打开内置目录，已经取到的目录会留在手机里，下次不用重新下载。
+• 资源详情只展示说明和官方入口，不在应用内下载、安装或执行模块。
+• 继续使用 COUI 原生组件：底栏三项、资源宫格圆角、公告弹窗、搜索和设置都保持原生样式。
+• 版本号 1.0.0.19。
 """.trimIndent(),
 
             confirmAction = CouiDialogAction(text = "知道了", onClick = { announcementVisible = false }),
