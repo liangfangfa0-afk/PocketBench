@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "config_version": "1.2.0",
+  "config_version": "1.3.0",
   "updated_at": "2026-11-27",
   "categories": [
     {
@@ -636,6 +636,759 @@
         {
           "label": "Telegram 频道",
           "url": "https://t.me/aerathfuns"
+        }
+      ]
+    },
+    {
+      "id": "play-integrity-fix",
+      "category_id": "2",
+      "name": "Play Integrity Fix",
+      "official_url": "https://github.com/KOWX712/PlayIntegrityFix/releases/latest",
+      "description": "修复 Play Integrity 设备认证结果，让受 Play Integrity 校验的应用恢复可用；只处理设备 verdict，不负责隐藏 Root，也不保证绕过其他应用的检测。",
+      "info": [
+        {
+          "label": "版本",
+          "value": "v4.9-inject-s（2026-10-15）"
+        },
+        {
+          "label": "适用系统",
+          "value": "Android 8–17"
+        },
+        {
+          "label": "依赖",
+          "value": "Zygisk（Magisk 内置 Zygisk 或 Zygisk Next / NeoZygisk / ReZygisk）"
+        },
+        {
+          "label": "注意",
+          "value": "与 TrickyStore / TEESimulator 同用时关闭 spoofProvider"
+        },
+        {
+          "label": "来源",
+          "value": "KernelSU 官方模块库（不可变 Release）"
+        },
+        {
+          "label": "作者",
+          "value": "KOWX712"
+        },
+        {
+          "label": "开源情况",
+          "value": "GPL-3.0，源码公开"
+        }
+      ],
+      "links": [
+        {
+          "label": "KernelSU 官方模块页",
+          "url": "https://modules.kernelsu.org/zh-CN/modules/playintegrityfix/"
+        },
+        {
+          "label": "GitHub 仓库",
+          "url": "https://github.com/KOWX712/PlayIntegrityFix"
+        },
+        {
+          "label": "GitHub Releases",
+          "url": "https://github.com/KOWX712/PlayIntegrityFix/releases"
+        }
+      ]
+    },
+    {
+      "id": "hybrid-mount",
+      "category_id": "2",
+      "name": "Hybrid Mount（元模块）",
+      "official_url": "https://github.com/Hybrid-Mount/meta-hybrid_mount/releases/latest",
+      "description": "给 KernelSU / APatch 用的混合挂载元模块，按模块和路径混用 OverlayFS、Magic Mount 与 VFS，适合安装需要 systemless 改动的模块；不要和 Magic Mount-rs、NoMount 同时启用。",
+      "info": [
+        {
+          "label": "版本",
+          "value": "6.2.6（2026-11-14）"
+        },
+        {
+          "label": "适用环境",
+          "value": "KernelSU / APatch"
+        },
+        {
+          "label": "挂载后端",
+          "value": "OverlayFS / Magic Mount / VFS（可逐模块、逐路径选择）"
+        },
+        {
+          "label": "架构",
+          "value": "arm64 / armv7 / x86_64 / riscv64"
+        },
+        {
+          "label": "来源",
+          "value": "KernelSU 官方模块库（不可变 Release）"
+        },
+        {
+          "label": "作者",
+          "value": "Hybrid Mount Developers"
+        },
+        {
+          "label": "开源情况",
+          "value": "GPL-3.0，源码公开"
+        }
+      ],
+      "links": [
+        {
+          "label": "KernelSU 官方模块页",
+          "url": "https://modules.kernelsu.org/zh-CN/modules/hybrid_mount/"
+        },
+        {
+          "label": "GitHub 仓库",
+          "url": "https://github.com/Hybrid-Mount/meta-hybrid_mount"
+        },
+        {
+          "label": "GitHub Releases",
+          "url": "https://github.com/Hybrid-Mount/meta-hybrid_mount/releases"
+        }
+      ]
+    },
+    {
+      "id": "magic-mount-rs",
+      "category_id": "2",
+      "name": "Magic Mount-rs（元模块）",
+      "official_url": "https://github.com/Tools-cx-app/meta-magic_mount-rs/releases/latest",
+      "description": "基于 MKSU 的 Magic Mount 元模块，为 KernelSU / APatch 提供 systemless 挂载，支持 WebUI 配置；和 Hybrid Mount、NoMount 只能选一个启用。",
+      "info": [
+        {
+          "label": "版本",
+          "value": "v4.1.12-959（2026-10-30）"
+        },
+        {
+          "label": "适用环境",
+          "value": "KernelSU / APatch"
+        },
+        {
+          "label": "配置",
+          "value": "/data/adb/magic_mount/config.toml，或 WebUI 修改"
+        },
+        {
+          "label": "来源",
+          "value": "KernelSU 官方模块库（不可变 Release）"
+        },
+        {
+          "label": "作者",
+          "value": "Tools-cx-app"
+        },
+        {
+          "label": "开源情况",
+          "value": "GPL-3.0，源码公开"
+        }
+      ],
+      "links": [
+        {
+          "label": "KernelSU 官方模块页",
+          "url": "https://modules.kernelsu.org/zh-CN/modules/magic_mount_rs/"
+        },
+        {
+          "label": "GitHub 仓库",
+          "url": "https://github.com/Tools-cx-app/meta-magic_mount-rs"
+        },
+        {
+          "label": "GitHub Releases",
+          "url": "https://github.com/Tools-cx-app/meta-magic_mount-rs/releases"
+        }
+      ]
+    },
+    {
+      "id": "ksu-tuner",
+      "category_id": "2",
+      "name": "KernelSU Tuner",
+      "official_url": "https://github.com/ylh440104/KernelSU-Tuner/releases/latest",
+      "description": "内核级性能调度模块，按温度、亮屏/息屏和充电状态自动切换性能档位，也支持按应用策略和充电限制；所有策略都在 WebUI 里调。",
+      "info": [
+        {
+          "label": "版本",
+          "value": "v3.6.0"
+        },
+        {
+          "label": "适用环境",
+          "value": "KernelSU"
+        },
+        {
+          "label": "功能",
+          "value": "性能档位 / 温控切换 / 充电限制 / 按应用策略"
+        },
+        {
+          "label": "来源",
+          "value": "KernelSU 官方模块库（不可变 Release）"
+        },
+        {
+          "label": "作者",
+          "value": "ylh440104"
+        },
+        {
+          "label": "开源情况",
+          "value": "GPL-3.0，源码公开"
+        },
+        {
+          "label": "注意",
+          "value": "和 HyperCool、ColorOS 温控的限频功能重叠，先小范围试再决定留哪个"
+        }
+      ],
+      "links": [
+        {
+          "label": "KernelSU 官方模块页",
+          "url": "https://modules.kernelsu.org/zh-CN/modules/KernelSU-Tuner/"
+        },
+        {
+          "label": "GitHub 仓库",
+          "url": "https://github.com/ylh440104/KernelSU-Tuner"
+        },
+        {
+          "label": "GitHub Releases",
+          "url": "https://github.com/ylh440104/KernelSU-Tuner/releases"
+        }
+      ]
+    },
+    {
+      "id": "hypercool",
+      "category_id": "2",
+      "name": "HyperCool（降温与省电）",
+      "official_url": "https://github.com/yudharn/HyperCool/releases/latest",
+      "description": "面向高通和天玑的降温、省电模块，WebUI 逐项开关 CPU/GPU 限频、息屏省电、后台休眠和充电保护；偏续航，不追峰值性能。",
+      "info": [
+        {
+          "label": "版本",
+          "value": "v2.4.1（2026-11-27）"
+        },
+        {
+          "label": "适用环境",
+          "value": "KernelSU / Magisk"
+        },
+        {
+          "label": "平台",
+          "value": "高通 / 联发科"
+        },
+        {
+          "label": "来源",
+          "value": "KernelSU 官方模块库（不可变 Release）"
+        },
+        {
+          "label": "作者",
+          "value": "yudharn"
+        },
+        {
+          "label": "开源情况",
+          "value": "GPL-3.0，源码公开"
+        },
+        {
+          "label": "注意",
+          "value": "和 KernelSU Tuner、ColorOS 温控都有限频/温控，别同时全开"
+        }
+      ],
+      "links": [
+        {
+          "label": "KernelSU 官方模块页",
+          "url": "https://modules.kernelsu.org/zh-CN/modules/hypercool/"
+        },
+        {
+          "label": "GitHub 仓库",
+          "url": "https://github.com/yudharn/HyperCool"
+        },
+        {
+          "label": "GitHub Releases",
+          "url": "https://github.com/yudharn/HyperCool/releases"
+        }
+      ]
+    },
+    {
+      "id": "qsc-battery",
+      "category_id": "2",
+      "name": "QSC 充电控制",
+      "official_url": "https://github.com/Eikeitsu/QSC-Battery/releases/latest",
+      "description": "充电管理模块，支持电量/温度停充、可选电流限制、分时段/按应用/无线策略，带 WebUI 和可选伴侣 App；充电节点按本机探测，刷入后需自行验证。",
+      "info": [
+        {
+          "label": "版本",
+          "value": "2026.11.26"
+        },
+        {
+          "label": "适用环境",
+          "value": "Magisk / KernelSU / APatch"
+        },
+        {
+          "label": "功能",
+          "value": "电量停充 / 温度停充 / 电流限制 / 分级省电 / 充电曲线"
+        },
+        {
+          "label": "来源",
+          "value": "KernelSU 官方模块库（不可变 Release）"
+        },
+        {
+          "label": "作者",
+          "value": "Eikeitsu"
+        },
+        {
+          "label": "开源情况",
+          "value": "源码公开，许可证以仓库为准"
+        }
+      ],
+      "links": [
+        {
+          "label": "KernelSU 官方模块页",
+          "url": "https://modules.kernelsu.org/zh-CN/modules/QSC_Battery/"
+        },
+        {
+          "label": "GitHub 仓库",
+          "url": "https://github.com/Eikeitsu/QSC-Battery"
+        },
+        {
+          "label": "GitHub Releases",
+          "url": "https://github.com/Eikeitsu/QSC-Battery/releases"
+        }
+      ]
+    },
+    {
+      "id": "coloros-thermal",
+      "category_id": "2",
+      "name": "ColorOS 温控与云控",
+      "official_url": "https://github.com/706412584/ColorOS-thermal/releases/latest",
+      "description": "ColorOS / 一加工具：解除大核 58% 出厂频率上限，按机身温度自动收回；拦截 OTA、系统静默更新和云控组件，并带内存面板与云控残留清理。",
+      "info": [
+        {
+          "label": "版本",
+          "value": "01.7.76（2026-11-25）"
+        },
+        {
+          "label": "适用系统",
+          "value": "ColorOS / 氧OS，Android 12+，arm64-v8a"
+        },
+        {
+          "label": "适用环境",
+          "value": "KernelSU"
+        },
+        {
+          "label": "来源",
+          "value": "KernelSU 官方模块库（不可变 Release）"
+        },
+        {
+          "label": "作者",
+          "value": "酷安 @谋事在人"
+        },
+        {
+          "label": "开源情况",
+          "value": "MIT，源码公开"
+        },
+        {
+          "label": "注意",
+          "value": "解除限频后功耗和发热会上升，依赖温度保护；云控拦截按组件，不影响账号登录和支付"
+        }
+      ],
+      "links": [
+        {
+          "label": "KernelSU 官方模块页",
+          "url": "https://modules.kernelsu.org/zh-CN/modules/oplus-cloud-block/"
+        },
+        {
+          "label": "GitHub 仓库",
+          "url": "https://github.com/706412584/ColorOS-thermal"
+        },
+        {
+          "label": "GitHub Releases",
+          "url": "https://github.com/706412584/ColorOS-thermal/releases"
+        }
+      ]
+    },
+    {
+      "id": "coloros-logd",
+      "category_id": "2",
+      "name": "ColorOS16 优化版（Logd Disabler）",
+      "official_url": "https://github.com/starlifezzz/Logd_Disabler_ColorOS16/releases/latest",
+      "description": "专为 ColorOS 16（OPPO / 一加）做的系统精简与隐私优化：38 个开关覆盖日志、OTA、广告与遥测、云控域名和冗余服务，所有改动可一键还原。",
+      "info": [
+        {
+          "label": "版本",
+          "value": "v2.3.29（2026-11-16）"
+        },
+        {
+          "label": "适用系统",
+          "value": "ColorOS 16（OPPO / 一加）"
+        },
+        {
+          "label": "适用环境",
+          "value": "KernelSU"
+        },
+        {
+          "label": "来源",
+          "value": "KernelSU 官方模块库（不可变 Release）"
+        },
+        {
+          "label": "作者",
+          "value": "starlifezzz"
+        },
+        {
+          "label": "开源情况",
+          "value": "源码公开，许可证以仓库为准"
+        },
+        {
+          "label": "注意",
+          "value": "关掉某个服务等于停用对应功能，按需取舍；卸载模块可全部还原"
+        }
+      ],
+      "links": [
+        {
+          "label": "KernelSU 官方模块页",
+          "url": "https://modules.kernelsu.org/zh-CN/modules/Logd_Disabler_ColorOS16/"
+        },
+        {
+          "label": "GitHub 仓库",
+          "url": "https://github.com/starlifezzz/Logd_Disabler_ColorOS16"
+        },
+        {
+          "label": "GitHub Releases",
+          "url": "https://github.com/starlifezzz/Logd_Disabler_ColorOS16/releases"
+        }
+      ]
+    },
+    {
+      "id": "coloros-wifi-sense",
+      "category_id": "2",
+      "name": "ColorOS WIFI 感知",
+      "official_url": "https://github.com/mazemingw/coloros-wifi-sense/releases/latest",
+      "description": "弱信号时自动断开当前 Wi-Fi 接入点，可选原生流体云倒计时和手动断开；阈值、倒计时、息屏策略都可调，默认 -80 dBm、7 秒。",
+      "info": [
+        {
+          "label": "版本",
+          "value": "v1.7.0（2026-11-23）"
+        },
+        {
+          "label": "适用系统",
+          "value": "ColorOS / Android 10+"
+        },
+        {
+          "label": "适用环境",
+          "value": "Magisk / KernelSU"
+        },
+        {
+          "label": "来源",
+          "value": "KernelSU 官方模块库（不可变 Release）"
+        },
+        {
+          "label": "作者",
+          "value": "酷安 @NVMEX夜莺"
+        },
+        {
+          "label": "开源情况",
+          "value": "Apache-2.0，源码公开"
+        },
+        {
+          "label": "注意",
+          "value": "建议关闭欧加网络助手里自带的弱信号断开，避免重复触发"
+        }
+      ],
+      "links": [
+        {
+          "label": "KernelSU 官方模块页",
+          "url": "https://modules.kernelsu.org/zh-CN/modules/coloros_wifi_sense/"
+        },
+        {
+          "label": "GitHub 仓库",
+          "url": "https://github.com/mazemingw/coloros-wifi-sense"
+        },
+        {
+          "label": "GitHub Releases",
+          "url": "https://github.com/mazemingw/coloros-wifi-sense/releases"
+        }
+      ]
+    },
+    {
+      "id": "bye-blur",
+      "category_id": "2",
+      "name": "Bye Blur（关闭模糊）",
+      "official_url": "https://github.com/LeanxModulostk/Bye-Blur/releases/latest",
+      "description": "关闭系统窗口模糊效果，减少 GPU 合成开销，适合追求流畅和省电的机器；只改模糊，不动其他动画。",
+      "info": [
+        {
+          "label": "版本",
+          "value": "v9（2026-11-13）"
+        },
+        {
+          "label": "适用环境",
+          "value": "Magisk / KernelSU"
+        },
+        {
+          "label": "来源",
+          "value": "KernelSU 官方模块库（不可变 Release）"
+        },
+        {
+          "label": "作者",
+          "value": "Lean"
+        },
+        {
+          "label": "开源情况",
+          "value": "源码公开，许可证以仓库为准"
+        },
+        {
+          "label": "注意",
+          "value": "ColorOS 需实测；关掉后部分系统界面会显得生硬或透明"
+        }
+      ],
+      "links": [
+        {
+          "label": "KernelSU 官方模块页",
+          "url": "https://modules.kernelsu.org/zh-CN/modules/ByeBlur/"
+        },
+        {
+          "label": "GitHub 仓库",
+          "url": "https://github.com/LeanxModulostk/Bye-Blur"
+        },
+        {
+          "label": "GitHub Releases",
+          "url": "https://github.com/LeanxModulostk/Bye-Blur/releases"
+        }
+      ]
+    },
+    {
+      "id": "clipshield",
+      "category_id": "2",
+      "name": "别动我的剪切板（ClipShield）",
+      "official_url": "https://github.com/klmmlk/KernelSU-ClipShield/releases/latest",
+      "description": "按应用拦截剪贴板读取和监听，防止国产 App 在后台偷读验证码、口令和复制内容；智能模式只在用户主动粘贴时放行，WebUI 可按包名配置。",
+      "info": [
+        {
+          "label": "版本",
+          "value": "v1.2.1（2026-10-13）"
+        },
+        {
+          "label": "适用系统",
+          "value": "Android 13+，arm64-v8a"
+        },
+        {
+          "label": "适用环境",
+          "value": "KernelSU + Zygisk Next / ReZygisk"
+        },
+        {
+          "label": "来源",
+          "value": "KernelSU 官方模块库（不可变 Release）"
+        },
+        {
+          "label": "作者",
+          "value": "klmmlk"
+        },
+        {
+          "label": "开源情况",
+          "value": "GPL-3.0，源码公开"
+        },
+        {
+          "label": "注意",
+          "value": "不要拉黑输入法；WebView 里的粘贴可能误拦，遇到就把该应用设为放行"
+        }
+      ],
+      "links": [
+        {
+          "label": "KernelSU 官方模块页",
+          "url": "https://modules.kernelsu.org/zh-CN/modules/clipshield/"
+        },
+        {
+          "label": "GitHub 仓库",
+          "url": "https://github.com/klmmlk/KernelSU-ClipShield"
+        },
+        {
+          "label": "GitHub Releases",
+          "url": "https://github.com/klmmlk/KernelSU-ClipShield/releases"
+        }
+      ]
+    },
+    {
+      "id": "certbridge",
+      "category_id": "2",
+      "name": "证书桥（CertBridge）",
+      "official_url": "https://github.com/Eikeitsu/CertBridge/releases/latest",
+      "description": "把 Reqable、ProxyPin 或自定义 PEM 合并进系统信任库，不改系统分区；支持开机注入、免重启热挂载、挂载隐藏协助和 Zygisk 过滤，适合抓包调试。",
+      "info": [
+        {
+          "label": "版本",
+          "value": "v5.2.0（2026-11-26）"
+        },
+        {
+          "label": "适用环境",
+          "value": "Magisk / KernelSU / APatch"
+        },
+        {
+          "label": "架构",
+          "value": "arm64（另提供 arm32 / x86 / x64）"
+        },
+        {
+          "label": "来源",
+          "value": "KernelSU 官方模块库（不可变 Release）"
+        },
+        {
+          "label": "作者",
+          "value": "Eikeitsu"
+        },
+        {
+          "label": "开源情况",
+          "value": "MIT，源码公开"
+        },
+        {
+          "label": "注意",
+          "value": "证书只应注入自己可控的调试环境，别把来源不明的 CA 装进系统信任库"
+        }
+      ],
+      "links": [
+        {
+          "label": "KernelSU 官方模块页",
+          "url": "https://modules.kernelsu.org/zh-CN/modules/CertBridge/"
+        },
+        {
+          "label": "GitHub 仓库",
+          "url": "https://github.com/Eikeitsu/CertBridge"
+        },
+        {
+          "label": "GitHub Releases",
+          "url": "https://github.com/Eikeitsu/CertBridge/releases"
+        }
+      ]
+    },
+    {
+      "id": "fusehide",
+      "category_id": "2",
+      "name": "Zygisk - FuseHide",
+      "official_url": "https://github.com/XiaoTong6666/FuseHide/releases/latest",
+      "description": "通过 Zygisk 注入 MediaProvider，按 UID 过滤 /sdcard 的可见范围，让指定应用看不到某些目录或文件；也提供 LSPosed 后端，这里收的是免 LSPosed 的 Zygisk 版。",
+      "info": [
+        {
+          "label": "版本",
+          "value": "1.222（222-53997de-release）"
+        },
+        {
+          "label": "适用系统",
+          "value": "Android 12+"
+        },
+        {
+          "label": "适用环境",
+          "value": "KernelSU + Zygisk（standalone）"
+        },
+        {
+          "label": "来源",
+          "value": "KernelSU 官方模块库（不可变 Release）"
+        },
+        {
+          "label": "作者",
+          "value": "XiaoTong6666"
+        },
+        {
+          "label": "开源情况",
+          "value": "Apache-2.0，源码公开"
+        },
+        {
+          "label": "注意",
+          "value": "存储过滤规则配错会让应用找不到文件，先小范围加白名单"
+        }
+      ],
+      "links": [
+        {
+          "label": "KernelSU 官方模块页",
+          "url": "https://modules.kernelsu.org/zh-CN/modules/zygisk_fusehide/"
+        },
+        {
+          "label": "GitHub 仓库",
+          "url": "https://github.com/XiaoTong6666/FuseHide"
+        },
+        {
+          "label": "GitHub Releases",
+          "url": "https://github.com/XiaoTong6666/FuseHide/releases"
+        }
+      ]
+    },
+    {
+      "id": "movecertificate",
+      "category_id": "2",
+      "name": "MoveCertificate（系统证书迁移）",
+      "official_url": "https://github.com/ys1231/MoveCertificate-ksu/releases/latest",
+      "description": "把用户证书移动到系统信任库，支持 Android 7–17，兼容 Magisk / KernelSU / APatch；适合把抓包或内网 CA 变成系统级信任。",
+      "info": [
+        {
+          "label": "版本",
+          "value": "v1.6.2（2026-09-02）"
+        },
+        {
+          "label": "适用系统",
+          "value": "Android 7–17"
+        },
+        {
+          "label": "适用环境",
+          "value": "Magisk / KernelSU / APatch"
+        },
+        {
+          "label": "来源",
+          "value": "KernelSU 官方模块库（不可变 Release）"
+        },
+        {
+          "label": "作者",
+          "value": "ys1231"
+        },
+        {
+          "label": "开源情况",
+          "value": "Apache-2.0，源码公开"
+        },
+        {
+          "label": "注意",
+          "value": "手动模式会覆盖同名系统证书；优先用系统设置安装证书"
+        }
+      ],
+      "links": [
+        {
+          "label": "KernelSU 官方模块页",
+          "url": "https://modules.kernelsu.org/zh-CN/modules/MoveCertificate/"
+        },
+        {
+          "label": "GitHub 仓库",
+          "url": "https://github.com/ys1231/MoveCertificate-ksu"
+        },
+        {
+          "label": "GitHub Releases",
+          "url": "https://github.com/ys1231/MoveCertificate-ksu/releases"
+        }
+      ]
+    },
+    {
+      "id": "ksu-grant-toast",
+      "category_id": "2",
+      "name": "KernelSU Grant Toast",
+      "official_url": "https://github.com/NativeStar/KernelSUGrantToast/releases/latest",
+      "description": "让 KernelSU 在应用获得超级用户权限时显示类似 Magisk 的 Toast，可自定义文案，并忽略指定应用的授权提示。",
+      "info": [
+        {
+          "label": "版本",
+          "value": "2.5（2026-11-21）"
+        },
+        {
+          "label": "适用环境",
+          "value": "仅官方 KernelSU（需支持 Su 日志）"
+        },
+        {
+          "label": "依赖",
+          "value": "不依赖 Zygisk 或元模块"
+        },
+        {
+          "label": "来源",
+          "value": "KernelSU 官方模块库（不可变 Release）"
+        },
+        {
+          "label": "作者",
+          "value": "NativeStar"
+        },
+        {
+          "label": "开源情况",
+          "value": "GPL-3.0，源码公开"
+        },
+        {
+          "label": "注意",
+          "value": "只测试过官方版，KernelSU Next 和其他分支兼容性未知"
+        }
+      ],
+      "links": [
+        {
+          "label": "KernelSU 官方模块页",
+          "url": "https://modules.kernelsu.org/zh-CN/modules/ksuGrantToast/"
+        },
+        {
+          "label": "GitHub 仓库",
+          "url": "https://github.com/NativeStar/KernelSUGrantToast"
+        },
+        {
+          "label": "GitHub Releases",
+          "url": "https://github.com/NativeStar/KernelSUGrantToast/releases"
         }
       ]
     }
