@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "config_version": "1.1.9",
-  "updated_at": "2026-11-26",
+  "config_version": "1.2.0",
+  "updated_at": "2026-11-27",
   "categories": [
     {
       "id": "1",
@@ -585,6 +585,57 @@
         {
           "label": "GitHub Releases",
           "url": "https://github.com/Xposed-Modules-Repo/com.luckyzyx.luckytool/releases"
+        }
+      ]
+    },
+    {
+      "id": "hma-oss",
+      "category_id": "2",
+      "name": "HMA-OSS（Zygisk 应用列表隐藏）",
+      "official_url": "https://github.com/frknkrc44/HMA-OSS/releases/latest",
+      "description": "Hide My Applist 的开源分支，改用 Zygisk 实现，用来隐藏应用列表、设置入口和安装器；在 KernelSU / APatch 上需要先装 Zygisk Next，Magisk 则要开启内置 Zygisk。它不是 LSPosed 模块。",
+      "info": [
+        {
+          "label": "版本",
+          "value": "oss-177（2026-11-18）"
+        },
+        {
+          "label": "适用环境",
+          "value": "Magisk（内置 Zygisk）/ KernelSU / APatch + Zygisk Next"
+        },
+        {
+          "label": "框架要求",
+          "value": "Zygisk；不是 LSPosed 模块"
+        },
+        {
+          "label": "作者",
+          "value": "frknkrc44"
+        },
+        {
+          "label": "提供者",
+          "value": "原作者官方渠道"
+        },
+        {
+          "label": "开源情况",
+          "value": "源码公开（AGPL-3.0，以仓库许可证为准）"
+        }
+      ],
+      "links": [
+        {
+          "label": "GitHub 仓库",
+          "url": "https://github.com/frknkrc44/HMA-OSS"
+        },
+        {
+          "label": "GitHub Releases",
+          "url": "https://github.com/frknkrc44/HMA-OSS/releases"
+        },
+        {
+          "label": "官方 Wiki",
+          "url": "https://github.com/frknkrc44/HMA-OSS/wiki"
+        },
+        {
+          "label": "Telegram 频道",
+          "url": "https://t.me/aerathfuns"
         }
       ]
     }
