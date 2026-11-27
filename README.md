@@ -1,6 +1,6 @@
 # PocketBench
 
-PocketBench 是一个专注于 Android 实时动态（Live Updates）的 Compose 应用，提供可编辑的通知标题、胶囊短文本与进度，并通过同一通知 ID 实时更新。当前版本：1.0.0.15。
+PocketBench 是一个专注于 Android 实时动态（Live Updates）的 Compose 应用，提供可编辑的通知标题、胶囊短文本与进度，并通过同一通知 ID 实时更新。当前版本：1.0.0.19。
 
 ## 功能
 
@@ -32,7 +32,7 @@ PocketBench 是一个专注于 Android 实时动态（Live Updates）的 Compose
 
 ## COUI-Kit
 
-界面组件 API 以 [COUI-Kit 官方仓库](https://github.com/ItosEO/COUI-Kit) 的组件文档与示例为准。当前引用版本为 `0.0.1-alpha12`。官方组件文档：[组件目录](https://github.com/ItosEO/COUI-Kit/tree/main/docs/components)、[弹窗](https://github.com/ItosEO/COUI-Kit/blob/main/docs/components/dialog.md)、[Group](https://github.com/ItosEO/COUI-Kit/blob/main/docs/components/group.md)、[Item](https://github.com/ItosEO/COUI-Kit/blob/main/docs/components/item.md)。
+界面组件 API 以 [COUI-Kit 官方仓库](https://github.com/ItosEO/COUI-Kit) 的组件文档与示例为准。当前引用版本为 `0.0.1-alpha21`。官方组件文档：[组件目录](https://github.com/ItosEO/COUI-Kit/tree/main/docs/components)、[弹窗](https://github.com/ItosEO/COUI-Kit/blob/main/docs/components/dialog.md)、[Group](https://github.com/ItosEO/COUI-Kit/blob/main/docs/components/group.md)、[Item](https://github.com/ItosEO/COUI-Kit/blob/main/docs/components/item.md)。
 
 ## 远程适配配置
 

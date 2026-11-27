@@ -5,6 +5,12 @@ import androidx.annotation.RequiresApi
 import android.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import com.ljj.PocketBench.device.DeviceMonitorController
+import com.ljj.PocketBench.catalog.AdaptationCatalogSpec
+import com.ljj.PocketBench.catalog.CloudCatalogStore
+import com.ljj.PocketBench.catalog.CloudCatalogUi
+import com.ljj.PocketBench.catalog.DeviceCatalogSpec
+import com.ljj.PocketBench.catalog.RootCatalogSpec
+import com.ljj.PocketBench.catalog.rememberCloudCatalog
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
@@ -36,14 +42,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
-import java.net.HttpURLConnection
-import java.net.URL
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -51,6 +52,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -67,6 +69,7 @@ import com.itos.coui.switch.Switch
 import com.itos.coui.text.CouiTextKind
 import com.itos.coui.text.Text
 import com.itos.coui.navigation.CouiNavigationBarDefaults
+import com.itos.coui.shape.CouiShape
 import com.itos.coui.theme.CouiTheme
 import com.itos.coui.topappbar.TopAppBar
 import com.itos.coui.topappbar.TopAppBarButton
@@ -105,6 +108,10 @@ fun PocketBenchApp(
     var currentPage by rememberSaveable { mutableStateOf("home") }
     var navigationForward by remember { mutableStateOf(true) }
     var returnPage by rememberSaveable { mutableStateOf("home") }
+    val context = LocalContext.current
+    LaunchedEffect(context) {
+        withContext(Dispatchers.IO) { CloudCatalogStore.cleanupLegacy(context) }
+    }
     var announcementVisible by rememberSaveable { mutableStateOf(false) }
     var selectedCatalogVendor by rememberSaveable { mutableStateOf("oppo") }
     var selectedCatalogProduct by rememberSaveable { mutableStateOf("oppo-find-x10") }
@@ -131,7 +138,13 @@ fun PocketBenchApp(
     } else {
         null
     }
-    val isSubPage = currentPage in setOf("live", "device", "root", "systemWebsites", "opensource", "coloros", "harmony", "originos", "adaptationHub", "deviceCatalog", "deviceCatalogVendor", "deviceCatalogSeries", "deviceCatalogProduct", "adaptation_coloros", "adaptation_harmony", "adaptation_originos", "adaptation_xiaomi", "adaptation_honor", "adaptation_apple", "rootResources", "rootResourcesCategory", "rootResourcesDetail", "rootResourcesNotice")
+    val isSubPage = currentPage in setOf("live", "device", "root", "systemWebsites", "opensource", "coloros", "harmony", "originos", "adaptationHub", "deviceCatalog", "deviceCatalogVendor", "deviceCatalogSeries", "deviceCatalogProduct", "adaptation_coloros", "adaptation_harmony", "adaptation_originos", "adaptation_xiaomi", "adaptation_honor", "adaptation_apple", "rootResourcesCategory", "rootResourcesDetail", "rootResourcesNotice")
+
+    fun tabIndexFor(page: String): Int = when (page) {
+        "rootResources" -> 1
+        "settings" -> 2
+        else -> 0
+    }
 
     fun navigate(page: String) {
         if (page in catalogPages) {
@@ -146,11 +159,11 @@ fun PocketBenchApp(
             catalogSearchExpanded = false
             catalogSearchFocusPending = false
             keyboardController?.hide()
-            if (page != "home" && page != "settings") returnPage = currentPage
+            if (page != "home" && page != "rootResources" && page != "settings") returnPage = currentPage
         }
         navigationForward = page != "home"
         currentPage = page
-        selectedTab = if (page == "settings") 1 else 0
+        selectedTab = tabIndexFor(page)
     }
 
     fun goBack() {
@@ -158,6 +171,12 @@ fun PocketBenchApp(
         if (currentPage in catalogPages && catalogBackStack.isNotEmpty()) {
             currentPage = catalogBackStack.last()
             catalogBackStack = catalogBackStack.dropLast(1)
+        } else if (currentPage == "rootResourcesDetail") {
+            currentPage = "rootResourcesCategory"
+            catalogBackStack = emptyList()
+        } else if (currentPage == "rootResourcesCategory" || currentPage == "rootResourcesNotice") {
+            currentPage = "rootResources"
+            catalogBackStack = emptyList()
         } else {
             currentPage = returnPage
             returnPage = "home"
@@ -168,7 +187,7 @@ fun PocketBenchApp(
             catalogSearchFocusPending = false
             keyboardController?.hide()
         }
-        selectedTab = if (currentPage == "settings") 1 else 0
+        selectedTab = tabIndexFor(currentPage)
     }
 
     BackHandler(enabled = isSubPage) { goBack() }
@@ -199,7 +218,7 @@ fun PocketBenchApp(
                         "deviceCatalogVendor" -> "厂商机型目录"
                         "deviceCatalogSeries" -> selectedCatalogSeries
                         "deviceCatalogProduct" -> "机型详情"
-                        "rootResources" -> "ROOT 玩机资源专区"
+                        "rootResources" -> "资源专区"
                         "rootResourcesCategory" -> "资源列表"
                         "rootResourcesDetail" -> "资源详情"
                         "rootResourcesNotice" -> "使用须知"
@@ -289,6 +308,7 @@ fun PocketBenchApp(
                         material = barMaterial,
                         items = listOf(
                             CouiNavigationItem("首页", CouiIcons.Filled.Grid, CouiIcons.Filled.Grid),
+                            CouiNavigationItem("资源专区", CouiIcons.Filled.CloudData, CouiIcons.Filled.CloudData),
                             CouiNavigationItem("设置", CouiIcons.Filled.Setting, CouiIcons.Filled.Setting),
                         ),
                         selectedIndex = selectedTab,
@@ -296,7 +316,11 @@ fun PocketBenchApp(
                             val previousTab = selectedTab
                             navigationForward = it > previousTab
                             selectedTab = it
-                            currentPage = if (it == 0) "home" else "settings"
+                            currentPage = when (it) {
+                                0 -> "home"
+                                1 -> "rootResources"
+                                else -> "settings"
+                            }
                         },
                     )
                 } else {
@@ -319,8 +343,20 @@ fun PocketBenchApp(
                         Item(
                             modifier = Modifier.weight(1f),
                             onClick = {
-                                navigationForward = selectedTab != 1
+                                navigationForward = selectedTab > 1
                                 selectedTab = 1
+                                currentPage = "rootResources"
+                            },
+                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+                            icon = { Image(CouiIcons.Filled.CloudData, contentDescription = "资源专区") },
+                        ) {
+                            Text(text = "资源专区", kind = CouiTextKind.ItemTitle)
+                        }
+                        Item(
+                            modifier = Modifier.weight(1f),
+                            onClick = {
+                                navigationForward = selectedTab < 2
+                                selectedTab = 2
                                 currentPage = "settings"
                             },
                             contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
@@ -406,7 +442,6 @@ fun PocketBenchApp(
                         onOpenSystemWebsites = { navigate("systemWebsites") },
                         onOpenAdaptationHub = { navigate("adaptationHub") },
                         onOpenDeviceCatalog = { navigate("deviceCatalog") },
-                        onOpenRootResources = { navigate("rootResources") },
                     )
                 }
                 Spacer(Modifier.height(16.dp))
@@ -450,7 +485,19 @@ fun PocketBenchApp(
             onDismissRequest = { announcementVisible = false },
             dark = dark,
             title = "PocketBench 更新公告",
-            message = "1.0.0.18\n\n更新内容：\n• 新增并完善手机机型目录搜索能力，支持按厂商、产品名称、系列、型号及上市信息进行检索，扩大可搜索的信息范围；\n• 优化搜索关键词匹配规则，自动忽略空格及常见标点，支持不完整关键词和多词拆分匹配，减少因输入格式不同造成的漏搜；\n• 优化厂商目录、系列目录与机型结果之间的联动搜索，让关键词能够在不同目录层级中继续生效；\n• 完善机型资料展示与目录浏览体验，搜索结果可直接进入对应机型详情，方便查看已收录的设备参数；\n• 统一机型搜索入口的 COUI 原生组件样式，保持搜索弹窗、输入状态和原有操作流程一致；\n• 优化应用设置中的版本信息展示，并完善更新公告内容，让新增功能与改进项目更加清晰。",
+            message = """
+1.0.0.19
+
+本次更新
+• 资源专区新增 15 个 KSU 模块，全部来自 KernelSU 官方模块库收录的不可变 Release，可追溯到原作者 GitHub；应用只保留官方入口与说明，不内置模块代码，也不在应用内执行模块。
+• 新增：Play Integrity Fix、Hybrid Mount、Magic Mount-rs、KernelSU Tuner、HyperCool、QSC 充电控制、ColorOS 温控与云控、ColorOS16 优化版、ColorOS WIFI 感知、Bye Blur、别动我的剪切板、证书桥、Zygisk FuseHide、MoveCertificate、KernelSU Grant Toast。
+• KSU 分类现在共 21 条；连同上一轮的 HMA-OSS，资源目录从 13 条扩到 28 条，config_version 1.3.0。
+• 云端目录继续四源并行同步：GitHub Raw、ghproxy.net、gh-proxy.com、jsDelivr；按 config_version 取最高有效版本，旧数据不回滚；内置副本与磁盘缓存兜底，首次打开不再空白。
+• 资源详情统一展示版本、适用系统、框架依赖、作者、来源与许可证；详情页只打开官方链接，不在应用内下载或执行模块。
+• 继续使用 COUI 原生组件：底栏三项、资源宫格圆角、公告弹窗、搜索与设置交互均不做手绘替代。
+• 版本号 1.0.0.19 / versionCode 18；资源目录 1.3.0 已推送云端。
+""".trimIndent(),
+
             confirmAction = CouiDialogAction(text = "知道了", onClick = { announcementVisible = false }),
             material = dialogMaterial,
             backdrop = backdrop,
@@ -492,7 +539,6 @@ private fun HomePage(
     onOpenSystemWebsites: () -> Unit,
     onOpenAdaptationHub: () -> Unit,
     onOpenDeviceCatalog: () -> Unit,
-    onOpenRootResources: () -> Unit,
 ) {
     Group(title = "PocketBench") {
         Item(
@@ -519,12 +565,6 @@ private fun HomePage(
     Group(title = "ROOT") {
         Item(onClick = onOpenRoot) {
             Text(text = "ROOT", kind = CouiTextKind.ItemTitle)
-        }
-    }
-
-    Group {
-        Item(onClick = onOpenRootResources, summary = { Text(text = "第三方资源索引与官方来源信息", kind = CouiTextKind.ItemSummary) }) {
-            Text(text = "ROOT 玩机资源专区", kind = CouiTextKind.ItemTitle)
         }
     }
 
@@ -865,58 +905,43 @@ private fun DeviceCatalogProductPage(productId: String) {
 }
 
 @Composable
-private fun DeviceCatalogCloudData(content: @Composable (JSONObject) -> Unit) {
-    val context = LocalContext.current
-    val prefs = remember(context) { context.getSharedPreferences("device_catalog_cloud", android.content.Context.MODE_PRIVATE) }
-    // Do not show cached data while online; cache is only a fallback after a failed fetch.
-    var raw by remember { mutableStateOf<String?>(null) }
-    var loading by remember { mutableStateOf(false) }
-    var error by remember { mutableStateOf("") }
-    var refresh by remember { mutableIntStateOf(0) }
-    LaunchedEffect(refresh) {
-        val cached = raw?.let { runCatching { JSONObject(it) }.getOrNull() }
-        val cacheIsUsable = cached?.optJSONArray("vendors") != null &&
-            cached.optJSONArray("products") != null
-
-        // A page change must reuse the cached catalogue instead of starting
-        // another request while AnimatedContent is disposing the previous page.
-        if (refresh == 0 && cacheIsUsable) return@LaunchedEffect
-
-        loading = true
-        try {
-            val downloaded = withContext(Dispatchers.IO) {
-                val c = (URL("https://raw.githubusercontent.com/liangfangfa0-afk/PocketBench/main/data/device_catalog.json").openConnection() as HttpURLConnection)
-                c.connectTimeout = 10000
-                c.readTimeout = 10000
-                c.setRequestProperty("Cache-Control", "no-cache")
-                try {
-                    if (c.responseCode !in 200..299) error("HTTP ${c.responseCode}")
-                    c.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
-                } finally {
-                    c.disconnect()
-                }
-            }
-            val parsed = JSONObject(downloaded)
-            require(parsed.optInt("schema_version") == 1) { "不支持的资料库版本" }
-            require(parsed.optJSONArray("vendors") != null) { "厂商目录格式错误" }
-            require(parsed.optJSONArray("products") != null) { "机型目录格式错误" }
-            raw = downloaded
-            prefs.edit().putString("catalog_json", downloaded).apply()
-            error = ""
-        } catch (e: Exception) {
-            // Use the saved index only when the cloud request cannot be completed.
-            raw = prefs.getString("catalog_json", null)
-            error = e.message ?: "云端读取失败"
-        } finally {
-            loading = false
+private fun CatalogStatusGroup(
+    title: String,
+    action: String,
+    state: CloudCatalogUi,
+) {
+    val payload = state.payload
+    Group(
+        title = title,
+        footer = when {
+            state.loading && payload != null -> "正在同步云端目录；当前显示 ${payload.source} 版本 ${payload.version}"
+            state.loading -> "正在同步云端目录…"
+            state.error.isNotBlank() && payload != null -> "${state.error}；当前显示 ${payload.source} 版本 ${payload.version}"
+            state.error.isNotBlank() -> state.error
+            payload != null -> "${payload.source} · 版本 ${payload.version} · 更新于 ${payload.updatedAt.ifBlank { "未知" }}"
+            else -> "目录尚未就绪"
+        },
+    ) {
+        Item(onClick = state.refresh) {
+            Text(text = if (state.loading) "正在更新…" else action, kind = CouiTextKind.ItemTitle)
         }
     }
-    val parsed = remember(raw) { runCatching { raw?.let(::JSONObject) }.getOrNull() }
-    Group(title = "云端资料库", footer = when { loading -> "正在同步云端资料…"; error.isNotBlank() && parsed != null -> "联网失败，当前显示缓存资料：$error"; error.isNotBlank() -> "加载失败：$error"; parsed != null -> "资料版本 ${parsed.optString("config_version")} · 更新于 ${parsed.optString("updated_at")}"; else -> "等待首次加载" }) {
-        Item(onClick = { refresh++ }) { Text(text = if (loading) "正在更新…" else "刷新云端资料", kind = CouiTextKind.ItemTitle) }
-    }
-    if (parsed != null) content(parsed) else Group(title = "暂无资料") { Item { Text(text = "暂时无法连接云端资料库。", kind = CouiTextKind.ItemSummary) } }
 }
+
+@Composable
+private fun DeviceCatalogCloudData(content: @Composable (JSONObject) -> Unit) {
+    val state = rememberCloudCatalog(DeviceCatalogSpec)
+    CatalogStatusGroup(title = "云端资料库", action = "刷新云端资料", state = state)
+    val parsed = state.payload?.parsed
+    if (parsed != null) {
+        content(parsed)
+    } else {
+        Group(title = "暂无资料") {
+            Item { Text(text = state.error.ifBlank { "正在读取内置机型资料…" }, kind = CouiTextKind.ItemSummary) }
+        }
+    }
+}
+
 @Composable
 private fun AdaptationHubPage(onOpenSystem: (String) -> Unit) {
     Group(title = "OPPO") {
@@ -1305,8 +1330,8 @@ private fun OpenSourcePage(onOpenPocketBench: () -> Unit, onOpenCoui: () -> Unit
         Item(onClick = onOpenCoui, summary = { Text(text = "ItosEO/COUI-Kit · 官方源码、许可与更新记录", kind = CouiTextKind.ItemSummary) }) { Text(text = "COUI-Kit 官方开源仓库", kind = CouiTextKind.ItemTitle) }
         Item(onClick = onOpenCouiDocs, summary = { Text(text = "Group、Item、Dialog、SingleChoiceDialog、NavigationBar、Switch、InputDialog 等组件 API", kind = CouiTextKind.ItemSummary) }) { Text(text = "COUI 官方组件文档", kind = CouiTextKind.ItemTitle) }
     }
-    Group(title = "官方依赖引用", footer = "以下版本与 PocketBench 当前 Gradle 配置保持一致。COUI-Kit 官方 README 的核心依赖写法为 io.github.itoseo:coui。") {
-        Item { Text(text = "dependencies {\n    implementation(\"io.github.itoseo:coui:0.0.1-alpha17\")\n    implementation(\"io.github.itoseo:coui-icons:0.0.1-alpha17\")\n}", kind = CouiTextKind.ItemSummary) }
+    Group(title = "官方依赖引用", footer = "以下版本与 PocketBench 当前 Gradle 配置保持一致。COUI-Kit 0.0.1-alpha21 通过 JitPack 分发，仓库坐标为 com.github.itoseo.coui-kit。") {
+        Item { Text(text = "dependencies {\n    implementation(\"com.github.itoseo.coui-kit:coui:0.0.1-alpha21\")\n    implementation(\"com.github.itoseo.coui-kit:coui-icons:0.0.1-alpha21\")\n}", kind = CouiTextKind.ItemSummary) }
     }
     Group(title = "官方示例 · Group + Item", footer = "按 COUI-Kit 官方 docs/components/group.md 与 item.md 示例结构：先读取 CouiPageDefaults.themeColors()，再组合 Group、Item 与 COUI Text。") {
         Item { Text(text = "@Composable\nfun SettingsGroupExample(\n    modifier: Modifier = Modifier,\n    groupTitle: String,\n    rowTitle: String,\n    footerText: String,\n    onRowClick: () -> Unit,\n) {\n    val colors = CouiPageDefaults.themeColors()\n    Group(\n        modifier = modifier,\n        title = groupTitle,\n        footer = footerText,\n        colors = colors,\n    ) {\n        Item(onClick = onRowClick) {\n            Text(\n                text = rowTitle,\n                kind = CouiTextKind.ItemTitle,\n                color = colors.title,\n            )\n        }\n    }\n}", kind = CouiTextKind.ItemSummary) }
@@ -1326,60 +1351,14 @@ private fun OriginOsAdaptationPage(onOpenOfficial: () -> Unit) {
     RemoteAdaptationPage(section = "originos", title = "OriginOS 7 官方适配计划", onOpenOfficial = onOpenOfficial)
 }
 
-private const val REMOTE_ADAPTATION_URL =
-    "https://raw.githubusercontent.com/liangfangfa0-afk/PocketBench/main/data/device_adaptation.json"
-
-private fun fetchAdaptationJson(): String {
-    val connection = (URL(REMOTE_ADAPTATION_URL).openConnection() as HttpURLConnection).apply {
-        requestMethod = "GET"
-        connectTimeout = 8000
-        readTimeout = 10000
-        setRequestProperty("Accept", "application/json")
-        setRequestProperty("Cache-Control", "no-cache")
-    }
-    return try {
-        if (connection.responseCode !in 200..299) throw java.io.IOException("HTTP ${connection.responseCode}")
-        connection.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
-    } finally {
-        connection.disconnect()
-    }
-}
-
 @Composable
 private fun RemoteAdaptationPage(
     section: String,
     title: String,
     onOpenOfficial: () -> Unit,
 ) {
-    val context = LocalContext.current
-    val preferences = remember(context) {
-        context.getSharedPreferences("pocketbench_remote_data", android.content.Context.MODE_PRIVATE)
-    }
-    var refreshKey by rememberSaveable(section) { mutableIntStateOf(0) }
-    var rawJson by remember(section) { mutableStateOf(preferences.getString("adaptation_json", null)) }
-    var loading by remember { mutableStateOf(false) }
-    var loadError by remember { mutableStateOf("") }
-
-    LaunchedEffect(refreshKey, section) {
-        loading = true
-        loadError = ""
-        try {
-            val latest = withContext(Dispatchers.IO) { fetchAdaptationJson() }
-            val parsed = JSONObject(latest)
-            require(parsed.optInt("schema_version") == 1) { "不支持的数据格式版本" }
-            require(listOf("coloros", "harmony", "originos", "xiaomi", "honor", "apple").all(parsed::has)) { "配置缺少必要字段" }
-            rawJson = latest
-            preferences.edit().putString("adaptation_json", latest).apply()
-        } catch (error: Exception) {
-            loadError = error.message ?: "网络请求失败"
-        } finally {
-            loading = false
-        }
-    }
-
-    val config = remember(rawJson) {
-        runCatching { rawJson?.let(::JSONObject) }.getOrNull()
-    }
+    val catalog = rememberCloudCatalog(AdaptationCatalogSpec)
+    val config = catalog.payload?.parsed
     val updatedAt = config?.optString("updated_at").orEmpty()
     val configVersion = config?.optString("config_version").orEmpty()
     Group(
@@ -1387,15 +1366,15 @@ private fun RemoteAdaptationPage(
         footer = "数据由应用在后台读取并缓存；接口地址仅作为内部数据源使用，不在页面中展示或提供复制。刷新只读取 JSON，不执行远程代码或系统命令。"
     ) {
         Item(
-            onClick = { refreshKey++ },
-            trailing = { Text(text = if (loading) "更新中…" else "刷新", kind = CouiTextKind.ItemTitle) },
+            onClick = catalog.refresh,
+            trailing = { Text(text = if (catalog.loading) "更新中…" else "刷新", kind = CouiTextKind.ItemTitle) },
             summary = {
                 Text(
                     text = when {
-                        loading -> "正在检查 GitHub 远程配置"
-                        loadError.isNotEmpty() && rawJson != null -> "联网失败，当前显示本地缓存 · $loadError"
-                        loadError.isNotEmpty() -> "获取失败：$loadError"
-                        rawJson == null -> "尚无缓存数据"
+                        catalog.loading -> "正在同步云端适配目录"
+                        catalog.error.isNotEmpty() && config != null -> "${catalog.error} · 当前显示 ${catalog.payload.source} 版本 $configVersion"
+                        catalog.error.isNotEmpty() -> "获取失败：${catalog.error}"
+                        config == null -> "尚无可用数据"
                         else -> "配置版本 $configVersion · 更新于 $updatedAt"
                     },
                     kind = CouiTextKind.ItemSummary
@@ -1571,65 +1550,6 @@ private fun StatusItem(label: String, value: String) {
     }
 }
 
-private val ROOT_CATALOG_URLS = listOf(
-    "https://ghproxy.net/https://raw.githubusercontent.com/liangfangfa0-afk/PocketBench/main/data/root_catalog.json",
-    "https://gh-proxy.com/https://raw.githubusercontent.com/liangfangfa0-afk/PocketBench/main/data/root_catalog.json",
-    "https://cdn.jsdelivr.net/gh/liangfangfa0-afk/PocketBench@main/data/root_catalog.json",
-    "https://raw.githubusercontent.com/liangfangfa0-afk/PocketBench/main/data/root_catalog.json",
-)
-
-private const val ROOT_CATALOG_ASSET_NAME = "root_catalog.json"
-
-private object RootCatalogMemory {
-    var raw: String? = null
-    var autoFetched = false
-}
-
-private fun catalogVersionScore(version: String): Int =
-    version.split(".").fold(0) { acc, part -> acc * 100 + (part.toIntOrNull() ?: 0) }
-
-private fun rootCatalogValidationError(parsed: JSONObject): String? {
-    if (parsed.optInt("schema_version") != 1) return "不支持的资源目录版本"
-    val categories = parsed.optJSONArray("categories") ?: return "分类数据格式错误"
-    val resources = parsed.optJSONArray("resources") ?: return "资源数据格式错误"
-    val categoryIds = mutableSetOf<String>()
-    for (index in 0 until categories.length()) {
-        val category = categories.optJSONObject(index) ?: return "第 ${index + 1} 个分类格式错误"
-        val id = category.optString("id").trim()
-        val name = category.optString("name").trim()
-        if (id.isBlank() || name.isBlank() || !categoryIds.add(id)) return "分类 ID 或标题无效"
-    }
-    for (index in 0 until resources.length()) {
-        val resource = resources.optJSONObject(index) ?: return "第 ${index + 1} 个资源格式错误"
-        val categoryId = resource.optString("category_id")
-        if (categoryId.isNotBlank() && categoryId !in categoryIds) return "资源引用了不存在的分类"
-    }
-    return null
-}
-
-private suspend fun downloadRootCatalog(url: String): String? = withContext(Dispatchers.IO) {
-    runCatching {
-        val connection = (URL("$url?ts=${System.currentTimeMillis()}").openConnection() as HttpURLConnection).apply {
-            connectTimeout = 5000
-            readTimeout = 6000
-            useCaches = false
-            defaultUseCaches = false
-            instanceFollowRedirects = true
-            requestMethod = "GET"
-            setRequestProperty("Accept", "application/json")
-            setRequestProperty("Cache-Control", "no-cache, no-store, max-age=0")
-            setRequestProperty("Pragma", "no-cache")
-            setRequestProperty("User-Agent", "PocketBench/1.0")
-        }
-        try {
-            if (connection.responseCode !in 200..299) return@runCatching null
-            connection.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
-        } finally {
-            connection.disconnect()
-        }
-    }.getOrNull()
-}
-
 @Composable
 private fun RootResourcesHomePage(
     onOpenCategory: (String) -> Unit,
@@ -1637,44 +1557,40 @@ private fun RootResourcesHomePage(
 ) {
     RootCatalogData { data ->
         val categories = data.optJSONArray("categories") ?: JSONArray()
-        val titles = (0 until categories.length()).mapNotNull { index ->
+        val entries = (0 until categories.length()).mapNotNull { index ->
             categories.optJSONObject(index)?.let { category ->
                 category.optString("id").takeIf(String::isNotBlank)?.let { id ->
                     id to category.optString("name").ifBlank { "资源入口 $id" }
                 }
             }
-        }.toMap()
+        }
 
         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            repeat(14) { rowIndex ->
+            entries.chunked(2).forEach { rowEntries ->
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(0.dp),
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    repeat(2) { columnIndex ->
-                        val number = rowIndex * 2 + columnIndex + 1
-                        if (number <= 27) {
-                            val id = number.toString()
-                            val title = titles[id] ?: "资源入口 $id"
-                            Group(modifier = Modifier.weight(1f).aspectRatio(1f)) {
-                                Item(
-                                    modifier = Modifier.weight(1f),
-                                    onClick = {
-                                        if (id == "4") onOpenNotice() else onOpenCategory(id)
-                                    },
-                                    contentPadding = PaddingValues(8.dp),
-                                ) {
-                                    Text(
-                                        text = title,
-                                        kind = CouiTextKind.ItemTitle,
-                                        textAlign = TextAlign.Center,
-                                        modifier = Modifier.fillMaxWidth(),
-                                    )
-                                }
+                    rowEntries.forEach { (id, title) ->
+                        Group(modifier = Modifier.weight(1f).aspectRatio(1f).clip(CouiShape(20.dp))) {
+                            Item(
+                                modifier = Modifier.weight(1f),
+                                onClick = {
+                                    if (id == "4") onOpenNotice() else onOpenCategory(id)
+                                },
+                                contentPadding = PaddingValues(8.dp),
+                            ) {
+                                Text(
+                                    text = title,
+                                    kind = CouiTextKind.ItemTitle,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier.fillMaxWidth(),
+                                )
                             }
-                        } else {
-                            Spacer(modifier = Modifier.weight(1f).aspectRatio(1f))
                         }
+                    }
+                    if (rowEntries.size == 1) {
+                        Spacer(modifier = Modifier.weight(1f).aspectRatio(1f))
                     }
                 }
             }
@@ -1689,85 +1605,9 @@ private fun RootResourcesHomePage(
 
 @Composable
 private fun RootCatalogData(content: @Composable (JSONObject) -> Unit) {
-    val context = LocalContext.current
-    remember(context) {
-        runCatching { context.deleteSharedPreferences("root_catalog_cloud") }
-    }
-    val bundledRaw = remember(context) {
-        runCatching {
-            context.assets.open(ROOT_CATALOG_ASSET_NAME).bufferedReader(Charsets.UTF_8).use { it.readText() }
-        }.getOrNull()
-    }
-    var raw by remember { mutableStateOf(RootCatalogMemory.raw ?: bundledRaw) }
-    var loading by remember { mutableStateOf(false) }
-    var error by remember { mutableStateOf("") }
-    var refresh by remember { mutableIntStateOf(0) }
-
-    LaunchedEffect(refresh) {
-        if (refresh == 0 && RootCatalogMemory.autoFetched) {
-            raw = RootCatalogMemory.raw ?: bundledRaw
-            loading = false
-            return@LaunchedEffect
-        }
-        loading = true
-        var failure = ""
-        var bestText: String? = null
-        var bestScore = -1
-        val results = coroutineScope {
-            ROOT_CATALOG_URLS.map { endpoint ->
-                async(Dispatchers.IO) { endpoint to downloadRootCatalog(endpoint) }
-            }.awaitAll()
-        }
-        for ((endpoint, text) in results) {
-            if (text == null) {
-                failure = "云端源不可用：$endpoint"
-                continue
-            }
-            val parsed = runCatching { JSONObject(text) }.getOrNull()
-            val invalidReason = if (parsed == null) "云端返回内容无法解析" else rootCatalogValidationError(parsed)
-            if (parsed == null || invalidReason != null) {
-                failure = invalidReason.orEmpty()
-                continue
-            }
-            val score = catalogVersionScore(parsed.optString("config_version"))
-            if (score > bestScore) {
-                bestScore = score
-                bestText = text
-            }
-        }
-        val bundledScore = bundledRaw
-            ?.let { runCatching { JSONObject(it) }.getOrNull() }
-            ?.let { catalogVersionScore(it.optString("config_version")) } ?: -1
-        if (bestText != null && bestScore >= bundledScore) {
-            RootCatalogMemory.raw = bestText
-            raw = bestText
-            error = ""
-        } else if (bestText != null) {
-            raw = bundledRaw
-            error = "云端索引版本低于内置索引，已显示内置索引"
-        } else {
-            raw = bundledRaw
-            error = "联网失败，已显示内置索引：${failure.ifBlank { "云端索引不可用" }}"
-        }
-        RootCatalogMemory.autoFetched = true
-        loading = false
-    }
-
-    val parsed = remember(raw) { runCatching { raw?.let(::JSONObject) }.getOrNull() }
-    Group(
-        title = "云端索引",
-        footer = when {
-            loading -> "正在强制同步云端索引…"
-            error.isNotBlank() -> error
-            parsed != null -> "目录版本 ${parsed.optString("config_version")} · 更新于 ${parsed.optString("updated_at")}"
-            else -> "索引数据不可用"
-        },
-    ) {
-        Item(onClick = { refresh++ }) {
-            Text(text = if (loading) "正在更新…" else "刷新资源索引", kind = CouiTextKind.ItemTitle)
-        }
-    }
-    content(parsed ?: JSONObject())
+    val state = rememberCloudCatalog(RootCatalogSpec)
+    CatalogStatusGroup(title = "云端索引", action = "刷新资源索引", state = state)
+    content(state.payload?.parsed ?: JSONObject())
 }
 
 @Composable
